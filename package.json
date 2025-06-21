@@ -1,0 +1,48 @@
+{
+  "name": "demir-celik-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@floating-ui/react": "^0.27.12",
+    "@neondatabase/serverless": "^1.0.1",
+    "@tiptap/extension-highlight": "^2.22.0",
+    "@tiptap/extension-image": "^2.22.0",
+    "@tiptap/extension-link": "^2.22.0",
+    "@tiptap/extension-subscript": "^2.22.0",
+    "@tiptap/extension-superscript": "^2.22.0",
+    "@tiptap/extension-task-item": "^2.22.0",
+    "@tiptap/extension-task-list": "^2.22.0",
+    "@tiptap/extension-text-align": "^2.22.0",
+    "@tiptap/extension-typography": "^2.22.0",
+    "@tiptap/extension-underline": "^2.22.0",
+    "@tiptap/pm": "^2.22.0",
+    "@tiptap/react": "^2.22.0",
+    "@tiptap/starter-kit": "^2.22.0",
+    "@vercel/blob": "^1.1.1",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.44.2",
+    "next": "15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.4",
+    "sass": "^1.89.2",
+    "tailwindcss": "^4",
+    "tsx": "^4.20.3",
+    "typescript": "^5"
+  }
+}
