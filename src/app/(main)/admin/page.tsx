@@ -2,7 +2,17 @@
 import { useEffect, useState } from 'react';
 import { useTheme, Theme } from '../../context/themeContext';
 
-type ThemeForm = Omit<Theme, 'id'>; // id sabit 'default'
+type ThemeForm = Omit<Theme, 'id'>;
+
+const fontOptions = [
+  'Inter, sans-serif',
+  'Arial, sans-serif',
+  'Roboto, sans-serif',
+  'Georgia, serif',
+  'Times New Roman, serif',
+  'Courier New, monospace',
+  'Verdana, sans-serif',
+];
 
 export default function AdminThemePage() {
   const { theme, toggleMode, setTheme } = useTheme();
@@ -89,14 +99,18 @@ export default function AdminThemePage() {
 
       <label>
         Font Family:
-        <input
-          type="text"
+        <select
           name="fontFamily"
           value={form.fontFamily}
           onChange={handleChange}
           style={{ marginLeft: 10, width: '100%' }}
-          placeholder="Örn: Inter, sans-serif"
-        />
+        >
+          {fontOptions.map((font) => (
+            <option key={font} value={font}>
+              {font}
+            </option>
+          ))}
+        </select>
       </label>
 
       <label>
