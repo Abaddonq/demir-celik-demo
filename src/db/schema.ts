@@ -1,4 +1,4 @@
-import { integer, jsonb, pgTable, varchar, text } from "drizzle-orm/pg-core";
+import { integer, jsonb, pgTable, varchar, text, boolean } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -21,10 +21,11 @@ export const staffTable = pgTable("staff", {
 });
 
 export const theme = pgTable('theme', {
-  id: varchar('id').primaryKey().notNull(), 
-  mode: varchar('mode').notNull(), 
+  id: varchar('id').primaryKey().notNull(),
+  mode: boolean('mode').notNull(),
   primaryColor: text('primary_color').notNull(),
   secondaryColor: text('secondary_color').notNull(),
   fontFamily: text('font_family').notNull(),
-  fontSizeBase: text('font_size_base').notNull()
+  fontSizeBase: text('font_size_base').notNull(),
 });
+

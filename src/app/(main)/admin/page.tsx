@@ -1,47 +1,38 @@
-"use client";
+'use client';
 import { useEffect, useState } from 'react';
-import { useTheme } from '../../context/themeContext';
+import { useTheme, Theme } from '../../context/themeContext';
 
-type ThemeForm = {
-  mode: 'light' | 'dark';
-  primaryColor: string;
-  secondaryColor: string;
-  fontFamily: string;
-  fontSizeBase: string;
-};
+type ThemeForm = Omit<Theme, 'id'>; // id sabit 'default'
 
 export default function AdminThemePage() {
-  const { mode: currentMode, toggleMode } = useTheme();
+  const { theme, toggleMode, setTheme } = useTheme();
 
   const [form, setForm] = useState<ThemeForm>({
-    mode: currentMode || 'light',
-    primaryColor: '#3b82f6',     // Tailwind blue-500 default
-    secondaryColor: '#fbbf24',   // Tailwind amber-400 default
-    fontFamily: 'Inter, sans-serif',
-    fontSizeBase: '16px',
+    mode: theme.mode,
+    primaryColor: theme.primaryColor,
+    secondaryColor: theme.secondaryColor,
+    fontFamily: theme.fontFamily,
+    fontSizeBase: theme.fontSizeBase,
   });
 
-  // Load existing theme from backend on mount or mode change
   useEffect(() => {
-    fetch(`/api/theme?mode=${form.mode}`)
-      .then(res => res.json())
-      .then(data => {
-        setForm({
-          mode: data.mode,
-          primaryColor: data.primaryColor,
-          secondaryColor: data.secondaryColor,
-          fontFamily: data.fontFamily,
-          fontSizeBase: data.fontSizeBase,
-        });
-      })
-      .catch(() => {
-        // Eğer yoksa form default kalır
-      });
-  }, [form.mode]);
+    setForm({
+      mode: theme.mode,
+      primaryColor: theme.primaryColor,
+      secondaryColor: theme.secondaryColor,
+      fontFamily: theme.fontFamily,
+      fontSizeBase: theme.fontSizeBase,
+    });
+  }, [theme]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+
+    if (name === 'mode') {
+      setForm((prev) => ({ ...prev, mode: value === 'true' }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const saveTheme = async () => {
@@ -51,8 +42,12 @@ export default function AdminThemePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      if (res.ok) alert('Tema başarıyla güncellendi!');
-      else alert('Bir hata oluştu.');
+      if (res.ok) {
+        alert('Tema başarıyla güncellendi!');
+        setTheme({ ...form, id: 'default' } as Theme);
+      } else {
+        alert('Bir hata oluştu.');
+      }
     } catch {
       alert('Sunucu hatası.');
     }
@@ -64,9 +59,9 @@ export default function AdminThemePage() {
 
       <label>
         Mod:
-        <select name="mode" value={form.mode} onChange={handleChange}>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
+        <select name="mode" value={form.mode.toString()} onChange={handleChange}>
+          <option value="false">Light</option>
+          <option value="true">Dark</option>
         </select>
       </label>
 
@@ -124,7 +119,7 @@ export default function AdminThemePage() {
         onClick={toggleMode}
         style={{ marginTop: 20, marginLeft: 20, padding: '10px 20px' }}
       >
-        {currentMode === 'light' ? 'Dark Mode\'a Geç' : 'Light Mode\'a Geç'}
+        {theme.mode ? "Light Mode'a Geç" : "Dark Mode'a Geç"}
       </button>
     </div>
   );

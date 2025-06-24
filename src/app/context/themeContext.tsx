@@ -1,9 +1,9 @@
-"use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+'use client';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type Theme = {
+export type Theme = {
   id: string;
-  mode: string;
+  mode: boolean;  // true = dark, false = light
   primaryColor: string;
   secondaryColor: string;
   fontFamily: string;
@@ -11,49 +11,33 @@ type Theme = {
 };
 
 type ThemeContextType = {
-  theme: Theme | null;
-  mode: 'light' | 'dark';
+  theme: Theme;
   toggleMode: () => void;
+  setTheme: (theme: Theme) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-type ThemeProviderProps = {
-  children: ReactNode;
-};
+export const ThemeProvider = ({ children, initialTheme }: { children: ReactNode; initialTheme: Theme }) => {
+  const [theme, setThemeState] = useState<Theme>(initialTheme);
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme | null>(null);
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const toggleMode = () => {
+    const updatedTheme = { ...theme, mode: !theme.mode };
+    setThemeState(updatedTheme);
+  };
 
-  useEffect(() => {
-    // Örnek: Sistem tercihi veya localStorage'dan oku
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setMode(systemDark ? 'dark' : 'light');
-  }, []);
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+  };
 
   useEffect(() => {
-    fetch(`/api/theme?mode=${mode}`)
-      .then(res => res.json())
-      .then(data => setTheme(data));
-  }, [mode]);
-
-  useEffect(() => {
-    if (theme) {
-      document.documentElement.style.setProperty('--color-primary', theme.primaryColor);
-      document.documentElement.style.setProperty('--color-secondary', theme.secondaryColor);
-      document.documentElement.style.setProperty('--font-family', theme.fontFamily);
-      document.documentElement.style.setProperty('--font-size-base', theme.fontSizeBase);
-    }
+    document.documentElement.style.setProperty('--color-primary', theme.primaryColor);
+    document.documentElement.style.setProperty('--color-secondary', theme.secondaryColor);
+    document.documentElement.style.setProperty('--font-family', theme.fontFamily);
+    document.documentElement.style.setProperty('--font-size-base', theme.fontSizeBase);
   }, [theme]);
 
-  const toggleMode = () => setMode(prev => (prev === 'light' ? 'dark' : 'light'));
-
-  return (
-    <ThemeContext.Provider value={{ theme, mode, toggleMode }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleMode, setTheme }}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = () => {

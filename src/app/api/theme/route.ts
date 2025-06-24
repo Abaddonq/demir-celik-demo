@@ -5,7 +5,10 @@ import { eq, and } from 'drizzle-orm';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const mode = searchParams.get('mode') || 'light';
+  const modeParam = searchParams.get('mode') || 'light';
+
+  // modeParam string => boolean dönüşümü
+  const mode = modeParam === 'dark' ? true : false;
 
   const data = await db
     .select()
@@ -24,7 +27,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { mode, primaryColor, secondaryColor, fontFamily, fontSizeBase } = body;
+  const { mode: modeParam, primaryColor, secondaryColor, fontFamily, fontSizeBase } = body;
+
+  // POST ile gelen mode parametresi string olarak gelebilir, boolean yapalım:
+  const mode = modeParam === true || modeParam === 'true' || modeParam === 1 || modeParam === '1';
 
   await db
     .insert(theme)

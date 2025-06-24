@@ -1,7 +1,9 @@
-// src/app/(main)/user/page.tsx
-import React from 'react';
+'use client';
 
-type ThemeForm = {
+import { useEffect, useState } from 'react';
+
+type Theme = {
+  id: string;
   mode: 'light' | 'dark';
   primaryColor: string;
   secondaryColor: string;
@@ -9,88 +11,65 @@ type ThemeForm = {
   fontSizeBase: string;
 };
 
-async function getTheme(mode: string): Promise<ThemeForm | null> {
-  try {
-    const res = await fetch(`http://localhost:3000/api/theme?mode=${mode}`, {
-      // Server component'te default fetch caching var,
-      // eğer her istekte güncel veri istersen cache: 'no-store' kullan
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data;
-  } catch {
-    return null;
+export default function ThemeInfoPage() {
+  const [theme, setTheme] = useState<Theme | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+useEffect(() => {
+  async function fetchTheme() {
+    try {
+      const res = await fetch('/api/theme?mode=false'); 
+      if (!res.ok) throw new Error('Tema verisi alınamadı');
+      const data: Theme = await res.json();
+      setTheme(data);
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError(String(e));
+      }
+    } finally {
+      setLoading(false);
+    }
   }
-}
+  fetchTheme();
+}, []);
 
-export default async function UserThemePage() {
-  // İstersen mode'u 'light' sabit bırakabilirsin veya
-  // request header veya cookie'den alabilirsin
-  const mode = 'light';
 
-  const themeData = await getTheme(mode);
-
-  if (!themeData) {
-    return (
-      <p style={{ textAlign: 'center', marginTop: '2rem' }}>
-        Tema bulunamadı.
-      </p>
-    );
-  }
+  if (loading) return <p>Yükleniyor...</p>;
+  if (error) return <p style={{ color: 'red' }}>Hata: {error}</p>;
+  if (!theme) return <p>Veri bulunamadı.</p>;
 
   return (
-    <div
-      style={{
-        maxWidth: 500,
-        margin: '2rem auto',
-        fontFamily: themeData.fontFamily,
-        fontSize: themeData.fontSizeBase,
-        border: '1px solid #ccc',
-        borderRadius: 8,
-        padding: 20,
-        backgroundColor: themeData.mode === 'light' ? '#f9f9f9' : '#1f2937',
-        color: themeData.mode === 'light' ? '#111' : '#f9f9f9',
-      }}
-    >
-      <h1 style={{ textAlign: 'center' }}>Kullanıcı Tema Ayarları</h1>
-
-      <p><strong>Mod:</strong> {themeData.mode === 'light' ? 'Light' : 'Dark'}</p>
-
+    <div style={{ maxWidth: 600, margin: '2rem auto', fontFamily: theme.fontFamily }}>
+      <h1>Mevcut Tema Bilgileri</h1>
+      <p><strong>ID:</strong> {theme.id}</p>
+      <p><strong>Mod:</strong> {theme.mode.toString()}</p>
       <p>
         <strong>Primary Color:</strong>{' '}
-        <span
-          style={{
-            display: 'inline-block',
-            width: 20,
-            height: 20,
-            backgroundColor: themeData.primaryColor,
-            border: '1px solid #000',
-            verticalAlign: 'middle',
-            marginLeft: 8,
-          }}
-        ></span>{' '}
-        {themeData.primaryColor}
+        <span style={{ color: theme.primaryColor }}>{theme.primaryColor}</span>
       </p>
-
       <p>
         <strong>Secondary Color:</strong>{' '}
-        <span
-          style={{
-            display: 'inline-block',
-            width: 20,
-            height: 20,
-            backgroundColor: themeData.secondaryColor,
-            border: '1px solid #000',
-            verticalAlign: 'middle',
-            marginLeft: 8,
-          }}
-        ></span>{' '}
-        {themeData.secondaryColor}
+        <span style={{ color: theme.secondaryColor }}>{theme.secondaryColor}</span>
       </p>
+      <p><strong>Font Family:</strong> {theme.fontFamily}</p>
+      <p><strong>Font Size Base:</strong> {theme.fontSizeBase}</p>
 
-      <p><strong>Font Family:</strong> {themeData.fontFamily}</p>
-      <p><strong>Font Size:</strong> {themeData.fontSizeBase}</p>
+      <div
+        style={{
+          marginTop: 20,
+          padding: 20,
+          backgroundColor: theme.primaryColor,
+          color: theme.mode === 'light' ? '#000' : '#fff',
+          borderRadius: 8,
+          fontSize: theme.fontSizeBase,
+          fontFamily: theme.fontFamily,
+        }}
+      >
+        Bu alanda tema renkleri ve fontları canlı olarak görünüyor.
+      </div>
     </div>
   );
 }
