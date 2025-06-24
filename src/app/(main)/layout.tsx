@@ -2,39 +2,33 @@ import '../globals.css';
 import { ThemeProvider } from '../context/themeContext';
 import type { Theme } from '../context/themeContext';
 
-async function getInitialTheme() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/theme?mode=false`, { cache: 'no-store' }); 
-  // burada 'false' = light mod için
-
+async function getInitialTheme(): Promise<Theme> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/theme?mode=false`, { cache: 'no-store' });
   if (!res.ok) {
+    // fallback theme
     return {
       id: 'default',
-      mode: false, // light = false
+      mode: false,
       primaryColor: '#3b82f6',
       secondaryColor: '#fbbf24',
       fontFamily: 'Inter, sans-serif',
       fontSizeBase: '16px',
-    } as Theme;
+    };
   }
-
-  const fetchedTheme = await res.json();
-
-  const safeTheme: Theme = {
-    ...fetchedTheme,
-    mode: fetchedTheme.mode === true || fetchedTheme.mode === 'true' ? true : false
-    // hem boolean hem string olursa ikisini de kapsar
+  const data = await res.json();
+  return {
+    ...data,
+    mode: Boolean(data.mode),
   };
-
-  return safeTheme;
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const theme = await getInitialTheme();
+  const initialTheme = await getInitialTheme();
 
   return (
     <html lang="tr">
       <body>
-        <ThemeProvider initialTheme={theme}>
+        <ThemeProvider initialTheme={initialTheme}>
           {children}
         </ThemeProvider>
       </body>

@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 export type Theme = {
   id: string;
-  mode: boolean;  // true = dark, false = light
+  mode: boolean;
   primaryColor: string;
   secondaryColor: string;
   fontFamily: string;
@@ -22,8 +22,7 @@ export const ThemeProvider = ({ children, initialTheme }: { children: ReactNode;
   const [theme, setThemeState] = useState<Theme>(initialTheme);
 
   const toggleMode = () => {
-    const updatedTheme = { ...theme, mode: !theme.mode };
-    setThemeState(updatedTheme);
+    setThemeState((prev) => ({ ...prev, mode: !prev.mode }));
   };
 
   const setTheme = (newTheme: Theme) => {
