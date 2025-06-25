@@ -1,8 +1,11 @@
+import Accordion from '@/components/Accordion'
 import React from 'react'
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+      <Accordion/>
+    </div>
   )
 }
 

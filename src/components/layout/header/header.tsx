@@ -1,6 +1,6 @@
-'use client'
-import React, { useState, useRef } from 'react'
-import Link from 'next/link'
+'use client';
+import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 import {
   FaPhoneAlt,
   FaMapMarkerAlt,
@@ -8,9 +8,9 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
-} from 'react-icons/fa'
+} from 'react-icons/fa';
+import { useTheme } from '@/app/context/themeContext'; 
 
-// Menü verisi
 const navItems = [
   {
     title: 'Anasayfa',
@@ -48,10 +48,10 @@ const navItems = [
     ],
   },
   {
-     title: 'Hızlı Erişim',
+    title: 'Hızlı Erişim',
     subItems: [
-      { title: 'Hızlı Erişim ', href: '/hizli-erisim' }, // app/hizli-erisim/page.tsx
-      { title: 'Fiyat Listesi', href: '/hizli-erisim/fiyat-listesi' }, // app/hizli-erisim/fiyat-listesi/page.tsx
+      { title: 'Hızlı Erişim ', href: '/hizli-erisim' },
+      { title: 'Fiyat Listesi', href: '/hizli-erisim/fiyat-listesi' },
       { title: 'Hizmet İşleyiş Süreci', href: '/hizli-erisim/hizmet-isleyis-sureci' },
       { title: 'İç Kontrol', href: '/hizli-erisim/ic-kontrol' },
       { title: 'Kalite Belgeleri', href: '/hizli-erisim/kalite-belgeleri' },
@@ -73,28 +73,31 @@ const navItems = [
       { title: 'Ulaşım', href: '/iletisim/ulasim' },
     ],
   },
-]
-
+];
 
 const Header = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { theme } = useTheme(); // 🎯 Tema verisini al
 
   const handleMouseEnter = (index: number) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    setOpenIndex(index)
-  }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpenIndex(index);
+  };
 
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
-      setOpenIndex(null)
-    }, 150) // 150ms gecikme
-  }
+      setOpenIndex(null);
+    }, 150);
+  };
 
   return (
     <header>
       {/* Üst Bar */}
-      <div className="bg-[#1a237e] text-white text-sm flex justify-between px-4 py-2 items-center">
+      <div
+        className="text-white text-sm flex justify-between px-4 py-2 items-center"
+        style={{ backgroundColor: theme.primaryColor }} // 🎯 Tema rengi
+      >
         <div className="flex items-center space-x-4">
           <span className="flex items-center gap-1">
             <FaPhoneAlt className="text-red-500" /> Destek: +90 370 418 6001
@@ -122,12 +125,18 @@ const Header = () => {
       <div className="flex items-center justify-between py-4 px-6 bg-white shadow-md relative z-50">
         {/* Logo */}
         <div className="flex items-center gap-4">
-          <img src="/logo.png" alt="Logo" className="w-20" />
-          <div className="text-xl font-bold text-[#1a237e]">Demir Çelik Enstitüsü</div>
+          <img
+            src="/images/enstitulogo.png"
+            alt=" Demir Çelik Enstitüsüsü"
+            className="h-16 object-contain"
+          />
+          <div className="text-xl font-bold" style={{ color: theme.primaryColor }}>
+            Demir Çelik Enstitüsü
+          </div>
         </div>
 
         {/* Menü */}
-        <nav className="flex gap-6 text-[#1a237e] font-semibold relative z-50">
+        <nav className="flex gap-6 font-semibold relative z-50" style={{ color: theme.primaryColor }}>
           {navItems.map((item, index) => (
             <div
               key={index}
@@ -157,12 +166,16 @@ const Header = () => {
         </nav>
 
         {/* Fiyat Al Butonu */}
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-tr-xl font-bold">
+        <button
+          className="text-white px-4 py-2 rounded-tr-xl font-bold"
+          style={{ backgroundColor: theme.secondaryColor }}
+        >
           Fiyat Al
         </button>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
+

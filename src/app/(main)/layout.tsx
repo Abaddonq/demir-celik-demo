@@ -36,8 +36,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeProvider initialTheme={initialTheme}>
         <Header/>
           {children}
+          <Footer/>
         </ThemeProvider>
-        <Footer/>
+        
       </body>
     </html>
   );

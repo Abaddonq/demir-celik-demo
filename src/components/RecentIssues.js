@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTheme } from '@/app/context/themeContext';
 
 const issues = [
   {
@@ -22,9 +23,19 @@ const issues = [
 ];
 
 export default function RecentIssues() {
+  const { theme } = useTheme();
+
   return (
-    <div className="max-w-sm bg-white rounded shadow p-4 border">
-      <h2 className="text-lg font-semibold text-blue-900 mb-4">Son Sayılar</h2>
+    <div
+      className="max-w-sm rounded shadow p-4 border"
+      style={{ backgroundColor: theme.cardBackground || '#ffffff' }}
+    >
+      <h2
+        className="text-lg font-semibold mb-4"
+        style={{ color: theme.primaryColor || '#202b85' }}
+      >
+        Son Sayılar
+      </h2>
 
       {issues.map((issue, index) => {
         const prevYear = index > 0 ? issues[index - 1].label.slice(0, 4) : null;
@@ -33,17 +44,39 @@ export default function RecentIssues() {
 
         return (
           <div key={index}>
-            {addDivider && <hr className="my-3 border-gray-300" />}
+            {addDivider && <hr className="my-3" style={{ borderColor: theme.borderColor || '#ccc' }} />}
             <a
               href={issue.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex justify-between items-center p-3 rounded-md mb-1 transition-all text-blue-900 hover:text-orange-600"
+              className="group flex justify-between items-center p-3 rounded-md mb-1 transition-all"
+              style={{
+                color: theme.primaryColor || '#202b85',
+                transform: 'scale(1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = theme.secondaryColor || '#ff7f50';
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = theme.primaryColor || '#202b85';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
             >
               <span className="transition-colors">{issue.label}</span>
 
-              {/* Ok simgesi — metinle arasında makul boşluk */}
-              <div className="ml-4 w-6 h-6 rounded-full flex items-center justify-center bg-indigo-900 text-white text-sm group-hover:bg-orange-500 transition-all">
+              <div
+                className="ml-4 w-6 h-6 rounded-full flex items-center justify-center text-white text-sm transition-all"
+                style={{
+                  backgroundColor: theme.primaryColor || '#202b85',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = theme.secondaryColor || '#ff7f50';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = theme.primaryColor || '#202b85';
+                }}
+              >
                 →
               </div>
             </a>

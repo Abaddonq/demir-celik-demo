@@ -1,4 +1,6 @@
+'use client';
 import { useState } from 'react';
+import { useTheme } from '@/app/context/themeContext';
 
 const editors = [
   {
@@ -8,50 +10,70 @@ const editors = [
   },
   {
     name: "Dr. Safa Polat",
+    email: "ccccccccccccccccc",
+    institution: "ccccccccccccccccccc",
   },
   {
     name: "Dr. Erhan Kayabaşı",
+    email: "aaaaaaaa",
+    institution: "aaaaaaaaa",
   },
 ];
 
 export default function Accordion() {
+  const { theme } = useTheme();
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggle = (index) => {
-    if (!editors[index].email) return; // Bilgi yoksa açılmasın
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 rounded overflow-hidden shadow">
+    <div 
+      className="max-w-md mx-auto mt-10 rounded overflow-hidden shadow"
+      style={{ fontFamily: theme.fontFamily }}
+    >
       {/* Başlık */}
-      <div className="bg-orange-600 text-white font-bold p-4">
+      <div 
+        className="text-white font-bold p-4"
+        style={{ backgroundColor: theme.primaryColor }}
+      >
         Baş Editörler
       </div>
 
       {/* Liste */}
       {editors.map((editor, index) => {
         const isOpen = openIndex === index;
-        const hasInfo = !!editor.email;
+        const hasContent = editor.email || editor.institution;
 
         return (
           <div key={index} className="border-t">
             <button
               onClick={() => toggle(index)}
-              className="w-full flex justify-between items-center p-4 font-semibold text-left hover:bg-gray-100"
+              className={`w-full flex justify-between items-center p-4 font-semibold text-left hover:bg-gray-100 ${
+                !hasContent ? 'cursor-default' : 'cursor-pointer'
+              }`}
+              style={{ color: theme.textColor }}
             >
-              <span className={hasInfo ? "text-red-600" : "text-blue-900"}>
-                {editor.name}
-              </span>
+              <span>{editor.name}</span>
               <span>
-                {hasInfo ? (isOpen ? "➖" : "➕") : "➕"}
+                {hasContent ? (isOpen ? "➖" : "➕") : "➕"}
               </span>
             </button>
 
-            {isOpen && hasInfo && (
-              <div className="px-4 pb-4 text-sm text-gray-600">
-                <div>{editor.email}</div>
-                <div>{editor.institution}</div>
+            {isOpen && hasContent && (
+              <div 
+                className="px-4 pb-4 text-sm"
+                style={{ 
+                  color: theme.textColor,
+                  backgroundColor: theme.backgroundColor 
+                }}
+              >
+                {editor.email && <div>{editor.email}</div>}
+                {editor.institution && <div>{editor.institution}</div>}
+                {!editor.email && !editor.institution && (
+                  <div className="opacity-70">Bilgi bulunmamaktadır</div>
+                )}
               </div>
             )}
           </div>
