@@ -5,21 +5,55 @@ import { eq } from "drizzle-orm";
 // Tip alias (okunabilirlik için)
 type StaffInsert = typeof staffTable.$inferInsert;
 
-// ✅ PERSONEL OLUŞTUR
-export const createStaff = async (
-  staffData: StaffInsert,
+
+
+
+export const addDepartmentsToStaff = async (
+  staffId: number,
   departmentIds: number[]
 ) => {
-  return db.transaction(async (tx) => {
-    // Email zorunlu kontrolü
-    if (!staffData.email) {
-      const error = new Error("Email boş olamaz") as Error & { code: string };
-      error.code = "EMAIL_REQUIRED";
-      throw error;
-    }
+  // Personelin var olduğunu kontrol et
+  const staff = await getStaffById(staffId);
+  if (!staff) {
+    const error = new Error("Personel bulunamadı") as Error & { code: string };
+    error.code = "STAFF_NOT_FOUND";
+    throw error;
+  }
 
-    // Email benzersiz mi kontrol et
-    const existing = await tx
+  // Eski ilişkileri sil
+  await db
+    .delete(staffDepartmentsTable)
+    .where(eq(staffDepartmentsTable.staff_id, staffId));
+
+  // Yeni ilişkileri ekle
+  if (departmentIds.length > 0) {
+    await db.insert(staffDepartmentsTable).values(
+      departmentIds.map(deptId => ({
+        staff_id: staffId,
+        department_id: deptId,
+      }))
+    );
+  }
+
+  return { 
+    success: true,
+    message: "Departmanlar başarıyla eklendi",
+    staffId,
+    departmentIds 
+  };
+};
+
+export const createStaff = async (staffData: StaffInsert) => {
+  // "not null" alanlar için ek kontrol
+  if (!staffData.name || !staffData.surname || !staffData.title) {
+    const error = new Error("Zorunlu alanlar eksik") as Error & { code: string };
+    error.code = "REQUIRED_FIELDS_MISSING";
+    throw error;
+  }
+
+  // Email kontrolü (email null olabilir)
+  if (staffData.email) {
+    const existing = await db
       .select()
       .from(staffTable)
       .where(eq(staffTable.email, staffData.email));
@@ -29,25 +63,15 @@ export const createStaff = async (
       error.code = "STAFF_EXISTS";
       throw error;
     }
+  }
 
-    // Yeni personel oluştur
-    const [newStaff] = await tx
-      .insert(staffTable)
-      .values(staffData)
-      .returning();
+  // Sadece personel oluştur (transaction olmadan)
+  const [newStaff] = await db
+    .insert(staffTable)
+    .values(staffData)
+    .returning();
 
-    // Departman ilişkilerini ekle
-    if (departmentIds.length > 0) {
-      await tx.insert(staffDepartmentsTable).values(
-        departmentIds.map((deptId) => ({
-          staff_id: newStaff.id,
-          department_id: deptId,
-        }))
-      );
-    }
-
-    return newStaff;
-  });
+  return newStaff;
 };
 
 // ✅ TÜM PERSONELLERİ GETİR
@@ -80,52 +104,48 @@ export const getStaffWithDepartments = async (id: number) => {
   };
 };
 
-// ✅ PERSONEL GÜNCELLE
 export const updateStaff = async (
   id: number,
   staffData: Partial<StaffInsert>,
   departmentIds: number[]
 ) => {
-  return db.transaction(async (tx) => {
-    const [updatedStaff] = await tx
-      .update(staffTable)
-      .set(staffData)
-      .where(eq(staffTable.id, id))
-      .returning();
+  // Personel bilgilerini güncelle
+  const [updatedStaff] = await db
+    .update(staffTable)
+    .set(staffData)
+    .where(eq(staffTable.id, id))
+    .returning();
 
-    // Eski departman ilişkilerini sil
-    await tx
-      .delete(staffDepartmentsTable)
-      .where(eq(staffDepartmentsTable.staff_id, id));
+  // Eski departman ilişkilerini sil
+  await db
+    .delete(staffDepartmentsTable)
+    .where(eq(staffDepartmentsTable.staff_id, id));
 
-    // Yeni ilişkileri ekle
-    if (departmentIds.length > 0) {
-      await tx.insert(staffDepartmentsTable).values(
-        departmentIds.map((deptId) => ({
-          staff_id: id,
-          department_id: deptId,
-        }))
-      );
-    }
+  // Yeni ilişkileri ekle
+  if (departmentIds.length > 0) {
+    await db.insert(staffDepartmentsTable).values(
+      departmentIds.map((deptId) => ({
+        staff_id: id,
+        department_id: deptId,
+      }))
+    );
+  }
 
-    return updatedStaff;
-  });
+  return updatedStaff;
 };
 
 // ✅ PERSONEL SİL
 export const deleteStaff = async (id: number) => {
-  return db.transaction(async (tx) => {
-    // Departman ilişkilerini sil
-    await tx
-      .delete(staffDepartmentsTable)
-      .where(eq(staffDepartmentsTable.staff_id, id));
+  // Departman ilişkilerini sil
+  await db
+    .delete(staffDepartmentsTable)
+    .where(eq(staffDepartmentsTable.staff_id, id));
 
-    // Personeli sil
-    const [deletedStaff] = await tx
-      .delete(staffTable)
-      .where(eq(staffTable.id, id))
-      .returning();
+  // Personeli sil
+  const [deletedStaff] = await db
+    .delete(staffTable)
+    .where(eq(staffTable.id, id))
+    .returning();
 
-    return deletedStaff;
-  });
+  return deletedStaff;
 };

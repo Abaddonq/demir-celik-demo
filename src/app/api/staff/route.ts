@@ -4,9 +4,11 @@ import {
   getAllStaff,
   getStaffWithDepartments,
   updateStaff,
-  deleteStaff
+  deleteStaff,
 } from '@/services/staff.service';
+import { staffTable } from "@/db/schema";
 
+type StaffInsert = typeof staffTable.$inferInsert;
 
 export async function GET( _request : NextRequest) {
   try {
@@ -30,22 +32,40 @@ export async function GET( _request : NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { staffData, departmentIds } = await request.json();
+    const { staffData } = await request.json();
 
-    if (!staffData || !departmentIds) {
+    if (!staffData) {
       return NextResponse.json(
-        { error: "Personel verileri ve departman ID'leri gereklidir" },
+        { error: "Personel verileri gereklidir" },
         { status: 400 }
       );
     }
 
-    const newStaff = await createStaff(staffData, departmentIds);
+    // Gerekli alanları kontrol et
+    if (!staffData.name || !staffData.surname || !staffData.title) {
+      return NextResponse.json(
+        { error: "Ad, soyad ve ünvan zorunlu alanlardır" },
+        { status: 400 }
+      );
+    }
+
+    // Tip dönüşümü yap
+    const staffInsert: StaffInsert = {
+      name: staffData.name,
+      surname: staffData.surname,
+      title: staffData.title,
+      phone: staffData.phone || null,
+      email: staffData.email || null,
+      responsible_labs: staffData.responsible_labs || null,
+      image_url: staffData.image_url || null
+    };
+
+    const newStaff = await createStaff(staffInsert);
     return NextResponse.json(newStaff, { status: 201 });
   } catch (error: unknown) {
     return handleStaffError(error);
   }
 }
-
 export async function PUT(request: NextRequest) {
   try {
     const { id, staffData, departmentIds } = await request.json();
@@ -66,8 +86,10 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const { id } = await request.json();
-
+    // ID'yi URL parametresinden al
+    const url = new URL(request.url);
+    const id = url.searchParams.get("id");
+    
     if (!id) {
       return NextResponse.json(
         { error: 'Personel ID gereklidir' },
@@ -75,7 +97,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const deletedStaff = await deleteStaff(id);
+    const deletedStaff = await deleteStaff(Number(id));
     if (!deletedStaff) {
       return NextResponse.json(
         { error: 'Personel bulunamadı' },
@@ -84,11 +106,8 @@ export async function DELETE(request: NextRequest) {
     }
 
     return NextResponse.json({ message: 'Personel silindi' });
-  } catch {
-    return NextResponse.json(
-      { error: 'Personel silinirken hata oluştu' },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    return handleStaffError(error);
   }
 }
 
@@ -115,8 +134,18 @@ function handleStaffError(error: unknown) {
         { status: 400 }
       );
     }
+    
+    // Yeni hata tipi
+    if (code === 'REQUIRED_FIELDS_MISSING') {
+      return NextResponse.json(
+        { error: 'Ad, soyad ve ünvan alanları zorunludur' },
+        { status: 400 }
+      );
+    }
   }
 
+  // Diğer hatalar için loglama
+  console.error("Beklenmeyen hata:", error);
   return NextResponse.json(
     { error: 'Sunucu hatası oluştu' },
     { status: 500 }
