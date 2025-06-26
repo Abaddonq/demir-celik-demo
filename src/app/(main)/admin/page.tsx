@@ -2,7 +2,12 @@
 import { useEffect, useState } from 'react';
 import { useTheme, Theme } from '../../context/themeContext';
 
-type ThemeForm = Omit<Theme, 'id'>; // id sabit 'default'
+type ThemeForm = Omit<Theme, 'id'>;
+
+type Department = {
+  id: number;
+  name: string;
+};
 
 export default function AdminThemePage() {
   const { theme, toggleMode, setTheme } = useTheme();
@@ -15,6 +20,12 @@ export default function AdminThemePage() {
     fontSizeBase: theme.fontSizeBase,
   });
 
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [newDeptName, setNewDeptName] = useState('');
+  const [editDeptId, setEditDeptId] = useState<number | null>(null);
+  const [editDeptName, setEditDeptName] = useState('');
+
+  // Temayı senkronize et
   useEffect(() => {
     setForm({
       mode: theme.mode,
@@ -25,14 +36,15 @@ export default function AdminThemePage() {
     });
   }, [theme]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+  // Departmanları getir
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
 
-    if (name === 'mode') {
-      setForm((prev) => ({ ...prev, mode: value === 'true' }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
+  const fetchDepartments = async () => {
+    const res = await fetch('/api/departments');
+    const data = await res.json();
+    setDepartments(data);
   };
 
   const saveTheme = async () => {
@@ -53,13 +65,81 @@ export default function AdminThemePage() {
     }
   };
 
+ const addDepartment = async () => {
+  const trimmedName = newDeptName.trim();
+
+  if (!trimmedName) {
+    alert("Departman adı boş olamaz.");
+    return;
+  }
+
+  if (trimmedName.length > 100) {
+    alert("Departman adı 100 karakterden uzun olamaz.");
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/departments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: trimmedName }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      await fetchDepartments();
+      setNewDeptName('');
+    } else {
+      alert(data.error || 'Departman eklenemedi.');
+    }
+  } catch  {
+    alert('Sunucu hatası.');
+  }
+};
+
+  const deleteDepartment = async (id: number) => {
+    const confirmed = confirm('Bu departmanı silmek istediğinize emin misiniz?');
+    if (!confirmed) return;
+
+    const res = await fetch('/api/departments', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) {
+      await fetchDepartments();
+    } else {
+      alert('Departman silinemedi.');
+    }
+  };
+
+  const updateDepartment = async () => {
+    if (!editDeptId || !editDeptName) return;
+    const res = await fetch('/api/departments', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: editDeptId, name: editDeptName }),
+    });
+    if (res.ok) {
+      await fetchDepartments();
+      setEditDeptId(null);
+      setEditDeptName('');
+    } else {
+      alert('Departman güncellenemedi.');
+    }
+  };
+
   return (
-    <div style={{ maxWidth: 500, margin: '2rem auto', fontFamily: form.fontFamily }}>
+    <div style={{ maxWidth: 600, margin: '2rem auto', fontFamily: form.fontFamily }}>
       <h1>Admin Tema Düzenleme</h1>
 
+      {/* Tema ayarları */}
       <label>
         Mod:
-        <select name="mode" value={form.mode.toString()} onChange={handleChange}>
+        <select name="mode" value={form.mode.toString()} onChange={(e) =>
+          setForm((prev) => ({ ...prev, mode: e.target.value === 'true' }))
+        }>
           <option value="false">Light</option>
           <option value="true">Dark</option>
         </select>
@@ -71,8 +151,7 @@ export default function AdminThemePage() {
           type="color"
           name="primaryColor"
           value={form.primaryColor}
-          onChange={handleChange}
-          style={{ marginLeft: 10 }}
+          onChange={(e) => setForm((prev) => ({ ...prev, primaryColor: e.target.value }))}
         />
       </label>
 
@@ -82,21 +161,21 @@ export default function AdminThemePage() {
           type="color"
           name="secondaryColor"
           value={form.secondaryColor}
-          onChange={handleChange}
-          style={{ marginLeft: 10 }}
+          onChange={(e) => setForm((prev) => ({ ...prev, secondaryColor: e.target.value }))}
         />
       </label>
 
       <label>
         Font Family:
-        <input
-          type="text"
+        <select
           name="fontFamily"
           value={form.fontFamily}
-          onChange={handleChange}
-          style={{ marginLeft: 10, width: '100%' }}
-          placeholder="Örn: Inter, sans-serif"
-        />
+          onChange={(e) => setForm((prev) => ({ ...prev, fontFamily: e.target.value }))}
+        >
+          {['Inter', 'Arial', 'Roboto', 'Georgia', 'Times New Roman', 'Courier New', 'Verdana'].map(font => (
+            <option key={font} value={font}>{font}</option>
+          ))}
+        </select>
       </label>
 
       <label>
@@ -105,22 +184,54 @@ export default function AdminThemePage() {
           type="text"
           name="fontSizeBase"
           value={form.fontSizeBase}
-          onChange={handleChange}
-          style={{ marginLeft: 10 }}
-          placeholder="Örn: 16px"
+          onChange={(e) => setForm((prev) => ({ ...prev, fontSizeBase: e.target.value }))}
         />
       </label>
 
-      <button onClick={saveTheme} style={{ marginTop: 20, padding: '10px 20px' }}>
-        Kaydet
-      </button>
-
-      <button
-        onClick={toggleMode}
-        style={{ marginTop: 20, marginLeft: 20, padding: '10px 20px' }}
-      >
+      <button onClick={saveTheme}>Kaydet</button>
+      <button onClick={toggleMode} style={{ marginLeft: 20 }}>
         {theme.mode ? "Light Mode'a Geç" : "Dark Mode'a Geç"}
       </button>
+
+      <hr style={{ margin: '2rem 0' }} />
+
+      {/* Departman işlemleri */}
+      <h2>Departmanlar</h2>
+
+      <ul>
+        {departments.map((dept) => (
+          <li key={dept.id} style={{ marginBottom: 8 }}>
+            {editDeptId === dept.id ? (
+              <>
+                <input
+                  value={editDeptName}
+                  onChange={(e) => setEditDeptName(e.target.value)}
+                />
+                <button onClick={updateDepartment}>Kaydet</button>
+                <button onClick={() => setEditDeptId(null)}>İptal</button>
+              </>
+            ) : (
+              <>
+                {dept.name}
+                <button onClick={() => { setEditDeptId(dept.id); setEditDeptName(dept.name); }}>
+                  Düzenle
+                </button>
+                <button onClick={() => deleteDepartment(dept.id)}>Sil</button>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <div style={{ marginTop: 16 }}>
+        <input
+          type="text"
+          placeholder="Yeni departman adı"
+          value={newDeptName}
+          onChange={(e) => setNewDeptName(e.target.value)}
+        />
+        <button onClick={addDepartment}>Ekle</button>
+      </div>
     </div>
   );
 }
