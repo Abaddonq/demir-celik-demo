@@ -4,15 +4,10 @@ import { useTheme, Theme } from '../../context/themeContext';
 
 type ThemeForm = Omit<Theme, 'id'>;
 
-const fontOptions = [
-  'Inter, sans-serif',
-  'Arial, sans-serif',
-  'Roboto, sans-serif',
-  'Georgia, serif',
-  'Times New Roman, serif',
-  'Courier New, monospace',
-  'Verdana, sans-serif',
-];
+type Department = {
+  id: number;
+  name: string;
+};
 
 export default function AdminThemePage() {
   const { theme, toggleMode, setTheme } = useTheme();
@@ -70,38 +65,21 @@ export default function AdminThemePage() {
     }
   };
 
- const addDepartment = async () => {
-  const trimmedName = newDeptName.trim();
-
-  if (!trimmedName) {
-    alert("Departman adı boş olamaz.");
-    return;
-  }
-
-  if (trimmedName.length > 100) {
-    alert("Departman adı 100 karakterden uzun olamaz.");
-    return;
-  }
-
-  try {
+  const addDepartment = async () => {
+    if (!newDeptName) return;
     const res = await fetch('/api/departments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: trimmedName }),
+      body: JSON.stringify({ name: newDeptName }),
     });
-
-    const data = await res.json();
-
     if (res.ok) {
       await fetchDepartments();
       setNewDeptName('');
     } else {
-      alert(data.error || 'Departman eklenemedi.');
+      const error = await res.json();
+      alert(error.error || 'Departman eklenemedi.');
     }
-  } catch  {
-    alert('Sunucu hatası.');
-  }
-};
+  };
 
   const deleteDepartment = async (id: number) => {
     const confirmed = confirm('Bu departmanı silmek istediğinize emin misiniz?');
@@ -173,18 +151,8 @@ export default function AdminThemePage() {
       <label>
         Font Family:
         <select
-        <select
           name="fontFamily"
           value={form.fontFamily}
-          onChange={handleChange}
-          style={{ marginLeft: 10, width: '100%' }}
-        >
-          {fontOptions.map((font) => (
-            <option key={font} value={font}>
-              {font}
-            </option>
-          ))}
-        </select>
           onChange={(e) => setForm((prev) => ({ ...prev, fontFamily: e.target.value }))}
         >
           {['Inter', 'Arial', 'Roboto', 'Georgia', 'Times New Roman', 'Courier New', 'Verdana'].map(font => (
