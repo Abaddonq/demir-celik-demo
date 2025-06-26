@@ -16,7 +16,7 @@ type ThemeContextType = {
   setTheme: (theme: Theme) => void;
 };
 
-const ThemeContext = createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType);
 
 export const ThemeProvider = ({ children, initialTheme }: { children: ReactNode; initialTheme: Theme }) => {
   const [theme, setThemeState] = useState<Theme>(initialTheme);

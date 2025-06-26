@@ -4,10 +4,15 @@ import { useTheme, Theme } from '../../context/themeContext';
 
 type ThemeForm = Omit<Theme, 'id'>;
 
-type Department = {
-  id: number;
-  name: string;
-};
+const fontOptions = [
+  'Inter, sans-serif',
+  'Arial, sans-serif',
+  'Roboto, sans-serif',
+  'Georgia, serif',
+  'Times New Roman, serif',
+  'Courier New, monospace',
+  'Verdana, sans-serif',
+];
 
 export default function AdminThemePage() {
   const { theme, toggleMode, setTheme } = useTheme();
@@ -168,8 +173,18 @@ export default function AdminThemePage() {
       <label>
         Font Family:
         <select
+        <select
           name="fontFamily"
           value={form.fontFamily}
+          onChange={handleChange}
+          style={{ marginLeft: 10, width: '100%' }}
+        >
+          {fontOptions.map((font) => (
+            <option key={font} value={font}>
+              {font}
+            </option>
+          ))}
+        </select>
           onChange={(e) => setForm((prev) => ({ ...prev, fontFamily: e.target.value }))}
         >
           {['Inter', 'Arial', 'Roboto', 'Georgia', 'Times New Roman', 'Courier New', 'Verdana'].map(font => (
