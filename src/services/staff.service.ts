@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { staffTable, staffDepartmentsTable } from "@/db/schema";
+import { staffTable, staffDepartmentsTable, departmentTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 // Tip alias (okunabilirlik için)
@@ -28,18 +28,34 @@ export const addDepartmentsToStaff = async (
   // Yeni ilişkileri ekle
   if (departmentIds.length > 0) {
     await db.insert(staffDepartmentsTable).values(
-      departmentIds.map(deptId => ({
+      departmentIds.map((deptId) => ({
         staff_id: staffId,
         department_id: deptId,
       }))
     );
   }
 
-  return { 
+  // ✅ Akademi kontrolü
+  const akademi = await db
+  .select()
+  .from(departmentTable)
+  .where(eq(departmentTable.name, "Akademi"))
+  .limit(1)
+  .then(rows => rows[0]);
+
+  if (akademi && !departmentIds.includes(akademi.id)) {
+    // Eğer akademi artık ilişkili değilse → sorumlu laboratuvarları sil
+    await db
+      .update(staffTable)
+      .set({ responsible_labs: null }) // veya null da olabilir
+      .where(eq(staffTable.id, staffId));
+  }
+
+  return {
     success: true,
     message: "Departmanlar başarıyla eklendi",
     staffId,
-    departmentIds 
+    departmentIds,
   };
 };
 

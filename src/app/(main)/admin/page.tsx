@@ -12,7 +12,37 @@ type Staff = {
   phone?: string;
   email: string;
   departments?: Department[];
+  responsible_labs?: string | null;
 };
+
+const laboratoryList = [
+  "Dinamik Test Laboratuvarı",
+  "Kalıntı Gerilme Ölçme Laboratuvarı",
+  "Spektral Analiz Laboratuvarı",
+  "SEM Laboratuvarı",
+  "Statik Test Laboratuvarı",
+  "XRD-XRF Laboratuvarı",
+  "Mikro Makro Sertlik Ölçüm Laboratuvarı",
+  "Metalografi Laboratuvarı",
+  "Talaşlı İmalat Atölyesi",
+  "Termal Analiz Laboratuvarı",
+  "Triboloji Laboratuvarı",
+  "Isıl İşlem Laboratuvarı",
+  "İnşaat Laboratuvarı",
+  "Korozyon Laboratuvarı",
+  "Kimyasal Analiz Laboratuvarı",
+  "Metroloji Laboratuvarı",
+  "Toz Metalurjisi Laboratuvarı",
+  "Kurumsal Karbon Ayak İzi̇ Raporlama",
+  "SKDM Raporlama",
+  "Sürdürülebilirlik Raporlanması",
+  "Bi̇na Enerji̇ Performansının Beli̇rlenmesi̇",
+  "Bi̇na Enerji̇ İyi̇leşti̇rme Projeleri̇ni̇n Oluşturulması",
+  "İç Mekan Hava Kali̇tesi̇ni̇n Beli̇rlenmesi̇",
+  "Yapılarda Isıl Köprüleri̇n Beli̇rlenmesi̇",
+  "ISO 50001 Enerji Yönetim Sistemi",
+  "Riskli Yapı Tespiti",
+];
 
 export default function AdminThemePage() {
   const { theme, toggleMode, setTheme } = useTheme();
@@ -29,6 +59,9 @@ export default function AdminThemePage() {
   const [newDeptName, setNewDeptName] = useState("");
   const [editDeptId, setEditDeptId] = useState<number | null>(null);
   const [editDeptName, setEditDeptName] = useState("");
+  const [assignLabStaffId, setAssignLabStaffId] = useState<number | null>(null);
+  const [selectedLabs, setSelectedLabs] = useState<string[]>([]);
+  const [isAssigningLabs, setIsAssigningLabs] = useState(false);
 
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [newStaff, setNewStaff] = useState<
@@ -212,6 +245,39 @@ export default function AdminThemePage() {
       alert("Sunucu hatası.");
     } finally {
       setIsLoading((prev) => ({ ...prev, departments: false }));
+    }
+  };
+
+  const isAcademicStaff = (staff: Staff) => {
+    return staff.departments?.some(
+      (dept) => dept.name.toLowerCase() === "akademi"
+    );
+  };
+
+  // Laboratuvar atama fonksiyonu
+  const assignLabsToStaff = async (staffId: number, labs: string[]) => {
+    setIsAssigningLabs(true);
+    try {
+      const res = await fetch(`/api/staff/${staffId}/labs`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ labs }),
+      });
+
+      if (res.ok) {
+        await fetchStaff();
+        alert("Laboratuvarlar başarıyla atandı!");
+        setSelectedLabs([]);
+        setAssignLabStaffId(null);
+      } else {
+        const err = await res.json();
+        alert(err.error || "Laboratuvar ataması yapılamadı.");
+      }
+    } catch (error) {
+      console.error("Laboratuvar atanırken hata:", error);
+      alert("Sunucu hatası.");
+    } finally {
+      setIsAssigningLabs(false);
     }
   };
 
@@ -659,7 +725,7 @@ export default function AdminThemePage() {
 
               {/* Departman Atama Modalı */}
               {assignDeptStaffId && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                   <div className="bg-white rounded-lg w-full max-w-md p-6">
                     <h3 className="text-lg font-medium text-gray-800 mb-4">
                       Departman Atama
@@ -719,6 +785,78 @@ export default function AdminThemePage() {
                         }`}
                       >
                         {isAssigningDept ? "Atanıyor..." : "Ata"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {assignLabStaffId && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                  <div className="bg-white rounded-lg w-full max-w-md p-6">
+                    <h3 className="text-lg font-medium text-gray-800 mb-4">
+                      Laboratuvar Atama
+                    </h3>
+
+                    <div className="mb-4 max-h-80 overflow-y-auto">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Laboratuvarlar
+                      </label>
+                      <div className="space-y-2">
+                        {laboratoryList.map((lab) => (
+                          <div key={lab} className="flex items-start">
+                            <div className="flex items-center h-5">
+                              <input
+                                id={`lab-${lab}`}
+                                type="checkbox"
+                                className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                checked={selectedLabs.includes(lab)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedLabs([...selectedLabs, lab]);
+                                  } else {
+                                    setSelectedLabs(
+                                      selectedLabs.filter((l) => l !== lab)
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div className="ml-3 text-sm">
+                              <label
+                                htmlFor={`lab-${lab}`}
+                                className="font-medium text-gray-700"
+                              >
+                                {lab}
+                              </label>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        onClick={() => {
+                          setAssignLabStaffId(null);
+                          setSelectedLabs([]);
+                        }}
+                        className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+                      >
+                        İptal
+                      </button>
+                      <button
+                        onClick={() =>
+                          assignLabsToStaff(assignLabStaffId, selectedLabs)
+                        }
+                        disabled={isAssigningLabs}
+                        className={`px-4 py-2 rounded-md ${
+                          isAssigningLabs
+                            ? "bg-blue-300 cursor-not-allowed text-white"
+                            : "bg-blue-600 hover:bg-blue-700 text-white"
+                        }`}
+                      >
+                        {isAssigningLabs ? "Atanıyor..." : "Ata"}
                       </button>
                     </div>
                   </div>
@@ -872,48 +1010,76 @@ export default function AdminThemePage() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {staffList.map((staff) => (
-                          <tr key={staff.id}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">
-                                {staff.name} {staff.surname}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {staff.title}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div className="font-medium">{staff.email}</div>
-                              <div>{staff.phone || "-"}</div>
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-500">
-                              {staff.departments
-                                ?.map((dept) => dept.name)
-                                .join(", ") || "Belirtilmemiş"}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={() => {
-                                    setAssignDeptStaffId(staff.id);
-                                    setSelectedDeptIds(
-                                      staff.departments?.map((d) => d.id) || []
-                                    );
-                                  }}
-                                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                                >
-                                  Departman Ata
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteStaff(staff.id)}
-                                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                                >
-                                  Sil
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
+                        {staffList.map((staff) => {
+                          const isAcademic = isAcademicStaff(staff);
+                          return (
+                            <tr key={staff.id}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {staff.name} {staff.surname}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {staff.title}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <div className="font-medium">{staff.email}</div>
+                                <div>{staff.phone || "-"}</div>
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-500">
+                                {staff.departments
+                                  ?.map((dept) => dept.name)
+                                  .join(", ") || "Belirtilmemiş"}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                <div className="flex space-x-2">
+                                  <button
+                                    onClick={() => {
+                                      setAssignDeptStaffId(staff.id);
+                                      setSelectedDeptIds(
+                                        staff.departments?.map((d) => d.id) ||
+                                          []
+                                      );
+                                    }}
+                                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                                  >
+                                    Departman Ata
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteStaff(staff.id)}
+                                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                                  >
+                                    Sil
+                                  </button>
+                                  {isAcademic && (
+                                    <button
+                                      onClick={() => {
+                                        setAssignLabStaffId(staff.id);
+
+                                        const labs = Array.isArray(
+                                          staff.responsible_labs
+                                        )
+                                          ? staff.responsible_labs
+                                          : [];
+
+                                        // Sadece geçerli laboratuvarları al (opsiyonel ama faydalı)
+                                        const validLabs = labs.filter(
+                                          (lab: string) =>
+                                            laboratoryList.includes(lab)
+                                        );
+
+                                        setSelectedLabs(validLabs);
+                                      }}
+                                      className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+                                    >
+                                      Laboratuvar Ata
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

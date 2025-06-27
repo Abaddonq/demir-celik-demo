@@ -40,6 +40,20 @@ export function handleStaffError(error: unknown) {
   ) {
     const code = (error as { code: string }).code;
 
+     if (typeof error === 'object' && error !== null && 'code' in error) {
+    const code = (error as { code: string }).code;
+    
+    // ... mevcut kodlar
+    
+    // JSONB hatası
+    if (code === '22P02') {
+      return NextResponse.json(
+        { error: 'Geçersiz JSON formatı' },
+        { status: 400 }
+      );
+    }
+  }
+
     if (code === '23505' || code === 'STAFF_EXISTS') {
       return NextResponse.json(
         { error: 'Bu email adresi zaten kullanılıyor' },
