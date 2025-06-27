@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useTheme, Theme } from "../../context/themeContext";
+import Image from "next/image";
+import { upload } from "@vercel/blob/client";
 
 type ThemeForm = Omit<Theme, "id">;
 type Department = { id: number; name: string };
@@ -13,6 +15,7 @@ type Staff = {
   email: string;
   departments?: Department[];
   responsible_labs?: string | null;
+  image_url?: string | null;
 };
 
 const laboratoryList = [
@@ -62,6 +65,9 @@ export default function AdminThemePage() {
   const [assignLabStaffId, setAssignLabStaffId] = useState<number | null>(null);
   const [selectedLabs, setSelectedLabs] = useState<string[]>([]);
   const [isAssigningLabs, setIsAssigningLabs] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [editStaffId, setEditStaffId] = useState<number | null>(null);
 
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [newStaff, setNewStaff] = useState<
@@ -281,11 +287,9 @@ export default function AdminThemePage() {
     }
   };
 
-  // GÜNCELLENDİ: Staff ekleme fonksiyonu (sadece temel bilgileri oluşturur)
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Zorunlu alan kontrolü
     if (
       !newStaff.name.trim() ||
       !newStaff.surname.trim() ||
@@ -296,33 +300,75 @@ export default function AdminThemePage() {
     }
 
     setIsLoading((prev) => ({ ...prev, staff: true }));
+
     try {
+      let imageUrl: string | null = previewImage;
+
+      if (imageFile) {
+        imageUrl = await uploadImageToBlob(imageFile);
+        if (!imageUrl) {
+          alert("Fotoğraf yüklenemedi.");
+          return;
+        }
+      }
+
+      const payload = {
+        staffData: {
+          ...newStaff,
+          phone: newStaff.phone || null,
+          email: newStaff.email || null,
+          image_url: imageUrl,
+        },
+        departmentIds: selectedDeptIds,
+      };
+
       const res = await fetch("/api/staff", {
-        method: "POST",
+        method: editStaffId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          staffData: {
-            ...newStaff,
-            // null olabilecek alanlar için düzeltme
-            phone: newStaff.phone || null,
-            email: newStaff.email || null,
-          },
-        }),
+        body: JSON.stringify(
+          editStaffId ? { id: editStaffId, ...payload } : payload
+        ),
       });
 
       if (res.ok) {
-        // ... başarılı işlemler
+        await fetchStaff();
+        setNewStaff({ name: "", surname: "", title: "", email: "", phone: "" });
+        setEditStaffId(null);
+        setSelectedDeptIds([]);
+        setImageFile(null);
+        setPreviewImage(null);
+        alert(editStaffId ? "Personel güncellendi." : "Personel eklendi.");
       } else {
-        // Hata mesajını doğrudan kullan
         const err = await res.json();
-        alert(err.error || "Personel oluşturulamadı.");
+        alert(err.error || "İşlem başarısız.");
       }
     } catch (error) {
-      console.error("Personel oluşturulurken hata:", error);
+      console.error("İşlem hatası:", error);
       alert("Sunucu hatası.");
     } finally {
       setIsLoading((prev) => ({ ...prev, staff: false }));
     }
+  };
+
+  const handleCancelEdit = () => {
+    setEditStaffId(null);
+    setNewStaff({ name: "", surname: "", title: "", email: "", phone: "" });
+    setSelectedDeptIds([]);
+    setImageFile(null);
+    setPreviewImage(null);
+  };
+
+  const handleEditStaff = (staff: Staff) => {
+    setEditStaffId(staff.id);
+    setNewStaff({
+      name: staff.name,
+      surname: staff.surname,
+      title: staff.title,
+      email: staff.email,
+      phone: staff.phone || "",
+    });
+    setSelectedDeptIds(staff.departments?.map((d) => d.id) || []);
+    setPreviewImage(staff.image_url || null);
   };
 
   // YENİ: Departman atama fonksiyonu
@@ -384,6 +430,28 @@ export default function AdminThemePage() {
       setIsLoading((prev) => ({ ...prev, staff: false }));
     }
   };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
+  async function uploadImageToBlob(imageFile: File): Promise<string | null> {
+    try {
+      const { url } = await upload(imageFile.name, imageFile, {
+        access: "public",
+        handleUploadUrl: "/api/avatar/upload",
+      });
+
+      return url;
+    } catch (error) {
+      console.error("Fotoğraf yüklenemedi:", error);
+      return null;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
@@ -723,6 +791,7 @@ export default function AdminThemePage() {
                 Personel Yönetimi
               </h2>
 
+              
               {/* Departman Atama Modalı */}
               {assignDeptStaffId && (
                 <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -731,31 +800,46 @@ export default function AdminThemePage() {
                       Departman Atama
                     </h3>
 
-                    <div className="mb-4">
+                    <div className="mb-4 max-h-80 overflow-y-auto">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Departman Seçin
+                        Departmanlar
                       </label>
-                      <select
-                        multiple
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 min-h-[150px]"
-                        value={selectedDeptIds.map(String)}
-                        onChange={(e) =>
-                          setSelectedDeptIds(
-                            Array.from(e.target.selectedOptions, (opt) =>
-                              Number(opt.value)
-                            )
-                          )
-                        }
-                      >
+                      <div className="space-y-2">
                         {departments.map((dept) => (
-                          <option key={dept.id} value={dept.id}>
-                            {dept.name}
-                          </option>
+                          <div key={dept.id} className="flex items-start">
+                            <div className="flex items-center h-5">
+                              <input
+                                id={`dept-${dept.id}`}
+                                type="checkbox"
+                                className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                checked={selectedDeptIds.includes(dept.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedDeptIds([
+                                      ...selectedDeptIds,
+                                      dept.id,
+                                    ]);
+                                  } else {
+                                    setSelectedDeptIds(
+                                      selectedDeptIds.filter(
+                                        (id) => id !== dept.id
+                                      )
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div className="ml-3 text-sm">
+                              <label
+                                htmlFor={`dept-${dept.id}`}
+                                className="font-medium text-gray-700"
+                              >
+                                {dept.name}
+                              </label>
+                            </div>
+                          </div>
                         ))}
-                      </select>
-                      <p className="mt-1 text-xs text-gray-500">
-                        Çoklu seçim için Ctrl/Cmd tuşunu basılı tutun
-                      </p>
+                      </div>
                     </div>
 
                     <div className="flex justify-end space-x-3">
@@ -792,7 +876,7 @@ export default function AdminThemePage() {
               )}
 
               {assignLabStaffId && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                   <div className="bg-white rounded-lg w-full max-w-md p-6">
                     <h3 className="text-lg font-medium text-gray-800 mb-4">
                       Laboratuvar Atama
@@ -943,19 +1027,77 @@ export default function AdminThemePage() {
                         }
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Personel Fotoğrafı
+                      </label>
+
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="hidden"
+                          id="upload-photo"
+                        />
+                        <label
+                          htmlFor="upload-photo"
+                          className="cursor-pointer inline-block px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                          Fotoğraf Yükle
+                        </label>
+
+                        {previewImage && (
+                          <div className="relative h-16 w-16">
+                            <Image
+                              src={previewImage}
+                              alt="Önizleme"
+                              fill
+                              className="rounded object-cover border border-gray-300"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isLoading.staff}
-                    className={`px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                      isLoading.staff
-                        ? "bg-blue-400 cursor-not-allowed text-white"
-                        : "bg-blue-600 hover:bg-blue-700 text-white"
-                    }`}
-                  >
-                    {isLoading.staff ? "Oluşturuluyor..." : "Personel Oluştur"}
-                  </button>
+                  {editStaffId ? (
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={isLoading.staff}
+                        className={`px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                          isLoading.staff
+                            ? "bg-blue-400 cursor-not-allowed text-white"
+                            : "bg-blue-600 hover:bg-blue-700 text-white"
+                        }`}
+                      >
+                        {isLoading.staff ? "Kaydediliyor..." : "Kaydet"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isLoading.staff}
+                        onClick={handleCancelEdit}
+                        className="px-4 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      >
+                        İptal
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={isLoading.staff}
+                      className={`px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                        isLoading.staff
+                          ? "bg-blue-400 cursor-not-allowed text-white"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      }`}
+                    >
+                      {isLoading.staff
+                        ? "Oluşturuluyor..."
+                        : "Personel Oluştur"}
+                    </button>
+                  )}
                 </form>
               </div>
 
@@ -1044,6 +1186,12 @@ export default function AdminThemePage() {
                                     className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                                   >
                                     Departman Ata
+                                  </button>
+                                  <button
+                                    onClick={() => handleEditStaff(staff)}
+                                    className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+                                  >
+                                    Düzenle
                                   </button>
                                   <button
                                     onClick={() => handleDeleteStaff(staff.id)}
