@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTheme, Theme } from "../../context/themeContext";
+import { useTheme, Theme } from "@/app/context/themeContext";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
+import { useRouter } from "next/navigation";
 
 type ThemeForm = Omit<Theme, "id">;
 type Department = { id: number; name: string };
@@ -47,8 +48,10 @@ const laboratoryList = [
   "Riskli Yapı Tespiti",
 ];
 
-export default function AdminThemePage() {
+export default function AdminPanelPage() {
   const { theme, toggleMode, setTheme } = useTheme();
+  const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
 
   const [form, setForm] = useState<ThemeForm>({
     mode: theme.mode,
@@ -112,6 +115,16 @@ export default function AdminThemePage() {
       fetchStaff();
     }
   }, [departments]);
+
+  useEffect(() => {
+    fetch("/api/auth/verify", { credentials: "include" }).then(res => {
+      if (!res.ok) {
+        router.push("/admin/login");
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, [router]);
 
   const fetchDepartments = async () => {
     setIsLoading((prev) => ({ ...prev, departments: true }));
@@ -453,17 +466,29 @@ export default function AdminThemePage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
-          <h1 className="text-2xl md:text-3xl font-bold">Admin Paneli</h1>
-          <p className="mt-1 opacity-90">
-            Tema, departman ve personel yönetimi
-          </p>
-        </div>
+  if (!authChecked) {
+    return null; // veya bir loading göstergesi
+  }
 
-        {/* Navigation Tabs */}
+  return (
+    <div className="min-h-screen px-4 pt-4" style={{ background: theme.secondaryColor + '22' }}>
+      <div className="w-full h-full bg-white rounded-2xl">
+        <div className="p-6 flex items-center justify-between rounded-t-2xl" style={{ background: theme.primaryColor, color: '#fff' }}>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">Admin Paneli</h1>
+            <p className="mt-1 opacity-90">Tema, departman ve personel yönetimi</p>
+          </div>
+          <button
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              window.location.href = "/admin/login";
+            }}
+            style={{ background: theme.secondaryColor }}
+            className="px-4 py-2 text-white rounded hover:opacity-90"
+          >
+            Çıkış Yap
+          </button>
+        </div>
         <div className="flex border-b border-gray-200">
           <button
             className={`px-4 py-3 font-medium text-sm ${activeTab === "tema" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-900"}`}
@@ -484,10 +509,7 @@ export default function AdminThemePage() {
             Personel Yönetimi
           </button>
         </div>
-
-        {/* Tab Content */}
         <div className="p-4 md:p-6">
-          {/* Theme Settings Tab */}
           {activeTab === "tema" && (
             <div>
               <div className="mb-6">
@@ -498,12 +520,12 @@ export default function AdminThemePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Tema Modu
-                      </label>
+                      <label htmlFor="modeSelect" className="block text-sm font-medium text-gray-700 mb-1">Tema Modu</label>
                       <select
+                        id="modeSelect"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         name="mode"
+                        title="Tema Modu"
                         value={form.mode.toString()}
                         onChange={(e) =>
                           setForm((prev) => ({
@@ -518,18 +540,13 @@ export default function AdminThemePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Font Ailesi
-                      </label>
+                      <label htmlFor="fontFamilySelect" className="block text-sm font-medium text-gray-700 mb-1">Font Ailesi</label>
                       <select
+                        id="fontFamilySelect"
+                        title="Font Ailesi"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value={form.fontFamily}
-                        onChange={(e) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            fontFamily: e.target.value,
-                          }))
-                        }
+                        onChange={e => setForm(prev => ({ ...prev, fontFamily: e.target.value }))}
                       >
                         {[
                           "Inter",
@@ -548,66 +565,41 @@ export default function AdminThemePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Font Boyutu (px)
-                      </label>
+                      <label htmlFor="fontSizeInput" className="block text-sm font-medium text-gray-700 mb-1">Font Boyutu (px)</label>
                       <input
-                        type="text"
+                        id="fontSizeInput"
+                        title="Font Boyutu"
+                        placeholder="Font boyutu (px)"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value={form.fontSizeBase}
-                        onChange={(e) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            fontSizeBase: e.target.value,
-                          }))
-                        }
+                        onChange={e => setForm(prev => ({ ...prev, fontSizeBase: e.target.value }))}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ana Renk
-                      </label>
-                      <div className="flex items-center">
-                        <input
-                          type="color"
-                          className="w-12 h-12 border border-gray-300 rounded cursor-pointer"
-                          value={form.primaryColor}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              primaryColor: e.target.value,
-                            }))
-                          }
-                        />
-                        <span className="ml-3 text-sm text-gray-600">
-                          {form.primaryColor}
-                        </span>
-                      </div>
+                      <label htmlFor="primaryColorInput" className="block text-sm font-medium text-gray-700 mb-1">Ana Renk</label>
+                      <input
+                        id="primaryColorInput"
+                        type="color"
+                        title="Ana Renk"
+                        className="w-12 h-12 border border-gray-300 rounded cursor-pointer"
+                        value={form.primaryColor}
+                        onChange={e => setForm(prev => ({ ...prev, primaryColor: e.target.value }))}
+                      />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        İkincil Renk
-                      </label>
-                      <div className="flex items-center">
-                        <input
-                          type="color"
-                          className="w-12 h-12 border border-gray-300 rounded cursor-pointer"
-                          value={form.secondaryColor}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              secondaryColor: e.target.value,
-                            }))
-                          }
-                        />
-                        <span className="ml-3 text-sm text-gray-600">
-                          {form.secondaryColor}
-                        </span>
-                      </div>
+                      <label htmlFor="secondaryColorInput" className="block text-sm font-medium text-gray-700 mb-1">İkincil Renk</label>
+                      <input
+                        id="secondaryColorInput"
+                        type="color"
+                        title="İkincil Renk"
+                        className="w-12 h-12 border border-gray-300 rounded cursor-pointer"
+                        value={form.secondaryColor}
+                        onChange={e => setForm(prev => ({ ...prev, secondaryColor: e.target.value }))}
+                      />
                     </div>
                   </div>
                 </div>
@@ -637,7 +629,6 @@ export default function AdminThemePage() {
             </div>
           )}
 
-          {/* Departments Tab */}
           {activeTab === "departman" && (
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -722,13 +713,18 @@ export default function AdminThemePage() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                               {editDeptId === dept.id ? (
-                                <input
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                  value={editDeptName}
-                                  onChange={(e) =>
-                                    setEditDeptName(e.target.value)
-                                  }
-                                />
+                                <>
+                                  <label htmlFor="editDeptNameInput" className="sr-only">Departman Adı</label>
+                                  <input
+                                    id="editDeptNameInput"
+                                    aria-label="Departman Adı"
+                                    title="Departman Adı"
+                                    placeholder="Departman adı giriniz"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    value={editDeptName}
+                                    onChange={e => setEditDeptName(e.target.value)}
+                                  />
+                                </>
                               ) : (
                                 dept.name
                               )}
@@ -784,15 +780,12 @@ export default function AdminThemePage() {
             </div>
           )}
 
-          {/* Staff Management Tab */}
           {activeTab === "personel" && (
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Personel Yönetimi
               </h2>
 
-              
-              {/* Departman Atama Modalı */}
               {assignDeptStaffId && (
                 <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                   <div className="bg-white rounded-lg w-full max-w-md p-6">
@@ -954,13 +947,13 @@ export default function AdminThemePage() {
                 <form onSubmit={handleAddStaff} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ad*
-                      </label>
+                      <label htmlFor="personelNameInput" className="sr-only">Personel Adı</label>
                       <input
-                        type="text"
+                        id="personelNameInput"
+                        aria-label="Personel Adı"
+                        title="Personel Adı"
+                        placeholder="Personel adı giriniz"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Personel adı"
                         value={newStaff.name}
                         onChange={(e) =>
                           setNewStaff({ ...newStaff, name: e.target.value })
@@ -969,13 +962,13 @@ export default function AdminThemePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Soyad*
-                      </label>
+                      <label htmlFor="personelSurnameInput" className="sr-only">Personel Soyadı</label>
                       <input
-                        type="text"
+                        id="personelSurnameInput"
+                        aria-label="Personel Soyadı"
+                        title="Personel Soyadı"
+                        placeholder="Personel soyadı giriniz"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Personel soyadı"
                         value={newStaff.surname}
                         onChange={(e) =>
                           setNewStaff({ ...newStaff, surname: e.target.value })
@@ -984,13 +977,13 @@ export default function AdminThemePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ünvan*
-                      </label>
+                      <label htmlFor="personelTitleInput" className="sr-only">Personel Ünvanı</label>
                       <input
-                        type="text"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        id="personelTitleInput"
+                        aria-label="Personel Ünvanı"
+                        title="Personel Ünvanı"
                         placeholder="Ünvan"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value={newStaff.title}
                         onChange={(e) =>
                           setNewStaff({ ...newStaff, title: e.target.value })
@@ -999,13 +992,13 @@ export default function AdminThemePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email*
-                      </label>
+                      <label htmlFor="personelEmailInput" className="sr-only">Personel Email</label>
                       <input
-                        type="email"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        id="personelEmailInput"
+                        aria-label="Personel Email"
+                        title="Personel Email"
                         placeholder="Email"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value={newStaff.email}
                         onChange={(e) =>
                           setNewStaff({ ...newStaff, email: e.target.value })
@@ -1014,13 +1007,13 @@ export default function AdminThemePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Telefon
-                      </label>
+                      <label htmlFor="personelPhoneInput" className="sr-only">Personel Telefon</label>
                       <input
-                        type="text"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        id="personelPhoneInput"
+                        aria-label="Personel Telefon"
+                        title="Personel Telefon"
                         placeholder="Telefon"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value={newStaff.phone}
                         onChange={(e) =>
                           setNewStaff({ ...newStaff, phone: e.target.value })
@@ -1028,10 +1021,7 @@ export default function AdminThemePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Personel Fotoğrafı
-                      </label>
-
+                      <label htmlFor="upload-photo" className="sr-only">Personel Fotoğrafı</label>
                       <div className="flex items-center gap-4">
                         <input
                           type="file"

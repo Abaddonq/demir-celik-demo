@@ -49,3 +49,9 @@ export const theme = pgTable('theme', {
   fontFamily: text('font_family').notNull(),
   fontSizeBase: text('font_size_base').notNull(),
 });
+
+export const admin = pgTable("admin", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  email: varchar({ length: 254 }).notNull().unique(),
+  password: varchar({ length: 255 }).notNull(),
+});
