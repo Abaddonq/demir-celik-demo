@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { useTheme } from '@/app/context/themeContext';
+import { FaArrowUp } from 'react-icons/fa';
+
 
 const Footer = () => {
   const { theme } = useTheme();
@@ -94,10 +96,34 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Sosyal Medya */}
           <div className="flex items-center gap-4">
-            <Link href="https://facebook.com" target="_blank" className="hover:text-blue-600"><FaFacebookF /></Link>
-            <Link href="https://instagram.com" target="_blank" className="hover:text-pink-500"><FaInstagram /></Link>
-            <Link href="https://linkedin.com" target="_blank" className="hover:text-blue-800"><FaLinkedinIn /></Link>
-          </div>
+  <a
+    href="https://www.facebook.com/kbudemircelikenstitusu"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 text-white flex items-center justify-center transition"
+  >
+    <FaFacebookF />
+  </a>
+  <a
+    href="https://www.instagram.com/demircelikenstitusukbu/#"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 text-white flex items-center justify-center transition"
+  >
+    <FaInstagram />
+  </a>
+  <a
+    href="https://www.linkedin.com/company/demir-%C3%A7elik-enstit%C3%BCs%C3%BC/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 text-white flex items-center justify-center transition"
+  >
+    <FaLinkedinIn />
+  </a>
+</div>
+
+
+
 
           {/* Telif */}
           <p className="text-sm text-gray-600 text-center">
@@ -105,7 +131,14 @@ const Footer = () => {
           </p>
 
           {/* Başa dön */}
-          <Link href="#" className="text-sm text-blue-700 hover:underline">↑ Başa dön</Link>
+          {/* <Link href="#" className="text-sm text-blue-700 hover:underline">↑ Başa dön</Link> */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="w-10 h-10 rounded-full border border-gray-300 bg-blue-500 hover:bg-orange-600 text-white flex items-center justify-center transition"
+            aria-label="Başa dön"
+              >
+           <FaArrowUp />
+             </button>
         </div>
       </div>
     </footer>

@@ -17,6 +17,8 @@ const navItems = [
     subItems: [
       { title: 'Genel Bakış', href: '/' },
       { title: 'Duyurular', href: '/duyurular' },
+      { title: 'İletişim', href: '/iletisim', subItems: [] },
+
     ],
   },
   {
@@ -30,7 +32,7 @@ const navItems = [
     title: 'Hizmetler',
     subItems: [
       { title: 'Laboratuvarlar', href: '/hizmetler/laboratuvarlar' },
-      { title: 'Testler', href: '/hizmetler/testler' },
+      { title: 'Raporlamalar', href: '/hizmetler/raporlamalar' },
     ],
   },
   {
@@ -67,12 +69,10 @@ const navItems = [
     ],
   },
   {
-    title: 'İletişim',
-    subItems: [
-      { title: 'İletişim Bilgileri', href: '/iletisim' },
-      { title: 'Ulaşım', href: '/iletisim/ulasim' },
-    ],
-  },
+  title: 'İletişim',
+  href: '/iletisim',  // 👈 this is the important part
+  subItems: [],
+},
 ];
 
 const Header = () => {
@@ -110,16 +110,38 @@ const Header = () => {
           </span>
         </div>
         <div className="flex items-center space-x-3">
-          <FaFacebookF />
-          <FaInstagram />
-          <FaLinkedinIn />
-          <input
-            type="text"
-            placeholder="Arama..."
-            className="bg-white text-black px-2 py-1 rounded"
+          <a
+    href="https://www.facebook.com/kbudemircelikenstitusu"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-white-600 hover:bg-orange-500 text-white flex items-center justify-center transition"
+  >
+    <FaFacebookF />
+  </a>
+  <a
+    href="https://www.instagram.com/demircelikenstitusukbu/#"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-white-600 hover:bg-orange-500 text-white flex items-center justify-center transition"
+  >
+    <FaInstagram />
+  </a>
+  <a
+    href="https://www.linkedin.com/company/demir-%C3%A7elik-enstit%C3%BCs%C3%BC/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-white-600 hover:bg-orange-500 text-white flex items-center justify-center transition"
+  >
+    <FaLinkedinIn />
+  </a>
+      <input
+          type="text"
+         placeholder="Arama..."
+         className="bg-white text-black px-2 py-1 rounded"
           />
-        </div>
-      </div>
+          </div>
+
+          </div>
 
       {/* Ana Menü */}
       <div className="flex items-center justify-between py-4 px-6 bg-white shadow-md relative z-50">
@@ -144,10 +166,15 @@ const Header = () => {
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
             >
-              <span className="cursor-pointer hover:text-orange-600 block py-2">
-                {item.title}
-              </span>
-
+                            {item.href ? (
+                <Link href={item.href} className="cursor-pointer hover:text-orange-600 block py-2">
+                  {item.title}
+                </Link>
+              ) : (
+                <span className="cursor-pointer hover:text-orange-600 block py-2">
+                  {item.title}
+                </span>
+              )}
               {openIndex === index && (
                 <div className="absolute left-0 top-full mt-1 bg-white shadow-lg rounded-md w-60 z-50">
                   {item.subItems.map((subItem, subIndex) => (
