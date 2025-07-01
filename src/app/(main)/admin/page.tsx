@@ -8,6 +8,8 @@ import DepartmentManager from "@/components/dashboard/DepartmentManager";
 import StaffManager from "@/components/dashboard/StaffManager";
 import AssignModal from "@/components/dashboard/AssignModal";
 import StaffForm from "@/components/dashboard/StaffForm";
+import { useRouter } from "next/navigation";
+import ThemeButton from "@/components/dashboard/themebutton";
 
 type ThemeForm = Omit<Theme, "id">;
 type Department = { id: number; name: string };
@@ -52,8 +54,10 @@ const laboratoryList = [
   "Riskli Yapı Tespiti",
 ];
 
-export default function AdminThemePage() {
+export default function AdminPanelPage() {
   const { theme, toggleMode, setTheme } = useTheme();
+  const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
 
   const [form, setForm] = useState<ThemeForm>({
     mode: theme.mode,
@@ -117,6 +121,16 @@ export default function AdminThemePage() {
       fetchStaff();
     }
   }, [departments]);
+
+  useEffect(() => {
+    fetch("/api/auth/verify", { credentials: "include" }).then(res => {
+      if (!res.ok) {
+        router.push("/admin/login");
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, [router]);
 
   const fetchDepartments = async () => {
     setIsLoading((prev) => ({ ...prev, departments: true }));
@@ -260,10 +274,10 @@ export default function AdminThemePage() {
   };
 
   const isAcademicStaff = (staff: Staff) => {
-  return staff.departments?.some(
-    (dept) => dept.name.toLowerCase() === "akademi"
+    return staff.departments?.some(
+      (dept) => dept.name.toLowerCase() === "akademi"
   ) ?? false; 
-};
+  };
 
   // Laboratuvar atama fonksiyonu
   const assignLabsToStaff = async (staffId: number, labs: string[]) => {
@@ -458,20 +472,48 @@ export default function AdminThemePage() {
     }
   }
 
+  if (!authChecked) {
+    return null; // veya bir loading göstergesi
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
+    <div
+      style={{
+        background: theme.mode ? '#181825' : '#f8fafc',
+        color: theme.mode ? '#fff' : '#23272f',
+        minHeight: '100vh',
+        transition: 'background 0.3s, color 0.3s',
+      }}
+    >
+      {/* Panel üst header */}
+      <div
+        className="p-6 text-white flex items-center justify-between rounded-t-2xl"
+        style={{
+          background: theme.mode ? '#2d2e4a' : '#6ca4fe',
+          color: '#fff',
+        }}
+      >
+        <div>
           <h1 className="text-2xl md:text-3xl font-bold">Admin Paneli</h1>
-          <p className="mt-1 opacity-90">
-            Tema, departman ve personel yönetimi
-          </p>
+          <p className="mt-1 opacity-90">Tema, departman ve personel yönetimi</p>
         </div>
+        <button
+          onClick={async () => {
+            await fetch("/api/auth/logout", { method: "POST" });
+            window.location.href = "/admin/login";
+          }}
+          style={{ background: theme.secondaryColor }}
+          className="px-4 py-2 text-white rounded hover:opacity-90"
+        >
+          Çıkış Yap
+        </button>
+      </div>
 
-        <AdminTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      <AdminTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="p-4 md:p-6">
-          {activeTab === "tema" && (
+      <div className="p-4 md:p-6">
+        {activeTab === "tema" && (
+          <>
             <ThemeSettings
               form={form}
               setForm={setForm}
@@ -479,55 +521,56 @@ export default function AdminThemePage() {
               saveTheme={saveTheme}
               toggleMode={toggleMode}
             />
-          )}
+            <ThemeButton />
+          </>
+        )}
 
-          {activeTab === "departman" && (
-            <DepartmentManager
-              departments={departments}
-              isLoading={isLoading}
-              newDeptName={newDeptName}
-              setNewDeptName={setNewDeptName}
-              addDepartment={addDepartment}
-              editDeptId={editDeptId}
-              editDeptName={editDeptName}
-              setEditDeptName={setEditDeptName}
-              updateDepartment={updateDepartment}
-              setEditDeptId={setEditDeptId}
-              deleteDepartment={deleteDepartment}
-            />
-          )}
+        {activeTab === "departman" && (
+          <DepartmentManager
+            departments={departments}
+            isLoading={isLoading}
+            newDeptName={newDeptName}
+            setNewDeptName={setNewDeptName}
+            addDepartment={addDepartment}
+            editDeptId={editDeptId}
+            editDeptName={editDeptName}
+            setEditDeptName={setEditDeptName}
+            updateDepartment={updateDepartment}
+            setEditDeptId={setEditDeptId}
+            deleteDepartment={deleteDepartment}
+          />
+        )}
 
-          {activeTab === "personel" && (
-            <StaffForm
-              newStaff={newStaff}
-              setNewStaff={setNewStaff}
-              selectedDeptIds={selectedDeptIds}
-              setSelectedDeptIds={setSelectedDeptIds}
-              previewImage={previewImage}
-              handleImageChange={handleImageChange}
-              handleAddStaff={handleAddStaff}
-              isLoading={isLoading}
-              editStaffId={editStaffId}
-              handleCancelEdit={handleCancelEdit}
-            />
-          )}
+        {activeTab === "personel" && (
+          <StaffForm
+            newStaff={newStaff}
+            setNewStaff={setNewStaff}
+            selectedDeptIds={selectedDeptIds}
+            setSelectedDeptIds={setSelectedDeptIds}
+            previewImage={previewImage}
+            handleImageChange={handleImageChange}
+            handleAddStaff={handleAddStaff}
+            isLoading={isLoading}
+            editStaffId={editStaffId}
+            handleCancelEdit={handleCancelEdit}
+          />
+        )}
 
-          {activeTab === "personel" && (
-            <StaffManager
-              staffList={staffList}
-              isLoading={isLoading}
-              departments={departments}
-              laboratoryList={laboratoryList}
-              handleEditStaff={handleEditStaff}
-              handleDeleteStaff={handleDeleteStaff}
-              setAssignDeptStaffId={setAssignDeptStaffId}
-              setAssignLabStaffId={setAssignLabStaffId}
-              setSelectedDeptIds={setSelectedDeptIds}
-              setSelectedLabs={setSelectedLabs}
-              isAcademicStaff={isAcademicStaff}
-            />
-          )}
-        </div>
+        {activeTab === "personel" && (
+          <StaffManager
+            staffList={staffList}
+            isLoading={isLoading}
+            departments={departments}
+            laboratoryList={laboratoryList}
+            handleEditStaff={handleEditStaff}
+            handleDeleteStaff={handleDeleteStaff}
+            setAssignDeptStaffId={setAssignDeptStaffId}
+            setAssignLabStaffId={setAssignLabStaffId}
+            setSelectedDeptIds={setSelectedDeptIds}
+            setSelectedLabs={setSelectedLabs}
+            isAcademicStaff={isAcademicStaff}
+          />
+        )}
       </div>
 
       {/* Modallar */}
@@ -541,15 +584,15 @@ export default function AdminThemePage() {
             assignDepartmentsToStaff(assignDeptStaffId, selectedDeptIds)
           }
           onCancel={() => {
-            setAssignDeptStaffId(null);
-            setSelectedDeptIds([]);
-          }}
+                          setAssignDeptStaffId(null);
+                          setSelectedDeptIds([]);
+                        }}
           isAssigning={isAssigningDept}
           itemType="department"
         />
-      )}
+              )}
 
-      {assignLabStaffId && (
+              {assignLabStaffId && (
         <AssignModal
           title="Laboratuvar Atama"
           items={laboratoryList}
@@ -557,9 +600,9 @@ export default function AdminThemePage() {
           setSelectedItems={setSelectedLabs}
           onAssign={() => assignLabsToStaff(assignLabStaffId, selectedLabs)}
           onCancel={() => {
-            setAssignLabStaffId(null);
-            setSelectedLabs([]);
-          }}
+                          setAssignLabStaffId(null);
+                          setSelectedLabs([]);
+                        }}
           isAssigning={isAssigningLabs}
           itemType="lab"
         />

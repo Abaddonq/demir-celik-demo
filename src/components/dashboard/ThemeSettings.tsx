@@ -1,4 +1,5 @@
 import { ThemeForm, LoadingState } from "@/lib/dashboardTypes";
+import { useTheme } from "../../app/context/themeContext";
 
 export default function ThemeSettings({ 
   form, 
@@ -17,6 +18,7 @@ export default function ThemeSettings({
     "Inter", "Arial", "Roboto", "Georgia", 
     "Times New Roman", "Courier New", "Verdana"
   ];
+  const { theme } = useTheme();
 
   return (
     <div>
@@ -38,6 +40,11 @@ export default function ThemeSettings({
                   ...prev,
                   mode: e.target.value === "true"
                 }))}
+                style={{
+                  background: theme.mode ? '#22223b' : '#e9ecef',
+                  color: theme.mode ? '#fff' : '#23272f',
+                }}
+                title="Tema Modu"
               >
                 <option value="false">Light Mode</option>
                 <option value="true">Dark Mode</option>
@@ -55,9 +62,14 @@ export default function ThemeSettings({
                   ...prev,
                   fontFamily: e.target.value
                 }))}
+                style={{
+                  background: theme.mode ? '#22223b' : '#e9ecef',
+                  color: theme.mode ? '#fff' : '#23272f',
+                }}
+                title="Font Ailesi"
               >
                 {fonts.map(font => (
-                  <option key={font} value={font}>{font}</option>
+                  <option key={font} value={font} style={{ color: theme.mode ? '#fff' : '#23272f' }}>{font}</option>
                 ))}
               </select>
             </div>
@@ -74,6 +86,12 @@ export default function ThemeSettings({
                   ...prev,
                   fontSizeBase: e.target.value
                 }))}
+                style={{
+                  background: theme.mode ? '#22223b' : '#e9ecef',
+                  color: theme.mode ? '#fff' : '#23272f',
+                }}
+                placeholder="16px"
+                title="Font Boyutu"
               />
             </div>
           </div>
@@ -92,6 +110,7 @@ export default function ThemeSettings({
                     ...prev,
                     primaryColor: e.target.value
                   }))}
+                  title="Ana Renk"
                 />
                 <span className="ml-3 text-sm text-gray-600">
                   {form.primaryColor}
@@ -112,6 +131,7 @@ export default function ThemeSettings({
                     ...prev,
                     secondaryColor: e.target.value
                   }))}
+                  title="İkincil Renk"
                 />
                 <span className="ml-3 text-sm text-gray-600">
                   {form.secondaryColor}
@@ -132,12 +152,6 @@ export default function ThemeSettings({
             }`}
           >
             {isLoading.theme ? "Kaydediliyor..." : "Tema Ayarlarını Kaydet"}
-          </button>
-          <button
-            onClick={toggleMode}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            {form.mode ? "Light Mode'a Geç" : "Dark Mode'a Geç"}
           </button>
         </div>
       </div>
