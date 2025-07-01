@@ -34,6 +34,11 @@ export const ThemeProvider = ({ children, initialTheme }: { children: ReactNode;
     document.documentElement.style.setProperty('--color-secondary', theme.secondaryColor);
     document.documentElement.style.setProperty('--font-family', theme.fontFamily);
     document.documentElement.style.setProperty('--font-size-base', theme.fontSizeBase);
+    if (theme.mode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, [theme]);
 
   return <ThemeContext.Provider value={{ theme, toggleMode, setTheme }}>{children}</ThemeContext.Provider>;
