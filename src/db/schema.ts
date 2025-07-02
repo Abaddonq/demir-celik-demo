@@ -55,3 +55,13 @@ export const admin = pgTable('admin', {
   email: varchar('email', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
 });
+
+export const moderators = pgTable("moderators", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }),
+  email: varchar("email", { length: 255 }).unique(),
+  password: varchar("password", { length: 255 }),
+  created_at: text("created_at"),
+  approved: boolean("approved").default(false),         // EKLE
+  approved_by: integer("approved_by",).notNull(),  // EKLE (veya varchar, admin id tipine göre)
+});

@@ -25,6 +25,14 @@ type Staff = {
   image_url?: string | null;
 };
 
+// Moderatör tipi
+type Moderator = {
+  id: number;
+  name: string;
+  email: string;
+  created_at: string;
+};
+
 const laboratoryList = [
   "Dinamik Test Laboratuvarı",
   "Kalıntı Gerilme Ölçme Laboratuvarı",
@@ -102,6 +110,8 @@ export default function AdminPanelPage() {
   );
   const [isAssigningDept, setIsAssigningDept] = useState(false);
 
+  const [pendingModerators, setPendingModerators] = useState<Moderator[]>([]);
+
   useEffect(() => {
     setForm({
       mode: theme.mode,
@@ -131,6 +141,12 @@ export default function AdminPanelPage() {
       }
     });
   }, [router]);
+
+  useEffect(() => {
+    if (activeTab === "moderator") {
+      fetchPendingModerators();
+    }
+  }, [activeTab]);
 
   const fetchDepartments = async () => {
     setIsLoading((prev) => ({ ...prev, departments: true }));
@@ -472,6 +488,52 @@ export default function AdminPanelPage() {
     }
   }
 
+  const fetchPendingModerators = async () => {
+    try {
+      const res = await fetch("/api/moderator/pending");
+      const data = await res.json();
+      setPendingModerators(data);
+    } catch (error) {
+      alert("Bekleyen moderatörler yüklenemedi");
+    }
+  };
+
+  const handleApproveModerator = async (moderatorId: number) => {
+    try {
+      const res = await fetch("/api/moderator/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moderatorId }),
+      });
+      if (res.ok) {
+        setPendingModerators(prev => prev.filter(m => m.id !== moderatorId));
+        alert("Moderatör onaylandı!");
+      } else {
+        alert("Onaylama başarısız");
+      }
+    } catch (error) {
+      alert("Sunucu hatası");
+    }
+  };
+
+  const handleRejectModerator = async (moderatorId: number) => {
+    try {
+      const res = await fetch("/api/moderator/reject", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moderatorId }),
+      });
+      if (res.ok) {
+        setPendingModerators(prev => prev.filter(m => m.id !== moderatorId));
+        alert("Başvuru reddedildi!");
+      } else {
+        alert("Reddetme başarısız");
+      }
+    } catch (error) {
+      alert("Sunucu hatası");
+    }
+  };
+
   if (!authChecked) {
     return null; // veya bir loading göstergesi
   }
@@ -570,6 +632,49 @@ export default function AdminPanelPage() {
             setSelectedLabs={setSelectedLabs}
             isAcademicStaff={isAcademicStaff}
           />
+        )}
+
+        {activeTab === "moderator" && (
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-4">Bekleyen Moderatörler</h2>
+            {pendingModerators.length === 0 ? (
+              <div>Bekleyen moderatör başvurusu yok.</div>
+            ) : (
+              <table className="min-w-full border">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2">Ad Soyad</th>
+                    <th className="border px-4 py-2">E-posta</th>
+                    <th className="border px-4 py-2">Başvuru Tarihi</th>
+                    <th className="border px-4 py-2">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingModerators.map((mod) => (
+                    <tr key={mod.id}>
+                      <td className="border px-4 py-2">{mod.name}</td>
+                      <td className="border px-4 py-2">{mod.email}</td>
+                      <td className="border px-4 py-2">{mod.created_at}</td>
+                      <td className="border px-4 py-2">
+                        <button
+                          className="bg-green-500 text-white px-3 py-1 rounded mr-2"
+                          onClick={() => handleApproveModerator(mod.id)}
+                        >
+                          Onayla
+                        </button>
+                        <button
+                          className="bg-red-500 text-white px-3 py-1 rounded"
+                          onClick={() => handleRejectModerator(mod.id)}
+                        >
+                          Reddet
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         )}
       </div>
 

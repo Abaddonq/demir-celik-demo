@@ -9,6 +9,7 @@ export default function AdminTabs({
     { id: "tema", label: "Tema Ayarları" },
     { id: "departman", label: "Departmanlar" },
     { id: "personel", label: "Personel Yönetimi" },
+    { id: "moderator", label: "Bekleyen Moderatörler" },
   ];
 
   return (

@@ -108,10 +108,12 @@ export default function DepartmentManager({
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {editDeptId === dept.id ? (
                         <input
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                          value={editDeptName}
-                          onChange={(e) => setEditDeptName(e.target.value)}
-                        />
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        value={editDeptName}
+                        onChange={(e) => setEditDeptName(e.target.value)}
+                        placeholder="Departman adı"
+                        title="Departman adı"
+                      />
                       ) : (
                         dept.name
                       )}

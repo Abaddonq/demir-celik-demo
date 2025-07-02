@@ -27,39 +27,44 @@ export default function AssignModal({
             {itemType === "department" ? "Departmanlar" : "Laboratuvarlar"}
           </label>
           <div className="space-y-2">
-            {items.map((item) => (
-              <div
-                key={itemType === "department" ? item.id : item}
-                className="flex items-start"
-              >
-                <div className="flex items-center h-5">
-                  <input
-                    type="checkbox"
-                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    checked={
-                      itemType === "department"
-                        ? selectedItems.includes(item.id)
-                        : selectedItems.includes(item)
-                    }
-                    onChange={(e) => {
-                      const value = itemType === "department" ? item.id : item;
-                      if (e.target.checked) {
-                        setSelectedItems([...selectedItems, value]);
-                      } else {
-                        setSelectedItems(
-                          selectedItems.filter((i) => i !== value)
-                        );
+            {items.map((item, idx) => {
+              const value = itemType === "department" ? item.id : item;
+              const inputId = `${itemType}-checkbox-${value}`;
+              return (
+                <div
+                  key={value}
+                  className="flex items-start"
+                >
+                  <div className="flex items-center h-5">
+                    <input
+                      type="checkbox"
+                      id={inputId}
+                      title={itemType === "department" ? `Departman: ${item.name}` : `Laboratuvar: ${item}`}
+                      className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                      checked={
+                        itemType === "department"
+                          ? selectedItems.includes(item.id)
+                          : selectedItems.includes(item)
                       }
-                    }}
-                  />
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedItems([...selectedItems, value]);
+                        } else {
+                          setSelectedItems(
+                            selectedItems.filter((i) => i !== value)
+                          );
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor={inputId} className="font-medium text-gray-700">
+                      {itemType === "department" ? item.name : item}
+                    </label>
+                  </div>
                 </div>
-                <div className="ml-3 text-sm">
-                  <label className="font-medium text-gray-700">
-                    {itemType === "department" ? item.name : item}
-                  </label>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
