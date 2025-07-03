@@ -121,17 +121,10 @@ const Footer = () => {
     <FaLinkedinIn />
   </a>
 </div>
-
-
-
-
-          {/* Telif */}
           <p className="text-sm text-gray-600 text-center">
             © {new Date().getFullYear()} Karabük Üniversitesi Demir Çelik Enstitüsü. Tüm hakları saklıdır.
           </p>
 
-          {/* Başa dön */}
-          {/* <Link href="#" className="text-sm text-blue-700 hover:underline">↑ Başa dön</Link> */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="w-10 h-10 rounded-full border border-gray-300 bg-blue-500 hover:bg-orange-600 text-white flex items-center justify-center transition"

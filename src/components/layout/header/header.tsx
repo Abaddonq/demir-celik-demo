@@ -26,6 +26,8 @@ const navItems = [
     subItems: [
       { title: 'Hakkımızda', href: '/kurumsal/hakkimizda' },
       { title: 'Misyon-Vizyon', href: '/kurumsal/misyon-vizyon' },
+      { title: 'Personel', href: '/kurumsal/personel/teknik' },
+
     ],
   },
   {

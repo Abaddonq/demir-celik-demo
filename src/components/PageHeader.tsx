@@ -14,7 +14,7 @@ export default function PageHeader({ title, imageUrl }: PageHeaderProps) {
         backgroundImage: `url(${imageUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed' // يجعل الصورة ثابتة عند التمرير
+        backgroundAttachment: 'fixed' // يجعل الصورة ثابتة عند التمرير  
       }}
     >
       <h1 className="text-6xl font-bold text-white  px-6 py-3 rounded-xl">
