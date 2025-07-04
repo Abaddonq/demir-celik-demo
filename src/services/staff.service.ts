@@ -91,7 +91,20 @@ export const createStaff = async (staffData: StaffInsert) => {
 };
 
 // ✅ TÜM PERSONELLERİ GETİR
-export const getAllStaff = async () => {
+export const getAllStaff = async (filter?: { department?: string }) => {
+  if (filter?.department) {
+    // Departman adı verilmişse, join ile filtrele
+    const staffInDepartment = await db
+      .select()
+      .from(staffTable)
+      .innerJoin(staffDepartmentsTable, eq(staffTable.id, staffDepartmentsTable.staff_id))
+      .innerJoin(departmentTable, eq(staffDepartmentsTable.department_id, departmentTable.id))
+      .where(eq(departmentTable.name, filter.department));
+    // staffInDepartment dizisinde her eleman { staff: {...}, staff_departments: {...}, departments: {...} } şeklinde olur
+    // Sadece staff verisini döndür
+    return staffInDepartment.map(row => row.staff);
+  }
+  // Departman filtresi yoksa, tüm personelleri döndür
   return db.select().from(staffTable);
 };
 

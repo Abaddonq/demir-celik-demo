@@ -10,9 +10,19 @@ import { staffTable } from "@/db/schema";
 
 type StaffInsert = typeof staffTable.$inferInsert;
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const staffList = await getAllStaff();
+    const { searchParams } = new URL(request.url);
+    const department = searchParams.get("department");
+
+    let staffList;
+    if (department) {
+      // Departman parametresi varsa, ona göre filtrele
+      staffList = await getAllStaff({ department });
+    } else {
+      // Yoksa tüm personelleri getir
+      staffList = await getAllStaff();
+    }
 
     const staffWithDepartments = await Promise.all(
       staffList.map(async (staff) => {
@@ -30,6 +40,7 @@ export async function GET(_request: NextRequest) {
   }
 }
 
+  
 export async function POST(request: NextRequest) {
   try {
     const { staffData } = await request.json();

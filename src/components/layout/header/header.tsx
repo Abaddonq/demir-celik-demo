@@ -26,8 +26,12 @@ const navItems = [
     subItems: [
       { title: 'Hakkımızda', href: '/kurumsal/hakkimizda' },
       { title: 'Misyon-Vizyon', href: '/kurumsal/misyon-vizyon' },
-      { title: 'Personel', href: '/kurumsal/personel/teknik' },
-
+      { title: 'Yönetim Kadromuz', href: '/kurumsal/yonetim-kadromuz' },
+      { title: 'Akademik Personel', href: '/kurumsal/personel/akademik' },
+      { title: 'Teknik Personel', href: '/kurumsal/personel/teknik' },
+      { title: 'İdari Personel', href: '/kurumsal/personel/idari' },
+      { title: 'Enstitü Yönetim Kurulu', href: '/kurumsal/enstitu-yonetim-kurulu' },
+      { title: 'Kalite Komisyonu', href: '/kurumsal/kalite-komisyonu' },
     ],
   },
   {
