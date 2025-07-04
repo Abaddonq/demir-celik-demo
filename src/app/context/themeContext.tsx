@@ -2,12 +2,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type Theme = {
-  id: string;
+  backgroundColor?: string;   id: string;
   mode: boolean;
   primaryColor: string;
   secondaryColor: string;
   fontFamily: string;
   fontSizeBase: string;
+  textColor?: string;
 };
 
 type ThemeContextType = {

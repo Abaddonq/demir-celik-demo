@@ -2,9 +2,20 @@
 import Link from 'next/link';
 import { FaFileAlt } from 'react-icons/fa';
 import { useState } from 'react';
+import { useTheme } from '@/app/context/themeContext'; // تأكد من المسار الصحيح
 
-export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
+export default function InfoCard({ title, hasLink = true, href = '#' }) {
   const [hovered, setHovered] = useState(false);
+  const { theme } = useTheme();
+
+  const {
+    fontFamily = 'sans-serif',
+    fontSizeBase = '16px',
+    primaryColor = '#1E3A8A',
+    secondaryColor = '#F97316',
+    backgroundColor = '#ffffff',
+    textColor = '#000000'
+  } = theme || {};
 
   return (
     <div
@@ -14,9 +25,9 @@ export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
         hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 
         flex flex-col justify-between items-center p-6 text-center group"
       style={{
-        backgroundColor: theme?.backgroundColor || '#ffffff',
-        fontFamily: theme?.fontFamily || 'sans-serif',
-        fontSize: theme?.fontSizeBase || '16px',
+        backgroundColor,
+        fontFamily,
+        fontSize: fontSizeBase,
       }}
     >
       {/* الأيقونة */}
@@ -24,9 +35,7 @@ export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
         <FaFileAlt
           className="text-2xl transition-colors duration-300"
           style={{
-            color: hovered
-              ? theme?.secondaryColor || '#F97316' // برتقالي عند التحويم
-              : theme?.primaryColor || '#1E3A8A',   // أزرق قبل التحويم
+            color: hovered ? secondaryColor : primaryColor,
           }}
         />
       </div>
@@ -34,7 +43,7 @@ export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
       {/* العنوان */}
       <h3
         className="text-xl font-semibold mt-6 mb-2 transition-colors duration-300"
-        style={{ color: theme?.primaryColor || '#1E3A8A' }}
+        style={{ color: primaryColor }}
       >
         {title}
       </h3>
@@ -46,9 +55,7 @@ export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
             <span
               className="mr-2 text-sm font-medium transition-colors duration-300"
               style={{
-                color: hovered
-                  ? theme?.secondaryColor || '#F97316' // برتقالي عند التحويم
-                  : theme?.primaryColor || '#1E3A8A',   // أزرق قبل التحويم
+                color: hovered ? secondaryColor : primaryColor,
               }}
             >
               İnceleyin
@@ -60,9 +67,7 @@ export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
               viewBox="0 0 24 24"
               stroke="currentColor"
               style={{
-                color: hovered
-                  ? theme?.secondaryColor || '#F97316'
-                  : theme?.primaryColor || '#1E3A8A',
+                color: hovered ? secondaryColor : primaryColor,
               }}
             >
               <path
@@ -80,4 +85,3 @@ export default function InfoCard({ title, hasLink = true, href = '#', theme }) {
     </div>
   );
 }
-
