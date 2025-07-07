@@ -2,7 +2,15 @@
 import { useState } from 'react';
 import { useTheme } from '@/app/context/themeContext';
 
-const editors = [
+// TypeScript: Editor tipini tanımla
+interface Editor {
+  name: string;
+  email: string;
+  institution: string;
+}
+
+// editors dizisine tip ekle
+const editors: Editor[] = [
   {
     name: "Dr. Recep Demirsöz",
     email: "recepdemirsoz@karabuk.edu.tr",
@@ -22,9 +30,11 @@ const editors = [
 
 export default function Accordion() {
   const { theme } = useTheme();
-  const [openIndex, setOpenIndex] = useState(null);
+  // openIndex için tip ekle
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggle = (index) => {
+  // toggle fonksiyonuna tip ekle
+  const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 

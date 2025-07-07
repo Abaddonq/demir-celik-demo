@@ -3,7 +3,12 @@
 import React from 'react';
 import { useTheme } from '@/app/context/themeContext';
 
-export default function CustomButton({ label = "Daha Fazla Bilgi Alın", url = "#" }) {
+interface CustomButtonProps {
+  label?: string;
+  url?: string;
+}
+
+export default function CustomButton({ label = "Daha Fazla Bilgi Alın", url = "#" }: CustomButtonProps) {
   const { theme } = useTheme();
 
   return (
@@ -12,7 +17,7 @@ export default function CustomButton({ label = "Daha Fazla Bilgi Alın", url = "
       className="px-4 py-2 rounded-full transition-colors"
       style={{
         backgroundColor: theme.primaryColor || '#202b85',
-        color: theme.cardTextColor || '#ffffff'
+        color: theme.textColor || '#ffffff'
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = theme.secondaryColor || '#ff7f50';

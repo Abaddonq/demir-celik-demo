@@ -2,7 +2,22 @@
 import { useTheme } from "@/app/context/themeContext";
 import { useEffect, useState } from "react";
 
-export default function Person1({ person }) {
+// person tipi
+interface Person {
+  name: string;
+  surname: string;
+  title: string;
+  phone: string;
+  email: string;
+  image_url?: string;
+}
+
+// props tipi
+interface Person1Props {
+  person: Person;
+}
+
+export default function Person1({ person }: Person1Props) {
   const { theme } = useTheme();
 
   const {
