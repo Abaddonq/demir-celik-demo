@@ -14,10 +14,10 @@ export default function CustomButton({ label = "Daha Fazla Bilgi Alın", url = "
   return (
     <a
       href={url}
-      className="px-4 py-2 rounded-full transition-colors"
+      className="px-8 py-3 min-w-[170px] md:min-w-[150px] text-lg md:text-xl font-semibold rounded-full transition-colors text-center block"
       style={{
         backgroundColor: theme.primaryColor || '#202b85',
-        color: theme.textColor || '#ffffff'
+        color: theme.textColor || '#ffffff',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = theme.secondaryColor || '#ff7f50';

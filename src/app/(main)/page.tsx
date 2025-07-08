@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
     <PageHeader
-            imageUrl="/images/demir-celik.jpg" // ضع المسار الصحيح للصورة
+            imageUrl="/images/demir-celik.jpg" 
             title="Demir Celik" 
           />
           <Link href="/hizmetler/genel-bakis">
