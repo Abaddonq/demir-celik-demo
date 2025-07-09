@@ -75,8 +75,6 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
-
-
 interface SimpleEditorProps {
   onChange?: (content: string) => void;
 }
@@ -191,7 +189,6 @@ const MobileToolbarContent = ({
   </>
 );
 
-
 // Component'i forwardRef ile sarmalayın ve tipini güncelleyin
 export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
   ({ onChange }, ref) => {
@@ -219,7 +216,10 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
         TaskList,
         TaskItem.configure({ nested: true }),
         Highlight.configure({ multicolor: true }),
-        Image,
+        Image.configure({
+          inline: true,
+          allowBase64: false, // Base64 görselleri kullanmayacağımız için false
+        }),
         Typography,
         Superscript,
         Subscript,

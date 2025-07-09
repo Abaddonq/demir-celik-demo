@@ -6,8 +6,6 @@ import { toast } from "sonner";
 import { upload } from "@vercel/blob/client";
 import Image from "next/image";
 
-
-
 export default function Page() {
   const [content, setContent] = useState<string>("");
   const editorRef = useRef<{ getContent: () => string }>(null);
@@ -26,6 +24,19 @@ export default function Page() {
       setPreviewImage(URL.createObjectURL(file));
     }
   };
+
+  function extractImageUrlsFromHtml(htmlContent: string): string[] {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const imgElements = doc.querySelectorAll("img");
+    const imageUrls: string[] = [];
+    imgElements.forEach((img) => {
+      if (img.src) {
+        imageUrls.push(img.src);
+      }
+    });
+    return imageUrls;
+  }
 
   const handleUploadCoverImage = async () => {
     if (!coverImage) return null;
@@ -55,50 +66,73 @@ export default function Page() {
     setIsLoading(true);
 
     try {
-      // Sadece coverImage varsa yükle
       let coverImageUrl = null;
       if (coverImage) {
         coverImageUrl = await handleUploadCoverImage();
         if (!coverImageUrl) {
-          // Yükleme başarısız olursa kaydetme işlemini durdur
           setIsLoading(false);
           return;
         }
       }
+
+      // Haber içeriğindeki görselleri HTML'den çek
+      const contentImageUrls = extractImageUrlsFromHtml(editorContent);
+      console.log("Haber içeriğindeki görseller:", contentImageUrls);
 
       const slug = title
         .toLowerCase()
         .replace(/[^\w\s]/gi, "")
         .replace(/\s+/g, "-");
 
-      // API çağrısı
-      const response = await fetch("/api/news", {
+      // Önce haber ana bilgilerini kaydet
+      const newsResponse = await fetch("/api/news", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
-          description: description || editorContent.substring(0, 160), // Burayı editorContent olarak değiştirdim
+          description: description || editorContent.substring(0, 160),
           content: editorContent,
-          cover_image: coverImageUrl, // null olabilir
+          cover_image: coverImageUrl,
           slug,
           author_id: 1, // Gerçek kullanıcı ID'si ile değiştir
+          // Haber içeriğindeki görselleri burada göndermiyoruz, ayrı bir API çağrısı yapacağız
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        // Sunucudan gelen detaylı hata mesajını kullanın
+      if (!newsResponse.ok) {
+        const errorData = await newsResponse.json();
         throw new Error(
           errorData.details || errorData.error || "Haber kaydedilemedi"
         );
       }
 
-      const data = await response.json();
+      const newsData = await newsResponse.json();
+      const newsId = newsData.id; // Kaydedilen haberin ID'sini al
+
+      // İçerik görsellerini newsImages tablosuna kaydet
+      if (contentImageUrls.length > 0) {
+        // Bu kısım için yeni bir API rotası oluşturacağız: /api/news/[newsId]/images
+        const imagesUploadResponse = await fetch(`/api/news/${newsId}/images`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ images: contentImageUrls }), // URL'leri gönder
+        });
+
+        if (!imagesUploadResponse.ok) {
+          // Görsel kaydetme hatası olursa ne yapılacağını düşünün (örn: ana haberi silme, loglama)
+          console.error(
+            "Haber görselleri kaydedilirken hata oluştu:",
+            await imagesUploadResponse.json()
+          );
+          toast.error("Haber görselleri kaydedilirken hata oluştu.");
+          // Hata olsa bile ana haberin kaydedilmesini isteyebiliriz, bu karara bağlı
+        }
+      }
+
       toast.success("Haber başarıyla oluşturuldu!");
-      router.push(`/dashboard/haberler/${data.id}`);
+      router.push(`/dashboard/haberler/${newsId}`);
     } catch (error: any) {
       console.error("Haber oluşturma hatası:", error);
-      // Sunucudan gelen hata mesajını veya genel bir mesajı göster
       toast.error(error.message || "Haber oluşturulurken hata oluştu");
     } finally {
       setIsLoading(false);

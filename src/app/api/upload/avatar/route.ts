@@ -5,40 +5,20 @@ export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
  
   try {
-    const jsonResponse = await handleUpload({
+   const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async (
-        _pathname,
-        /* clientPayload */
-      ) => {
-        // Generate a client token for the browser to upload the file
-        // ⚠️ Authenticate and authorize users before generating the token.
-        // Otherwise, you're allowing anonymous uploads.
- 
+      onBeforeGenerateToken: async (pathname) => {
+        // İsteğe bağlı: Dosya adını veya tipi kontrol edebilirsiniz
         return {
-          allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp'],
-          addRandomSuffix: true,
-          tokenPayload: JSON.stringify({
-            // optional, sent to your server on upload completion
-            // you could pass a user id from auth, or a value from clientPayload
-          }),
+          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+          tokenPayload: JSON.stringify({ userId: 'some-user-id' }), // Opsiyonel token yükü
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        // Get notified of client upload completion
-        // ⚠️ This will not work on `localhost` websites,
-        // Use ngrok or similar to get the full upload flow
- 
-        console.log('blob upload completed', blob, tokenPayload);
- 
-        try {
-          // Run any logic after the file upload completed
-          // const { userId } = JSON.parse(tokenPayload);
-          // await db.update({ avatar: blob.url, userId });
-        } catch {
-          throw new Error('Could not update user');
-        }
+        // Yükleme tamamlandığında veritabanına kaydedebilirsiniz.
+        // Ancak TipTap görselleri için bunu page.tsx'ten sonra yapacağız.
+        console.log('Blob upload completed', blob, tokenPayload);
       },
     });
  

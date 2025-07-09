@@ -1,5 +1,7 @@
 import type { Attrs, Node } from "@tiptap/pm/model"
 import type { Editor } from "@tiptap/react"
+import { upload } from '@vercel/blob/client';
+import { toast } from 'sonner';
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -136,35 +138,35 @@ export function findNodePosition(props: {
  */
 export const handleImageUpload = async (
   file: File,
-  onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
+  // onProgress?: (event: { progress: number }) => void, // Bu satırı yorum satırı yapıyoruz veya kaldırıyoruz
+  // abortSignal?: AbortSignal // Bu satırı da şimdilik kaldırıyoruz, TipTap'ın kendi abort mekanizması olabilir
 ): Promise<string> => {
-  // Validate file
-  if (!file) {
-    throw new Error("No file provided")
-  }
-
   if (file.size > MAX_FILE_SIZE) {
-    throw new Error(
-      `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`
-    )
+    const errorMessage = `Görsel boyutu ${MAX_FILE_SIZE / (1024 * 1024)}MB'tan büyük olamaz.`;
+    toast.error(errorMessage);
+    throw new Error(errorMessage); // Hata mesajını fırlat
   }
 
-  // For demo/testing: Simulate upload progress
-  for (let progress = 0; progress <= 100; progress += 10) {
-    if (abortSignal?.aborted) {
-      throw new Error("Upload cancelled")
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    onProgress?.({ progress })
+  try {
+    const { url } = await upload(file.name, file, {
+      access: 'public',
+      handleUploadUrl: '/api/upload/avatar', // Kapak görseli için kullandığınız rota
+      // onProgress: (progressEvent) => { // Bu bloğu kaldırıyoruz
+      //   if (onProgress) {
+      //     onProgress({ progress: progressEvent.percentage });
+      //   }
+      // },
+      // signal: abortSignal, // Bu satırı kaldırıyoruz
+    });
+
+    toast.success(`Görsel ${file.name} başarıyla yüklendi!`);
+    return url; // Yüklenen görselin URL'sini geri döndür
+  } catch (error: any) {
+    console.error("Görsel yükleme hatası:", error);
+    toast.error(`Görsel yüklenirken hata oluştu: ${file.name} - ${error.message || ''}`);
+    throw error;
   }
-
-  return "/images/placeholder-image.png"
-
-  // Uncomment for production use:
-  // return convertFileToBase64(file, abortSignal);
-}
-
+};
 /**
  * Converts a File to base64 string
  * @param file The file to convert
