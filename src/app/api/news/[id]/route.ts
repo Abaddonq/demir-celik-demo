@@ -1,12 +1,22 @@
+// src/app/api/news/[id]/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
-import { getNewsById, updateNews, deleteNews } from "@/services/news.service";
+import { getNewsById, updateNews, deleteNews } from "@/services/news.service"; // Servislerinizi import edin
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // params yerine context kullanıyoruz
 ) {
   try {
-    const id = parseInt(params.id);
+    // context.params'ı await ederek proxy davranışını çözüyoruz
+    // Bu, Next.js'in hata mesajında önerdiği "params should be awaited" durumunu ele alır.
+    const resolvedParams = await context.params;
+    const id = parseInt(resolvedParams.id);
+
+    if (isNaN(id)) {
+      return NextResponse.json({ error: "Geçersiz ID" }, { status: 400 });
+    }
+
     const newsItem = await getNewsById(id);
     
     if (!newsItem) {
@@ -14,9 +24,10 @@ export async function GET(
     }
     
     return NextResponse.json(newsItem);
-  } catch  {
+  } catch (error: any) {
+    console.error("Haber getirilirken hata oluştu:", error);
     return NextResponse.json(
-      { error: "Haber getirilirken hata oluştu" },
+      { error: "Haber getirilirken hata oluştu: " + error.message },
       { status: 500 }
     );
   }
@@ -24,16 +35,24 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // params yerine context kullanıyoruz
 ) {
   try {
-    const id = parseInt(params.id);
+    // context.params'ı await ederek proxy davranışını çözüyoruz
+    const resolvedParams = await context.params;
+    const id = parseInt(resolvedParams.id);
+
+    if (isNaN(id)) {
+      return NextResponse.json({ error: "Geçersiz ID" }, { status: 400 });
+    }
+
     const updateData = await request.json();
     const updatedNews = await updateNews(id, updateData);
     return NextResponse.json(updatedNews);
-  } catch  {
+  } catch (error: any) {
+    console.error("Haber güncellenirken hata oluştu:", error);
     return NextResponse.json(
-      { error: "Haber güncellenirken hata oluştu" },
+      { error: "Haber güncellenirken hata oluştu: " + error.message },
       { status: 500 }
     );
   }
@@ -41,15 +60,23 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // params yerine context kullanıyoruz
 ) {
   try {
-    const id = parseInt(params.id);
+    // context.params'ı await ederek proxy davranışını çözüyoruz
+    const resolvedParams = await context.params;
+    const id = parseInt(resolvedParams.id);
+
+    if (isNaN(id)) {
+      return NextResponse.json({ error: "Geçersiz ID" }, { status: 400 });
+    }
+
     await deleteNews(id);
     return NextResponse.json({ message: "Haber silindi" });
-  } catch  {
+  } catch (error: any) {
+    console.error("Haber silinirken hata oluştu:", error);
     return NextResponse.json(
-      { error: "Haber silinirken hata oluştu" },
+      { error: "Haber silinirken hata oluştu: " + error.message },
       { status: 500 }
     );
   }

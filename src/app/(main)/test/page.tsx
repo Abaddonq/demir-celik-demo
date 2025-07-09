@@ -130,7 +130,7 @@ export default function Page() {
       }
 
       toast.success("Haber başarıyla oluşturuldu!");
-      router.push(`/dashboard/haberler/${newsId}`);
+      router.push(`/duyurular-ve-haberler/${slug}`);
     } catch (error: any) {
       console.error("Haber oluşturma hatası:", error);
       toast.error(error.message || "Haber oluşturulurken hata oluştu");
