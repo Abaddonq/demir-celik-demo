@@ -1,5 +1,4 @@
 import React from 'react'
-import Person1 from "@/components/Person1";
 import PageHeader from '@/components/PageHeader';
 import CustomButton from '@/components/CustomButton';
 import Accordion from '@/components/Accordion';
