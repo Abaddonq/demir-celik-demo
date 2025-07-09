@@ -4,7 +4,14 @@ import { FaFileAlt } from 'react-icons/fa';
 import { useState } from 'react';
 import { useTheme } from '@/app/context/themeContext'; // تأكد من المسار الصحيح
 
-export default function InfoCard({ title, hasLink = true, href = '#' }) {
+// props tipi ekle
+interface InfoCardProps {
+  title: string;
+  hasLink?: boolean;
+  href?: string;
+}
+
+export default function InfoCard({ title, hasLink = true, href = '#' }: InfoCardProps) {
   const [hovered, setHovered] = useState(false);
   const { theme } = useTheme();
 

@@ -4,10 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useTheme } from '@/app/context/themeContext';
-import { FaMapMarkerAlt, FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
-  
 
-export default function RaporList({ items, basePath = '' }) {
+// LaboratoryList props tipi
+interface LaboratoryListProps {
+  items: { slug: string; title: string }[];
+  basePath?: string;
+}
+
+export default function LaboratoryList({ items, basePath = '' }: LaboratoryListProps) {
   const { theme } = useTheme();
   const pathname = usePathname();
 
@@ -25,9 +29,10 @@ export default function RaporList({ items, basePath = '' }) {
       className="w-full max-w-[280px] bg-white shadow-lg rounded-xl p-4 sticky top-20 max-h-[80vh] overflow-y-auto"
       style={{ fontFamily, fontSize: fontSizeBase }}
     >
+      {/* عنوان القائمة ينقلك لأول عنصر عند الضغط */}
       <Link href={`/${basePath}/${items[0]?.slug}`} className="block mb-4 cursor-pointer">
         <h2 className="text-xl font-bold text-right transition-colors duration-300" style={{ color: primaryColor }}>
-          Raporlamalar
+          Laboratuvarlar
         </h2>
       </Link>
 
@@ -45,51 +50,19 @@ export default function RaporList({ items, basePath = '' }) {
           />
         ))}
       </div>
-      <div className="mt-6 space-y-3 border-t pt-4 text-sm" style={{ borderColor: underlineColor }}>
-                <h3 className="text-md font-semibold leading-snug" style={{ color: primaryColor }}>
-                  KARABÜK ÜNİVERSİTESİ <br />
-                  DEMİR ÇELİK ENSTİTÜSÜ <br />
-                  MALZEME ARAŞTIRMA ve GELİŞTİRME MERKEZİ (MARGEM) LABORATUVARLARI
-                </h3>
-            <div className="flex items-start gap-3">
-              <FaMapMarkerAlt className="mt-1 text-lg" style={{ color: secondaryColor }} />
-              <div>
-                <p className="text-base font-semibold" style={{ color: primaryColor }}>Adres</p>
-                <p className="text-gray-600 text-sm">Demir Çelik Kampüsü, KARABÜK</p>
-              </div>
-            </div>
-      
-            <div className="flex items-start gap-3">
-              <FaEnvelope className="mt-1 text-lg" style={{ color: secondaryColor }} />
-              <div>
-                <p className="text-base font-semibold" style={{ color: primaryColor }}>E-Posta</p>
-                <p className="text-gray-600 text-sm">dce@karabuk.edu.tr</p>
-              </div>
-            </div>
-      
-            <div className="flex items-start gap-3">
-              <FaPhoneAlt className="mt-1 text-lg" style={{ color: secondaryColor }} />
-              <div>
-                <p className="text-base font-semibold" style={{ color: primaryColor }}>Telefon</p>
-                <p className="text-gray-600 text-sm">(0 370) 418 77 20</p>
-              </div>
-            </div>
-      
-            <a
-              href="https://maps.google.com/?q=Karabük+Üniversitesi+Demir+Çelik+Enstitüsü"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 mt-2 text-sm hover:underline"
-            >
-              <FaMapMarkerAlt className="text-red-600" />
-              <span className="font-semibold" style={{ color: secondaryColor }}>
-                Konum Bilgisi
-              </span>
-            </a>
-          </div>
-
     </div>
   );
+}
+
+// MenuItem props tipi
+interface MenuItemProps {
+  title: string;
+  href: string;
+  primaryColor: string;
+  secondaryColor: string;
+  textColor: string;
+  underlineColor: string;
+  active: boolean;
 }
 
 function MenuItem({
@@ -100,7 +73,7 @@ function MenuItem({
   textColor,
   underlineColor,
   active
-}) {
+}: MenuItemProps) {
   const [hovered, setHovered] = useState(false);
   const bgColor = active || hovered ? secondaryColor : primaryColor;
 
@@ -129,3 +102,4 @@ function MenuItem({
     </Link>
   );
 }
+

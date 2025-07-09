@@ -22,12 +22,53 @@ html,
 body,
 #root,
 #app {
-  height: 100%;
+  min-height: 100%; /* height: 100% yerine min-height: 100% kullan */
   background-color: var(--tt-bg-color);
 }
 
-body {
+/* body overflow hidden kaldırıldı - bu satır sayfa kaydırmasını engelliyordu */
+/* body {
   overflow: hidden;
+} */
+
+/* Text selection stilleri - seçim highlight'ı için */
+.tiptap.ProseMirror ::selection {
+  background: #b3d4fc !important;
+  color: inherit !important;
+}
+
+.tiptap.ProseMirror ::-moz-selection {
+  background: #b3d4fc !important;
+  color: inherit !important;
+}
+
+/* Genel text selection - editör dışında da çalışır */
+::selection {
+  background: #b3d4fc !important;
+  color: inherit !important;
+}
+
+::-moz-selection {
+  background: #b3d4fc !important;
+  color: inherit !important;
+}
+
+/* ProseMirror selection stilleri */
+.tiptap.ProseMirror .ProseMirror-selectednode {
+  outline: 2px solid #8cf !important;
+  outline-offset: 2px;
+}
+
+.tiptap.ProseMirror .ProseMirror-selection {
+  background: rgba(0, 123, 255, 0.25) !important;
+}
+
+/* User-select özelliğini zorla aktif et */
+.tiptap.ProseMirror * {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
 }
 
 .tiptap.ProseMirror {
@@ -35,7 +76,9 @@ body {
 }
 
 .content-wrapper {
-  height: calc(100% - var(--tt-toolbar-height));
+  /* Sabit yükseklik yerine minimum yükseklik */
+  min-height: calc(100vh - var(--tt-toolbar-height));
+  max-height: 70vh; /* Editörün maksimum yüksekliği */
   overflow-y: auto;
 
   &::-webkit-scrollbar {

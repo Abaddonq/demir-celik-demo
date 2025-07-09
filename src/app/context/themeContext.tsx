@@ -9,6 +9,12 @@ export type Theme = {
   fontFamily: string;
   fontSizeBase: string;
   textColor?: string;
+  iconColor?: string;
+  iconHoverColor?: string;
+  underlineColor?: string;
+  cardTextColor?: string;
+  cardBackground?: string;
+  borderColor?: string;
 };
 
 type ThemeContextType = {

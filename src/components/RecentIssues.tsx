@@ -3,7 +3,13 @@
 import React from 'react';
 import { useTheme } from '@/app/context/themeContext';
 
-const issues = [
+// issues tipi
+interface Issue {
+  label: string;
+  url: string;
+}
+
+const issues: Issue[] = [
   {
     label: "2023 - Cilt: 4 Sayı: 2",
     url: "https://dergipark.org.tr/tr/pub/jesred/issue/81238",

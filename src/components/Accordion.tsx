@@ -1,44 +1,45 @@
 'use client';
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { useTheme } from '@/app/context/themeContext';
 
-const editors = [
-  {
-    name: "Dr. Recep Demirsöz",
-    email: "recepdemirsoz@karabuk.edu.tr",
-    institution: "Karabük Üniversitesi, Demir Çelik Enstitüsü, TR.",
-  },
-  {
-    name: "Dr. Safa Polat",
-    email: "ccccccccccccccccc",
-    institution: "ccccccccccccccccccc",
-  },
-  {
-    name: "Dr. Erhan Kayabaşı",
-    email: "aaaaaaaa",
-    institution: "aaaaaaaaa",
-  },
+// TypeScript: Editor tipini tanımla
+export interface Editor {
+  name: string;
+  email?: string;
+  institution?: string | ReactNode;
+}
+
+interface AccordionProps {
+  title?: string;
+  items?: Editor[];
+}
+
+// Default editors for backward compatibility
+const defaultEditors: Editor[] = [
+  
 ];
 
-export default function Accordion() {
-  const { theme } = useTheme();
-  const [openIndex, setOpenIndex] = useState(null);
 
-  const toggle = (index) => {
+export default function Accordion({ title = "Baş Editörler", items }: AccordionProps) {
+  const { theme } = useTheme();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const editors = items || defaultEditors;
+
+  const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div 
-      className="max-w-md mx-auto mt-10 rounded overflow-hidden shadow"
+    <div
+      className="w-full max-w-lg mx-auto rounded overflow-hidden shadow"
       style={{ fontFamily: theme.fontFamily }}
     >
       {/* Başlık */}
-      <div 
+      <div
         className="text-white font-bold p-4"
-        style={{ backgroundColor: theme.primaryColor }}
+        style={{ backgroundColor: theme.secondaryColor }}
       >
-        Baş Editörler
+        {title}
       </div>
 
       {/* Liste */}
@@ -47,26 +48,30 @@ export default function Accordion() {
         const hasContent = editor.email || editor.institution;
 
         return (
-          <div key={index} className="border-t">
+          <div
+            key={index}
+            className="border-t bg-white transition-all duration-300"
+            style={{ position: 'relative' }}
+          >
             <button
               onClick={() => toggle(index)}
-              className={`w-full flex justify-between items-center p-4 font-semibold text-left hover:bg-gray-100 ${
+              className={`w-full flex justify-between items-center p-3 font-semibold text-left hover:bg-gray-100 ${
                 !hasContent ? 'cursor-default' : 'cursor-pointer'
               }`}
               style={{ color: theme.textColor }}
             >
               <span>{editor.name}</span>
-              <span>
-                {hasContent ? (isOpen ? "➖" : "➕") : "➕"}
+              <span className="text-xl font-bold select-none" style={{ color: theme.primaryColor }}>
+                {hasContent ? (isOpen ? "−" : "+") : "+"}
               </span>
             </button>
 
             {isOpen && hasContent && (
-              <div 
+              <div
                 className="px-4 pb-4 text-sm"
-                style={{ 
+                style={{
                   color: theme.textColor,
-                  backgroundColor: theme.backgroundColor 
+                  backgroundColor: theme.backgroundColor,
                 }}
               >
                 {editor.email && <div>{editor.email}</div>}
