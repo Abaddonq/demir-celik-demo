@@ -262,7 +262,7 @@ const navItems = [
 
     ],
   },
-  {
+  { 
     title: 'Kurumsal',
     subItems: [
       { title: 'Hakkımızda', href: '/kurumsal/hakkimizda' },

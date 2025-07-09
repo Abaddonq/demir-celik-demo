@@ -1,13 +1,13 @@
 // data/reports.js
 export const reports = [
   {
-    slug: 'mekanik-test-raporu',
-    title: 'Mekanik Test Raporu',
+    slug: 'kurumsal-karbon-ayak-izi',
+    title: 'Kurumsal Karbon Ayak İzi̇',
     description: 'Bu laboratuvar mekanik testler için kullanılır...'
   },
   {
-    slug: 'kimyasal-analiz-raporu',
-    title: 'Kimyasal Analiz Raporu',
+    slug: 'skdm-raporlama',
+    title: 'SKDM Raporlama',
     description: 'Kimyasal bileşim analizleri burada yapılır...'
   }
 ];

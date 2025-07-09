@@ -14,7 +14,7 @@ export default function RaporlamaLayout({ children }: { children: React.ReactNod
     <>
         <PageHeader
                 imageUrl="/images/Raporlamalar.jpg" // ضع المسار الصحيح للصورة
-                title="SKDM Raporlama"
+                title="Raporlamalar"
               />
     <div className="flex items-start bg-gray-100 p-4">
       <div className="self-start">

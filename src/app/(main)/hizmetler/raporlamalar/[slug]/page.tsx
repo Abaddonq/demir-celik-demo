@@ -1,18 +1,15 @@
+
 import { reports } from '@/data/reports';
 import { notFound } from 'next/navigation';
+import RapClient from './RapClient';
 
 export async function generateStaticParams() {
-  return reports.map((report) => ({ slug: report.slug }));
+  return reports.map((lab) => ({ slug: lab.slug }));
 }
 
-export default function ReportDetailPage({ params }: { params: { slug: string } }) {
-  const report = reports.find((r) => r.slug === params.slug);
-  if (!report) return notFound();
+export default function RapPage({ params }: { params: { slug: string } }) {
+  const lab = reports.find((l) => l.slug === params.slug);
+  if (!lab) return notFound();
 
-  return (
-    <>
-      <h1 className="text-2xl font-bold text-blue-900 mb-4">{report.title}</h1>
-      <p className="text-gray-700">{report.description}</p>
-    </>
-  );
+  return <RapClient lab={lab} />;
 }
