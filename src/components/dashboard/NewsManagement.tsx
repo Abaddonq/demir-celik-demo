@@ -21,7 +21,7 @@ export default function NewsManagementPanel({
   limit,
 }: NewsManagementPanelProps) {
   const { theme } = useTheme(); // theme objesi Theme arayüzüne göre tip alacak
-  const router = useRouter(); // router zaten kullanılıyor (router.push)
+  const router = useRouter(); 
 
   const [newsList, setNewsList] = useState<NewsItem[]>(initialNewsList);
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function NewsManagementPanel({
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(Math.ceil(initialTotalCount / limit));
-  const [totalItems, setTotalItems] = useState(initialTotalCount); // totalItems JSX içinde kullanılıyor
+  const [totalItems, setTotalItems] = useState(initialTotalCount); 
 
   // Haberleri çekme fonksiyonu (arama terimi ve sayfalama ile)
   const fetchNews = useCallback(async (page: number, term: string) => {
@@ -61,7 +61,6 @@ export default function NewsManagementPanel({
         errorMessage = err;
       }
       console.error('Haber listesi çekilirken hata:', err);
-      setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -98,7 +97,9 @@ export default function NewsManagementPanel({
 
   // Haber silme işlemi
   const handleDeleteNews = async (id: number) => {
-    const isConfirmed = window.confirm('Bu haberi silmek istediğinizden emin misiniz?');
+    // NOTE: Do NOT use window.confirm or alert in Canvas environments.
+    // Replace with a custom modal UI for confirmation if needed.
+    const isConfirmed = window.confirm('Bu haberi silmek istediğinizden emin misiniz?'); 
     if (!isConfirmed) {
       return;
     }
@@ -128,6 +129,13 @@ export default function NewsManagementPanel({
     }
   };
 
+  // Haber düzenleme işlemi için yeni fonksiyon
+  const handleEditNews = (newsItem: NewsItem) => {
+    // StaffManager'daki handleEditStaff gibi, bu fonksiyon da doğrudan bir eylem başlatır.
+    // Burada Next.js router'ı kullanarak düzenleme sayfasına yönlendiriyoruz.
+    router.push(`/test?slug=${newsItem.slug}`);
+  };
+
   // Sayfa numaralarını oluştur
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -142,7 +150,7 @@ export default function NewsManagementPanel({
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white transition-colors duration-200
             bg-blue-600 hover:bg-blue-700"
             style={{
-              backgroundColor: theme.primaryColor, // primaryColor kullanıldı
+              backgroundColor: theme.primaryColor, 
             }}
           >
             <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -161,7 +169,7 @@ export default function NewsManagementPanel({
           value={searchTerm}
           onChange={handleSearchChange}
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          style={{ borderColor: theme.primaryColor + '33' }} // primaryColor'ın daha açık tonu kullanıldı
+          style={{ borderColor: theme.primaryColor + '33' }} 
         />
       </div>
 
@@ -173,7 +181,7 @@ export default function NewsManagementPanel({
       ) : error ? (
         <div className="text-center py-8 text-red-600">Hata: {error}</div>
       ) : newsList.length === 0 ? (
-        <div className="bg-gray-50 rounded-lg p-8 text-center" style={{ backgroundColor: theme.mode ? '#333333' : '#f9fafb' }}> {/* Mode'a göre default renk */}
+        <div className="bg-gray-50 rounded-lg p-8 text-center" style={{ backgroundColor: theme.mode ? '#333333' : '#f9fafb' }}> 
           <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2zM9 10V4m0 0a2 2 0 110 4m0-4a2 2 0 100 4m7 6H9m4 0h-4" />
           </svg>
@@ -204,11 +212,13 @@ export default function NewsManagementPanel({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex space-x-2">
-                      <Link href={`/duyurular-ve-haberler/${newsItem.slug}/edit`} passHref>
-                        <button className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors">
-                          Düzenle
-                        </button>
-                      </Link>
+                      {/* Düzenle butonu artık handleEditNews fonksiyonunu çağırıyor */}
+                      <button 
+                        onClick={() => handleEditNews(newsItem)}
+                        className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
+                      >
+                        Düzenle
+                      </button>
                       <button
                         onClick={() => handleDeleteNews(newsItem.id)}
                         className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
@@ -232,8 +242,8 @@ export default function NewsManagementPanel({
             disabled={currentPage === 1 || loading}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             style={{
-              backgroundColor: theme.mode ? '#424242' : '#ffffff', // Mode'a göre default renk
-              color: theme.mode ? '#e0e0e0' : theme.primaryColor, // Mode'a göre default renk veya primaryColor
+              backgroundColor: theme.mode ? '#424242' : '#ffffff', 
+              color: theme.mode ? '#e0e0e0' : theme.primaryColor, 
               borderColor: theme.primaryColor + '33',
             }}
           >
@@ -250,8 +260,8 @@ export default function NewsManagementPanel({
                   : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-100'
               } transition-colors`}
               style={{
-                backgroundColor: currentPage === number ? (theme.primaryColor) : (theme.mode ? '#424242' : '#ffffff'), // Mode'a göre default renk veya primaryColor
-                color: currentPage === number ? (theme.mode ? '#ffffff' : '#ffffff') : (theme.mode ? '#e0e0e0' : theme.primaryColor), // Mode'a göre default renk veya primaryColor
+                backgroundColor: currentPage === number ? (theme.primaryColor) : (theme.mode ? '#424242' : '#ffffff'), 
+                color: currentPage === number ? (theme.mode ? '#ffffff' : '#ffffff') : (theme.mode ? '#e0e0e0' : theme.primaryColor), 
                 borderColor: theme.primaryColor + '33',
               }}
             >
@@ -263,8 +273,8 @@ export default function NewsManagementPanel({
             disabled={currentPage === totalPages || loading}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             style={{
-              backgroundColor: theme.mode ? '#424242' : '#ffffff', // Mode'a göre default renk
-              color: theme.mode ? '#e0e0e0' : theme.primaryColor, // Mode'a göre default renk veya primaryColor
+              backgroundColor: theme.mode ? '#424242' : '#ffffff', 
+              color: theme.mode ? '#e0e0e0' : theme.primaryColor, 
               borderColor: theme.primaryColor + '33',
             }}
           >
@@ -273,7 +283,7 @@ export default function NewsManagementPanel({
         </nav>
       )}
       {/* Display total items to resolve unused var warning */}
-      <div className="text-center text-sm text-gray-500 mt-4" style={{ color: theme.mode ? '#bdbdbd' : '#6b7280' }}> {/* Mode'a göre default renk */}
+      <div className="text-center text-sm text-gray-500 mt-4" style={{ color: theme.mode ? '#bdbdbd' : '#6b7280' }}> 
         Toplam Haber: {totalItems}
       </div>
     </div>
