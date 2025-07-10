@@ -17,7 +17,7 @@ const navItems = [
     href: '/',
     subItems: [],
   },
-  {
+  { 
     title: 'Kurumsal',
     subItems: [
       { title: 'Hakkımızda', href: '/kurumsal/hakkimizda' },
