@@ -77,6 +77,7 @@ import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 interface SimpleEditorProps {
   onChange?: (content: string) => void;
+  initialContent?: string; // Yeni prop eklendi
 }
 
 // Yeni tip tanımı: editor dışından erişmek istediğimiz metotları belirtiyoruz.
@@ -190,8 +191,8 @@ const MobileToolbarContent = ({
 );
 
 // Component'i forwardRef ile sarmalayın ve tipini güncelleyin
-export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
-  ({ onChange }, ref) => {
+const SimpleEditorWithRef = forwardRef<SimpleEditorRef, SimpleEditorProps>(
+  ({ onChange, initialContent }, ref) => {
     const isMobile = useMobile();
     const windowSize = useWindowSize();
     const [mobileView, setMobileView] = React.useState<
@@ -200,7 +201,7 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
     const toolbarRef = React.useRef<HTMLDivElement>(null);
 
     const editor = useEditor({
-      content: "<p>İçeriğinizi buraya yazın...</p>",
+      content: initialContent || "<p>İçeriğinizi buraya yazın...</p>",
       editorProps: {
         attributes: {
           autocomplete: "off",
@@ -236,6 +237,16 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
         Link.configure({ openOnClick: false }),
       ],
     });
+
+    React.useEffect(() => {
+      if (editor && initialContent !== undefined) {
+        // Mevcut içerikle aynıysa güncelleme yapma
+        if (editor.getHTML() === initialContent) return;
+
+        // Editör içeriğini güncelle
+        editor.commands.setContent(initialContent);
+      }
+    }, [initialContent, editor]);
 
     // useImperativeHandle hook'unu ekleyin
     useImperativeHandle(ref, () => ({
@@ -305,4 +316,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
   }
 );
 
-SimpleEditor.displayName = "SimpleEditor";
+SimpleEditorWithRef.displayName = "SimpleEditor";
+
+export default SimpleEditorWithRef;

@@ -1,12 +1,15 @@
 "use client";
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
-import { useState, useRef } from "react";
+import SimpleEditor from "@/components/tiptap-templates/simple/simple-editor";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { upload } from "@vercel/blob/client";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation"; // useParams ekledik
 
 export default function Page() {
+  const searchParams = useSearchParams(); // URL parametrelerini al
+  const slug = searchParams.get("slug"); // Slug parametresini al
   const [content, setContent] = useState<string>("");
   const editorRef = useRef<{ getContent: () => string }>(null);
   const router = useRouter();
@@ -16,6 +19,41 @@ export default function Page() {
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newsId, setNewsId] = useState<number | null>(null); // Düzenlenen haberin id'si
+  const [isEditing, setIsEditing] = useState(false); // Düzenleme modunda mıyız?
+
+  // Düzenleme modunda ise haber verilerini çek
+  useEffect(() => {
+  if (slug) {
+    const fetchNewsData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/news/slug/${slug}`);
+        if (!response.ok) {
+          throw new Error("Haber getirilemedi");
+        }
+        const newsData = await response.json();
+        
+        setTitle(newsData.title);
+        setDescription(newsData.description || "");
+        
+        // ÖNEMLİ: content state'ini direkt set et
+        setContent(newsData.content);
+        
+        setPreviewImage(newsData.cover_image || null);
+        setNewsId(newsData.id);
+        setIsEditing(true);
+        
+      } catch (error: unknown) {
+        // ... hata yönetimi ...
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNewsData();
+  }
+}, [slug]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,67 +111,92 @@ export default function Page() {
           setIsLoading(false);
           return;
         }
+      } else if (previewImage && !coverImage) {
+        // Düzenleme modunda ve yeni bir resim yüklenmediyse, mevcut resmi kullan
+        coverImageUrl = previewImage;
       }
 
       // Haber içeriğindeki görselleri HTML'den çek
       const contentImageUrls = extractImageUrlsFromHtml(editorContent);
-      console.log("Haber içeriğindeki görseller:", contentImageUrls);
 
-      const slug = title
+      const newSlug = title
         .toLowerCase()
         .replace(/[^\w\s]/gi, "")
         .replace(/\s+/g, "-");
 
-      // Önce haber ana bilgilerini kaydet
-      const newsResponse = await fetch("/api/news", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          description: description || editorContent.substring(0, 160),
-          content: editorContent,
-          cover_image: coverImageUrl,
-          slug,
-          author_id: 1, // Gerçek kullanıcı ID'si ile değiştir
-          // Haber içeriğindeki görselleri burada göndermiyoruz, ayrı bir API çağrısı yapacağız
-        }),
-      });
-
-      if (!newsResponse.ok) {
-        const errorData = await newsResponse.json();
-        throw new Error(
-          errorData.details || errorData.error || "Haber kaydedilemedi"
-        );
-      }
-
-      const newsData = await newsResponse.json();
-      const newsId = newsData.id; // Kaydedilen haberin ID'sini al
-
-      // İçerik görsellerini newsImages tablosuna kaydet
-      if (contentImageUrls.length > 0) {
-        // Bu kısım için yeni bir API rotası oluşturacağız: /api/news/[newsId]/images
-        const imagesUploadResponse = await fetch(`/api/news/${newsId}/images`, {
-          method: "POST",
+      if (isEditing && newsId) {
+        // DÜZENLEME MODU: PUT isteği ile güncelle
+        const response = await fetch(`/api/news/${newsId}`, {
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ images: contentImageUrls }), // URL'leri gönder
+          body: JSON.stringify({
+            title,
+            description: description || editorContent.substring(0, 160),
+            content: editorContent,
+            cover_image: coverImageUrl,
+            slug: newSlug,
+            author_id: 1, // Gerçek kullanıcı ID'si ile değiştir
+          }),
         });
 
-        if (!imagesUploadResponse.ok) {
-          // Görsel kaydetme hatası olursa ne yapılacağını düşünün (örn: ana haberi silme, loglama)
-          console.error(
-            "Haber görselleri kaydedilirken hata oluştu:",
-            await imagesUploadResponse.json()
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.details || errorData.error || "Haber güncellenemedi"
           );
-          toast.error("Haber görselleri kaydedilirken hata oluştu.");
-          // Hata olsa bile ana haberin kaydedilmesini isteyebiliriz, bu karara bağlı
         }
-      }
 
-      toast.success("Haber başarıyla oluşturuldu!");
-      router.push(`/duyurular-ve-haberler/${slug}`);
+        // İçerik görsellerini güncelle
+        if (contentImageUrls.length > 0) {
+          await fetch(`/api/news/${newsId}/images`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ images: contentImageUrls }),
+          });
+        }
+
+        toast.success("Haber başarıyla güncellendi!");
+        router.push(`/duyurular-ve-haberler/${newSlug}`);
+      } else {
+        // YENİ HABER MODU: POST isteği ile oluştur
+        const response = await fetch("/api/news", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            description: description || editorContent.substring(0, 160),
+            content: editorContent,
+            cover_image: coverImageUrl,
+            slug: newSlug,
+            author_id: 1, // Gerçek kullanıcı ID'si ile değiştir
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.details || errorData.error || "Haber kaydedilemedi"
+          );
+        }
+
+        const newsData = await response.json();
+        const newNewsId = newsData.id;
+
+        // İçerik görsellerini kaydet
+        if (contentImageUrls.length > 0) {
+          await fetch(`/api/news/${newNewsId}/images`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ images: contentImageUrls }),
+          });
+        }
+
+        toast.success("Haber başarıyla oluşturuldu!");
+        router.push(`/duyurular-ve-haberler/${newSlug}`);
+      }
     } catch (error: any) {
-      console.error("Haber oluşturma hatası:", error);
-      toast.error(error.message || "Haber oluşturulurken hata oluştu");
+      console.error("İşlem hatası:", error);
+      toast.error(error.message || "İşlem sırasında hata oluştu");
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +210,7 @@ export default function Page() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-gray-900">
-                Haber Oluştur
+                {isEditing ? "Haberi Düzenle" : "Haber Oluştur"}
               </h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -178,8 +241,10 @@ export default function Page() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Kaydediliyor...
+                    {isEditing ? "Güncelleniyor..." : "Kaydediliyor..."}
                   </>
+                ) : isEditing ? (
+                  "Güncelle"
                 ) : (
                   "Haberi Yayınla"
                 )}
@@ -191,200 +256,209 @@ export default function Page() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sol Sütun - Haber Bilgileri */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Kapak Fotoğrafı */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Kapak Fotoğrafı
-              </h2>
+        {isEditing && isLoading ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Sol Sütun - Haber Bilgileri */}
+            <div className="lg:col-span-1 space-y-6">
+              {/* Kapak Fotoğrafı */}
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">
+                  Kapak Fotoğrafı
+                </h2>
 
-              <div className="flex flex-col items-center space-y-4">
-                {previewImage ? (
-                  <div className="relative w-full h-64 rounded-lg overflow-hidden border">
-                    <Image
-                      src={previewImage}
-                      alt="Kapak önizleme"
-                      layout="fill"
-                      objectFit="cover"
-                    />
-                    <button
-                      onClick={() => {
-                        setCoverImage(null);
-                        setPreviewImage(null);
-                        if (fileInputRef.current)
-                          fileInputRef.current.value = "";
-                      }}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
-                    >
+                <div className="flex flex-col items-center space-y-4">
+                  {previewImage ? (
+                    <div className="relative w-full h-64 rounded-lg overflow-hidden border">
+                      <Image
+                        src={previewImage}
+                        alt="Kapak önizleme"
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                      <button
+                        onClick={() => {
+                          setCoverImage(null);
+                          setPreviewImage(null);
+                          if (fileInputRef.current)
+                            fileInputRef.current.value = "";
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center w-full">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
                         <path
-                          fillRule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clipRule="evenodd"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center w-full">
+                      <p className="mt-2 text-sm text-gray-600">
+                        Kapak fotoğrafı ekleyin
+                      </p>
+                    </div>
+                  )}
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                    id="cover-upload"
+                  />
+                  <label
+                    htmlFor="cover-upload"
+                    className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
                     <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                      className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
                     >
                       <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        fillRule="evenodd"
+                        d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
                       />
                     </svg>
-                    <p className="mt-2 text-sm text-gray-600">
-                      Kapak fotoğrafı ekleyin
+                    {previewImage ? "Fotoğrafı Değiştir" : "Fotoğraf Yükle"}
+                  </label>
+                </div>
+              </div>
+
+              {/* Haber Bilgileri */}
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">
+                  Haber Bilgileri
+                </h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="title"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Başlık*
+                    </label>
+                    <input
+                      type="text"
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Haber başlığını girin"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="description"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Kısa Açıklama
+                    </label>
+                    <textarea
+                      id="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Haberin kısa açıklamasını girin (160 karakter)"
+                      rows={3}
+                      maxLength={160}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1 text-right">
+                      {description.length}/160 karakter
                     </p>
                   </div>
-                )}
+                </div>
+              </div>
+            </div>
 
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                  id="cover-upload"
-                />
-                <label
-                  htmlFor="cover-upload"
-                  className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
+            {/* Sağ Sütun - Editör */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-lg shadow-sm border">
+                {/* Editor Header */}
+                <div className="border-b bg-gray-50 px-6 py-4 rounded-t-lg">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-medium text-gray-900">
+                      Haber İçeriği
+                    </h2>
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 bg-green-400 rounded-full"></div>
+                      <span className="text-sm text-gray-600">
+                        Kaydediliyor
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Editor Container */}
+                <div className="p-6">
+                  <SimpleEditor
+                    onChange={setContent}
+                    ref={editorRef}
+                    initialContent={content} // Düzenleme modunda içeriği yükle
+                  />
+                </div>
+              </div>
+
+              {/* İpucu Bölümü */}
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <div className="flex items-start">
                   <svg
-                    className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                    className="h-5 w-5 text-blue-400 mr-2 mt-0.5"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
                     <path
                       fillRule="evenodd"
-                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                       clipRule="evenodd"
                     />
                   </svg>
-                  {previewImage ? "Fotoğrafı Değiştir" : "Fotoğraf Yükle"}
-                </label>
-              </div>
-            </div>
-
-            {/* Haber Bilgileri */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Haber Bilgileri
-              </h2>
-
-              <div className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="title"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Başlık*
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Haber başlığını girin"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Kısa Açıklama
-                  </label>
-                  <textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Haberin kısa açıklamasını girin (160 karakter)"
-                    rows={3}
-                    maxLength={160}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <p className="text-xs text-gray-500 mt-1 text-right">
-                    {description.length}/160 karakter
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sağ Sütun - Editör */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border">
-              {/* Editor Header */}
-              <div className="border-b bg-gray-50 px-6 py-4 rounded-t-lg">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium text-gray-900">
-                    Haber İçeriği
-                  </h2>
-                  <div className="flex items-center space-x-2">
-                    <div className="h-2 w-2 bg-green-400 rounded-full"></div>
-                    <span className="text-sm text-gray-600">Kaydediliyor</span>
+                  <div>
+                    <h3 className="text-sm font-medium text-blue-800">
+                      İpuçları
+                    </h3>
+                    <ul className="mt-2 text-sm text-blue-700 list-disc pl-5 space-y-1">
+                      <li>Başlık ve içerik zorunlu alanlardır</li>
+                      <li>Görselleri sürükleyip bırakarak ekleyebilirsiniz</li>
+                      <li>Değişiklikler otomatik olarak kaydedilir</li>
+                    </ul>
                   </div>
                 </div>
               </div>
-
-              {/* Editor Container */}
-              <div className="p-6">
-                <SimpleEditor
-                  onChange={setContent}
-                  ref={editorRef} // Ref ekle
-                />
-              </div>
-            </div>
-
-            {/* İpucu Bölümü */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-              <div className="flex items-start">
-                <svg
-                  className="h-5 w-5 text-blue-400 mr-2 mt-0.5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <div>
-                  <h3 className="text-sm font-medium text-blue-800">
-                    İpuçları
-                  </h3>
-                  <ul className="mt-2 text-sm text-blue-700 list-disc pl-5 space-y-1">
-                    <li>Başlık ve içerik zorunlu alanlardır</li>
-                    <li>Görselleri sürükleyip bırakarak ekleyebilirsiniz</li>
-                    <li>Değişiklikler otomatik olarak kaydedilir</li>
-                  </ul>
-                </div>
-              </div>
             </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );

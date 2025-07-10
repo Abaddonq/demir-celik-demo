@@ -10,6 +10,7 @@ export default function AdminTabs({
     { id: "departman", label: "Departmanlar" },
     { id: "personel", label: "Personel Yönetimi" },
     { id: "moderator", label: "Bekleyen Moderatörler" },
+    { id: "haberler", label: "Haber Yonetim Paneli" },
   ];
 
   return (

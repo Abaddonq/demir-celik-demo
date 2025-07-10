@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTheme, Theme } from "../../context/themeContext";
 import { upload } from "@vercel/blob/client";
 import AdminTabs from "@/components/dashboard/AdminTabs";
@@ -10,6 +10,7 @@ import AssignModal from "@/components/dashboard/AssignModal";
 import StaffForm from "@/components/dashboard/StaffForm";
 import { useRouter } from "next/navigation";
 import ThemeButton from "@/components/dashboard/themebutton";
+import NewsManagement from "@/components/dashboard/NewsManagement"; // Yeni import
 
 type ThemeForm = Omit<Theme, "id">;
 type Department = { id: number; name: string };
@@ -126,14 +127,9 @@ export default function AdminPanelPage() {
     fetchDepartments();
   }, []);
 
+  
   useEffect(() => {
-    if (departments.length > 0 || !isLoading.departments) {
-      fetchStaff();
-    }
-  }, [departments]);
-
-  useEffect(() => {
-    fetch("/api/auth/verify", { credentials: "include" }).then(res => {
+    fetch("/api/auth/verify", { credentials: "include" }).then((res) => {
       if (!res.ok) {
         router.push("/admin/login");
       } else {
@@ -162,7 +158,8 @@ export default function AdminPanelPage() {
     }
   };
 
-  const fetchStaff = async () => {
+  const fetchStaff = useCallback(async () => {
+    // useCallback burada başlıyor
     setIsLoading((prev) => ({ ...prev, staff: true }));
     try {
       const res = await fetch("/api/staff");
@@ -186,7 +183,11 @@ export default function AdminPanelPage() {
     } finally {
       setIsLoading((prev) => ({ ...prev, staff: false }));
     }
-  };
+  }, [departments, setIsLoading, setStaffList]); // departments, setIsLoading ve setStaffList de bağımlılık olarak eklenmeli.
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
 
   const saveTheme = async () => {
     setIsLoading((prev) => ({ ...prev, theme: true }));
@@ -290,9 +291,11 @@ export default function AdminPanelPage() {
   };
 
   const isAcademicStaff = (staff: Staff) => {
-    return staff.departments?.some(
-      (dept) => dept.name.toLowerCase() === "akademi"
-  ) ?? false; 
+    return (
+      staff.departments?.some(
+        (dept) => dept.name.toLowerCase() === "akademi"
+      ) ?? false
+    );
   };
 
   // Laboratuvar atama fonksiyonu
@@ -478,7 +481,7 @@ export default function AdminPanelPage() {
     try {
       const { url } = await upload(imageFile.name, imageFile, {
         access: "public",
-        handleUploadUrl: "/api/avatar/upload",
+        handleUploadUrl: "/api/upload/avatar",
       });
 
       return url;
@@ -506,7 +509,9 @@ export default function AdminPanelPage() {
         body: JSON.stringify({ moderatorId }),
       });
       if (res.ok) {
-        setPendingModerators(prev => prev.filter(m => m.id !== moderatorId));
+        setPendingModerators((prev) =>
+          prev.filter((m) => m.id !== moderatorId)
+        );
         alert("Moderatör onaylandı!");
       } else {
         alert("Onaylama başarısız");
@@ -516,6 +521,13 @@ export default function AdminPanelPage() {
     }
   };
 
+  useEffect(() => {
+    if (departments.length > 0 || !isLoading.departments) {
+      fetchStaff();
+    }
+  }, [departments, fetchStaff, isLoading.departments]); // Eksik bağımlılıklar eklendi
+
+
   const handleRejectModerator = async (moderatorId: number) => {
     try {
       const res = await fetch("/api/moderator/reject", {
@@ -524,7 +536,9 @@ export default function AdminPanelPage() {
         body: JSON.stringify({ moderatorId }),
       });
       if (res.ok) {
-        setPendingModerators(prev => prev.filter(m => m.id !== moderatorId));
+        setPendingModerators((prev) =>
+          prev.filter((m) => m.id !== moderatorId)
+        );
         alert("Başvuru reddedildi!");
       } else {
         alert("Reddetme başarısız");
@@ -541,23 +555,25 @@ export default function AdminPanelPage() {
   return (
     <div
       style={{
-        background: theme.mode ? '#181825' : '#f8fafc',
-        color: theme.mode ? '#fff' : '#23272f',
-        minHeight: '100vh',
-        transition: 'background 0.3s, color 0.3s',
+        background: theme.mode ? "#181825" : "#f8fafc",
+        color: theme.mode ? "#fff" : "#23272f",
+        minHeight: "100vh",
+        transition: "background 0.3s, color 0.3s",
       }}
     >
       {/* Panel üst header */}
       <div
         className="p-6 text-white flex items-center justify-between rounded-t-2xl"
         style={{
-          background: theme.mode ? '#2d2e4a' : '#6ca4fe',
-          color: '#fff',
+          background: theme.mode ? "#2d2e4a" : "#6ca4fe",
+          color: "#fff",
         }}
       >
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">Admin Paneli</h1>
-          <p className="mt-1 opacity-90">Tema, departman ve personel yönetimi</p>
+          <p className="mt-1 opacity-90">
+            Tema, departman ve personel yönetimi
+          </p>
         </div>
         <button
           onClick={async () => {
@@ -676,6 +692,17 @@ export default function AdminPanelPage() {
             )}
           </div>
         )}
+
+        {/* Yeni Haber Yönetimi Sekmesi */}
+        {activeTab === "haberler" && (
+          <div className="p-4">
+            <NewsManagement
+              initialNewsList={[]}
+              initialTotalCount={0}
+              limit={10}
+            />
+          </div>
+        )}
       </div>
 
       {/* Modallar */}
@@ -689,15 +716,15 @@ export default function AdminPanelPage() {
             assignDepartmentsToStaff(assignDeptStaffId, selectedDeptIds)
           }
           onCancel={() => {
-                          setAssignDeptStaffId(null);
-                          setSelectedDeptIds([]);
-                        }}
+            setAssignDeptStaffId(null);
+            setSelectedDeptIds([]);
+          }}
           isAssigning={isAssigningDept}
           itemType="department"
         />
-              )}
+      )}
 
-              {assignLabStaffId && (
+      {assignLabStaffId && (
         <AssignModal
           title="Laboratuvar Atama"
           items={laboratoryList}
@@ -705,9 +732,9 @@ export default function AdminPanelPage() {
           setSelectedItems={setSelectedLabs}
           onAssign={() => assignLabsToStaff(assignLabStaffId, selectedLabs)}
           onCancel={() => {
-                          setAssignLabStaffId(null);
-                          setSelectedLabs([]);
-                        }}
+            setAssignLabStaffId(null);
+            setSelectedLabs([]);
+          }}
           isAssigning={isAssigningLabs}
           itemType="lab"
         />
