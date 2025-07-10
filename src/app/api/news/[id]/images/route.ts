@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db"; // Drizzle bağlantınızı import edin
 import { newsImages } from "@/db/schema"; // newsImages şemanızı import edin
+import { eq } from "drizzle-orm"; // Drizzle'dan eq fonksiyonunu import edin
 
 export async function GET(
   request: NextRequest,
@@ -72,6 +73,68 @@ export async function POST(
     console.error("Haber görselleri kaydedilirken hata:", error);
     return NextResponse.json(
       { error: "Haber görselleri kaydedilirken bir hata oluştu: " + error.message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const newsId = parseInt(id);
+
+    if (isNaN(newsId)) {
+      return NextResponse.json({ error: "Geçersiz Haber ID'si" }, { status: 400 });
+    }
+
+    // Bu habere ait tüm görselleri sil
+    await db.delete(newsImages).where(eq(newsImages.news_id, newsId));
+
+    return NextResponse.json({ success: true, message: "Tüm görseller silindi" });
+  } catch (error: any) {
+    console.error("Görseller silinirken hata:", error);
+    return NextResponse.json(
+      { error: "Görseller silinirken bir hata oluştu: " + error.message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = await params;
+    const newsId = parseInt(id);
+
+    if (isNaN(newsId)) {
+      return NextResponse.json({ error: "Geçersiz Haber ID'si" }, { status: 400 });
+    }
+
+    const { images } = await request.json();
+
+    // Önce tüm eski görselleri sil
+    await db.delete(newsImages).where(eq(newsImages.news_id, newsId));
+
+    // Yeni görselleri ekle
+    const valuesToInsert = images.map((url: string, index: number) => ({
+      news_id: newsId,
+      image_url: url,
+      order_index: index,
+      caption: null,
+    }));
+
+    const insertedImages = await db.insert(newsImages).values(valuesToInsert).returning();
+
+    return NextResponse.json({ success: true, insertedImages });
+  } catch (error: any) {
+    console.error("Görseller güncellenirken hata:", error);
+    return NextResponse.json(
+      { error: "Görseller güncellenirken bir hata oluştu: " + error.message },
       { status: 500 }
     );
   }

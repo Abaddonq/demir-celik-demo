@@ -24,36 +24,35 @@ export default function Page() {
 
   // Düzenleme modunda ise haber verilerini çek
   useEffect(() => {
-  if (slug) {
-    const fetchNewsData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/news/slug/${slug}`);
-        if (!response.ok) {
-          throw new Error("Haber getirilemedi");
-        }
-        const newsData = await response.json();
-        
-        setTitle(newsData.title);
-        setDescription(newsData.description || "");
-        
-        // ÖNEMLİ: content state'ini direkt set et
-        setContent(newsData.content);
-        
-        setPreviewImage(newsData.cover_image || null);
-        setNewsId(newsData.id);
-        setIsEditing(true);
-        
-      } catch (error: unknown) {
-        // ... hata yönetimi ...
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (slug) {
+      const fetchNewsData = async () => {
+        setIsLoading(true);
+        try {
+          const response = await fetch(`/api/news/slug/${slug}`);
+          if (!response.ok) {
+            throw new Error("Haber getirilemedi");
+          }
+          const newsData = await response.json();
 
-    fetchNewsData();
-  }
-}, [slug]);
+          setTitle(newsData.title);
+          setDescription(newsData.description || "");
+
+          // ÖNEMLİ: content state'ini direkt set et
+          setContent(newsData.content);
+
+          setPreviewImage(newsData.cover_image || null);
+          setNewsId(newsData.id);
+          setIsEditing(true);
+        } catch (error: unknown) {
+          // ... hata yönetimi ...
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchNewsData();
+    }
+  }, [slug]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,6 +61,12 @@ export default function Page() {
       setPreviewImage(URL.createObjectURL(file));
     }
   };
+
+  function compareImageUrls(oldUrls: string[], newUrls: string[]) {
+    const added = newUrls.filter((url) => !oldUrls.includes(url));
+    const removed = oldUrls.filter((url) => !newUrls.includes(url));
+    return { added, removed };
+  }
 
   function extractImageUrlsFromHtml(htmlContent: string): string[] {
     const parser = new DOMParser();
@@ -119,6 +124,15 @@ export default function Page() {
       // Haber içeriğindeki görselleri HTML'den çek
       const contentImageUrls = extractImageUrlsFromHtml(editorContent);
 
+      let oldImageUrls: string[] = [];
+      if (isEditing && newsId) {
+        const imagesResponse = await fetch(`/api/news/${newsId}/images`);
+        if (imagesResponse.ok) {
+          const imagesData = await imagesResponse.json();
+          oldImageUrls = imagesData.map((img: any) => img.image_url);
+        }
+      }
+
       const newSlug = title
         .toLowerCase()
         .replace(/[^\w\s]/gi, "")
@@ -135,7 +149,7 @@ export default function Page() {
             content: editorContent,
             cover_image: coverImageUrl,
             slug: newSlug,
-            author_id: 1, // Gerçek kullanıcı ID'si ile değiştir
+            author_id: 1,
           }),
         });
 
@@ -147,12 +161,20 @@ export default function Page() {
         }
 
         // İçerik görsellerini güncelle
-        if (contentImageUrls.length > 0) {
-          await fetch(`/api/news/${newsId}/images`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ images: contentImageUrls }),
-          });
+        if (oldImageUrls.length > 0 || contentImageUrls.length > 0) {
+          // Görsellerde değişiklik varsa güncelle
+          const { added, removed } = compareImageUrls(
+            oldImageUrls,
+            contentImageUrls
+          );
+
+          if (added.length > 0 || removed.length > 0) {
+            await fetch(`/api/news/${newsId}/images`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ images: contentImageUrls }),
+            });
+          }
         }
 
         toast.success("Haber başarıyla güncellendi!");
