@@ -60,12 +60,12 @@ export default function Hakkimizda() {
             <h2 className="text-4xl font-bold text-[#202b85] mb-4">Misyonumuz</h2>
             <p className="text-[#202b85] mb-4 font-medium">Demir Çelik Enstitüsü, toplumun gereksinimlerini karşılayacak mamul ürünlerin oluşturulması için ihtiyaç duyulan güçlü ve sürdürülebilir bir Türk demir çelik endüstrisini desteklemek amacıyla, demir çelik alanında çalışanları eğitmek ve şekillendirmek istemektedir.Bu hedefle, Demir Çelik Enstitüsü'nün özgörevi:</p>
             <ul className="space-y-3">
-              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2" /> Demir çelik endüstrisine ait temel konularda kamu politikalarına etkide bulunmak,</li>
-              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2" /> Demir çelik endüstrisinde çalışanları yeni teknoloji ve süreçler hakkında eğitmek,</li>
-              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2" /> İş sağlığı ve iş güvenliği ve yaşanabilir bir çevre için önlemler hakkında bilgilendirmek,</li>
-              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2" /> Endüstri verilerini, karar vericiler, demir çelik şirketleri ve kamu için yorumlamak, demir üretim süreçleri, üretim, enerji verimliliği, yatırımlar ve eğilimler hakkında önerilerde bulunmak,</li>
-              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2" /> Şirketleri araştırma ve geliştirme için ortak çalışmaya ikna etmek,</li>
-              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2" /> Demir çelik endüstrisinin bütününde, mesleki standartlara katkıda bulunmaktır.</li>
+              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2 text-xl flex-shrink-0" /> Demir çelik endüstrisine ait temel konularda kamu politikalarına etkide bulunmak,</li>
+              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2 text-xl flex-shrink-0" /> Demir çelik endüstrisinde çalışanları yeni teknoloji ve süreçler hakkında eğitmek,</li>
+              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2 text-xl flex-shrink-0" /> İş sağlığı ve iş güvenliği ve yaşanabilir bir çevre için önlemler hakkında bilgilendirmek,</li>
+              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2 text-xl flex-shrink-0" /> Endüstri verilerini, karar vericiler, demir çelik şirketleri ve kamu için yorumlamak, demir üretim süreçleri, üretim, enerji verimliliği, yatırımlar ve eğilimler hakkında önerilerde bulunmak,</li>
+              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2 text-xl flex-shrink-0" /> Şirketleri araştırma ve geliştirme için ortak çalışmaya ikna etmek,</li>
+              <li className="flex items-start text-[#202b85] font-bold"><FaCheck className="text-[#f97316] mt-1 mr-2 text-xl flex-shrink-0" /> Demir çelik endüstrisinin bütününde, mesleki standartlara katkıda bulunmaktır.</li>
             </ul>
           </div>
         </div>
