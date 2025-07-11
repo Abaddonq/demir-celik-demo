@@ -7,11 +7,10 @@ import { eq } from "drizzle-orm"; // Drizzle ORM'dan `eq` operatörünü import 
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } } // URL'den slug parametresini yakalarız
+  { params }: { params: Promise<{ slug: string }> } // params artık Promise olarak tanımlanıyor
 ) {
   try {
-    const param = await params;
-    const { slug } = param; // params objesinden slug'ı doğrudan alıyoruz
+    const { slug } = await params; // params'ı await edip destructure yapıyoruz
     console.log(`Fetching news with slug: ${slug}`);
 
     // Slug parametresinin mevcut olup olmadığını kontrol et

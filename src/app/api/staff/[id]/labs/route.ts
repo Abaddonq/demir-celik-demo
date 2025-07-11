@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { staffTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { handleStaffError } from '@/app/api/staff/[id]/departments/route';
+import { handleStaffError } from '@/lib/staff-error-handler';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise <{ id: string }> }
 ) {
   try {
     const {id} = await params;
