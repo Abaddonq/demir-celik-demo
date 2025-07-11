@@ -9,11 +9,11 @@ export const addNewsImage = async (imageData: NewsImageInsert) => {
   return newImage;
 };
 
-export const getNewsImages = async (newsId: number) => {
+export const getNewsImages = async (id: number) => {
   return db
     .select()
     .from(newsImages)
-    .where(eq(newsImages.news_id, newsId))
+    .where(eq(newsImages.news_id, id))
     .orderBy(newsImages.order_index);
 };
 

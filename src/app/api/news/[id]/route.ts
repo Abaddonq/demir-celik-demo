@@ -58,12 +58,12 @@ export async function PUT(
   }
 }
 
+
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } } // params yerine context kullanıyoruz
+  context: { params: { id: string } }
 ) {
   try {
-    // context.params'ı await ederek proxy davranışını çözüyoruz
     const resolvedParams = await context.params;
     const id = parseInt(resolvedParams.id);
 
@@ -72,7 +72,8 @@ export async function DELETE(
     }
 
     await deleteNews(id);
-    return NextResponse.json({ message: "Haber silindi" });
+    // Doğru mesajı döndür:
+    return NextResponse.json({ message: "Haber başarıyla silindi" });
   } catch (error: any) {
     console.error("Haber silinirken hata oluştu:", error);
     return NextResponse.json(

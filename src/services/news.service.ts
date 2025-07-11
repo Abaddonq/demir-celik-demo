@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { news, newsImages } from "@/db/schema";
+import { news } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 type NewsInsert = typeof news.$inferInsert;
@@ -32,12 +32,21 @@ export const updateNews = async (id: number, newsData: NewsUpdate) => {
 };
 
 export const deleteNews = async (id: number) => {
-  return db.transaction(async (tx) => {
-    await tx.delete(newsImages).where(eq(newsImages.news_id, id));
-    const [deletedNews] = await tx
+  try {
+    // Sadece 'news' tablosundan ilgili haberi silmek yeterli.
+    // 'onDelete: "cascade"' sayesinde ilişkili görseller otomatik silinecektir.
+    const [deletedNews] = await db
       .delete(news)
       .where(eq(news.id, id))
-      .returning();
-    return deletedNews;
-  });
+      .returning(); // Silinen kaydı döndürür
+
+    if (!deletedNews) { // Eğer 'deletedNews' undefined ise, haber bulunamadı demektir.
+      throw new Error(`ID ${id} ile haber bulunamadı veya silinemedi.`);
+    }
+
+    return deletedNews; // Silinen haberin bilgisini dön
+  } catch (error) {
+    console.error("news.service.ts - deleteNews hatası:", error);
+    throw error; // Hatayı çağırana (API rotasına) yeniden fırlat
+  }
 };

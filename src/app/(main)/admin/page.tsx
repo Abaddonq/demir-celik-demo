@@ -10,6 +10,7 @@ import AssignModal from "@/components/dashboard/AssignModal";
 import StaffForm from "@/components/dashboard/StaffForm";
 import { useRouter } from "next/navigation";
 import ThemeButton from "@/components/dashboard/themebutton";
+import NewsManagement from "@/components/dashboard/NewsManagement";
 
 type ThemeForm = Omit<Theme, "id">;
 type Department = { id: number; name: string };
@@ -25,7 +26,6 @@ type Staff = {
   image_url?: string | null;
 };
 
-// Moderatör tipi
 type Moderator = {
   id: number;
   name: string;
@@ -102,14 +102,11 @@ export default function AdminPanelPage() {
     departments: false,
     staff: false,
     theme: false,
+    moderators: false,
   });
 
-  // Departman atama için yeni state'ler
-  const [assignDeptStaffId, setAssignDeptStaffId] = useState<number | null>(
-    null
-  );
+  const [assignDeptStaffId, setAssignDeptStaffId] = useState<number | null>(null);
   const [isAssigningDept, setIsAssigningDept] = useState(false);
-
   const [pendingModerators, setPendingModerators] = useState<Moderator[]>([]);
 
   useEffect(() => {
@@ -123,17 +120,7 @@ export default function AdminPanelPage() {
   }, [theme]);
 
   useEffect(() => {
-    fetchDepartments();
-  }, []);
-
-  useEffect(() => {
-    if (departments.length > 0 || !isLoading.departments) {
-      fetchStaff();
-    }
-  }, [departments]);
-
-  useEffect(() => {
-    fetch("/api/auth/verify", { credentials: "include" }).then(res => {
+    fetch("/api/auth/verify", { credentials: "include" }).then((res) => {
       if (!res.ok) {
         router.push("/admin/login");
       } else {
@@ -162,21 +149,21 @@ export default function AdminPanelPage() {
     }
   };
 
-  const fetchStaff = async () => {
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
+  const fetchStaff = async (depts: Department[]) => {
     setIsLoading((prev) => ({ ...prev, staff: true }));
     try {
       const res = await fetch("/api/staff");
-      const data: (Omit<Staff, "departments"> & {
-        departmentIds: number[];
-        responsible_labs?: string | null;
-        image_url?: string;
-      })[] = await res.json();
+      const data = await res.json();
 
       const populatedStaffList = data.map((staff) => ({
         ...staff,
         departments: staff.departmentIds
-          .map((deptId) => departments.find((d) => d.id === deptId))
-          .filter((d): d is Department => d !== undefined),
+          .map((deptId) => depts.find((d) => d.id === deptId))
+          .filter(Boolean) as Department[],
       }));
 
       setStaffList(populatedStaffList);
@@ -187,6 +174,12 @@ export default function AdminPanelPage() {
       setIsLoading((prev) => ({ ...prev, staff: false }));
     }
   };
+
+  useEffect(() => {
+    if (departments.length > 0) {
+      fetchStaff(departments);
+    }
+  }, [departments]);
 
   const saveTheme = async () => {
     setIsLoading((prev) => ({ ...prev, theme: true }));
@@ -290,12 +283,13 @@ export default function AdminPanelPage() {
   };
 
   const isAcademicStaff = (staff: Staff) => {
-    return staff.departments?.some(
-      (dept) => dept.name.toLowerCase() === "akademi"
-  ) ?? false; 
+    return (
+      staff.departments?.some(
+        (dept) => dept.name.toLowerCase() === "akademi"
+      ) ?? false
+    );
   };
 
-  // Laboratuvar atama fonksiyonu
   const assignLabsToStaff = async (staffId: number, labs: string[]) => {
     setIsAssigningLabs(true);
     try {
@@ -306,7 +300,7 @@ export default function AdminPanelPage() {
       });
 
       if (res.ok) {
-        await fetchStaff();
+        await fetchStaff(departments);
         alert("Laboratuvarlar başarıyla atandı!");
         setSelectedLabs([]);
         setAssignLabStaffId(null);
@@ -366,7 +360,7 @@ export default function AdminPanelPage() {
       });
 
       if (res.ok) {
-        await fetchStaff();
+        await fetchStaff(departments);
         setNewStaff({ name: "", surname: "", title: "", email: "", phone: "" });
         setEditStaffId(null);
         setSelectedDeptIds([]);
@@ -406,7 +400,6 @@ export default function AdminPanelPage() {
     setPreviewImage(staff.image_url || null);
   };
 
-  // YENİ: Departman atama fonksiyonu
   const assignDepartmentsToStaff = async (
     staffId: number,
     deptIds: number[]
@@ -420,7 +413,7 @@ export default function AdminPanelPage() {
       });
 
       if (res.ok) {
-        await fetchStaff();
+        await fetchStaff(departments);
         alert("Departmanlar başarıyla atandı!");
         setSelectedDeptIds([]);
         setAssignDeptStaffId(null);
@@ -436,7 +429,6 @@ export default function AdminPanelPage() {
     }
   };
 
-  // GÜNCELLENDİ: Staff silme fonksiyonu
   const handleDeleteStaff = async (id: number) => {
     if (
       !confirm(
@@ -452,7 +444,7 @@ export default function AdminPanelPage() {
       });
 
       if (res.ok) {
-        await fetchStaff();
+        await fetchStaff(departments);
         alert("Personel başarıyla silindi!");
       } else {
         const err = await res.json();
@@ -478,7 +470,7 @@ export default function AdminPanelPage() {
     try {
       const { url } = await upload(imageFile.name, imageFile, {
         access: "public",
-        handleUploadUrl: "/api/avatar/upload",
+        handleUploadUrl: "/api/upload/avatar",
       });
 
       return url;
@@ -489,12 +481,15 @@ export default function AdminPanelPage() {
   }
 
   const fetchPendingModerators = async () => {
+    setIsLoading((prev) => ({ ...prev, moderators: true }));
     try {
       const res = await fetch("/api/moderator/pending");
       const data = await res.json();
       setPendingModerators(data);
     } catch (error) {
       alert("Bekleyen moderatörler yüklenemedi");
+    } finally {
+      setIsLoading((prev) => ({ ...prev, moderators: false }));
     }
   };
 
@@ -506,7 +501,9 @@ export default function AdminPanelPage() {
         body: JSON.stringify({ moderatorId }),
       });
       if (res.ok) {
-        setPendingModerators(prev => prev.filter(m => m.id !== moderatorId));
+        setPendingModerators((prev) =>
+          prev.filter((m) => m.id !== moderatorId)
+        );
         alert("Moderatör onaylandı!");
       } else {
         alert("Onaylama başarısız");
@@ -524,7 +521,9 @@ export default function AdminPanelPage() {
         body: JSON.stringify({ moderatorId }),
       });
       if (res.ok) {
-        setPendingModerators(prev => prev.filter(m => m.id !== moderatorId));
+        setPendingModerators((prev) =>
+          prev.filter((m) => m.id !== moderatorId)
+        );
         alert("Başvuru reddedildi!");
       } else {
         alert("Reddetme başarısız");
@@ -535,29 +534,30 @@ export default function AdminPanelPage() {
   };
 
   if (!authChecked) {
-    return null; // veya bir loading göstergesi
+    return null;
   }
 
   return (
     <div
       style={{
-        background: theme.mode ? '#181825' : '#f8fafc',
-        color: theme.mode ? '#fff' : '#23272f',
-        minHeight: '100vh',
-        transition: 'background 0.3s, color 0.3s',
+        background: theme.mode ? "#181825" : "#f8fafc",
+        color: theme.mode ? "#fff" : "#23272f",
+        minHeight: "100vh",
+        transition: "background 0.3s, color 0.3s",
       }}
     >
-      {/* Panel üst header */}
       <div
         className="p-6 text-white flex items-center justify-between rounded-t-2xl"
         style={{
-          background: theme.mode ? '#2d2e4a' : '#6ca4fe',
-          color: '#fff',
+          background: theme.mode ? "#2d2e4a" : "#6ca4fe",
+          color: "#fff",
         }}
       >
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">Admin Paneli</h1>
-          <p className="mt-1 opacity-90">Tema, departman ve personel yönetimi</p>
+          <p className="mt-1 opacity-90">
+            Tema, departman ve personel yönetimi
+          </p>
         </div>
         <button
           onClick={async () => {
@@ -604,34 +604,33 @@ export default function AdminPanelPage() {
         )}
 
         {activeTab === "personel" && (
-          <StaffForm
-            newStaff={newStaff}
-            setNewStaff={setNewStaff}
-            selectedDeptIds={selectedDeptIds}
-            setSelectedDeptIds={setSelectedDeptIds}
-            previewImage={previewImage}
-            handleImageChange={handleImageChange}
-            handleAddStaff={handleAddStaff}
-            isLoading={isLoading}
-            editStaffId={editStaffId}
-            handleCancelEdit={handleCancelEdit}
-          />
-        )}
-
-        {activeTab === "personel" && (
-          <StaffManager
-            staffList={staffList}
-            isLoading={isLoading}
-            departments={departments}
-            laboratoryList={laboratoryList}
-            handleEditStaff={handleEditStaff}
-            handleDeleteStaff={handleDeleteStaff}
-            setAssignDeptStaffId={setAssignDeptStaffId}
-            setAssignLabStaffId={setAssignLabStaffId}
-            setSelectedDeptIds={setSelectedDeptIds}
-            setSelectedLabs={setSelectedLabs}
-            isAcademicStaff={isAcademicStaff}
-          />
+          <>
+            <StaffForm
+              newStaff={newStaff}
+              setNewStaff={setNewStaff}
+              selectedDeptIds={selectedDeptIds}
+              setSelectedDeptIds={setSelectedDeptIds}
+              previewImage={previewImage}
+              handleImageChange={handleImageChange}
+              handleAddStaff={handleAddStaff}
+              isLoading={isLoading}
+              editStaffId={editStaffId}
+              handleCancelEdit={handleCancelEdit}
+            />
+            <StaffManager
+              staffList={staffList}
+              isLoading={isLoading}
+              departments={departments}
+              laboratoryList={laboratoryList}
+              handleEditStaff={handleEditStaff}
+              handleDeleteStaff={handleDeleteStaff}
+              setAssignDeptStaffId={setAssignDeptStaffId}
+              setAssignLabStaffId={setAssignLabStaffId}
+              setSelectedDeptIds={setSelectedDeptIds}
+              setSelectedLabs={setSelectedLabs}
+              isAcademicStaff={isAcademicStaff}
+            />
+          </>
         )}
 
         {activeTab === "moderator" && (
@@ -676,9 +675,18 @@ export default function AdminPanelPage() {
             )}
           </div>
         )}
+
+        {activeTab === "haberler" && (
+          <div className="p-4">
+            <NewsManagement
+              initialNewsList={[]}
+              initialTotalCount={0}
+              limit={10}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Modallar */}
       {assignDeptStaffId && (
         <AssignModal
           title="Departman Atama"
@@ -689,15 +697,15 @@ export default function AdminPanelPage() {
             assignDepartmentsToStaff(assignDeptStaffId, selectedDeptIds)
           }
           onCancel={() => {
-                          setAssignDeptStaffId(null);
-                          setSelectedDeptIds([]);
-                        }}
+            setAssignDeptStaffId(null);
+            setSelectedDeptIds([]);
+          }}
           isAssigning={isAssigningDept}
           itemType="department"
         />
-              )}
+      )}
 
-              {assignLabStaffId && (
+      {assignLabStaffId && (
         <AssignModal
           title="Laboratuvar Atama"
           items={laboratoryList}
@@ -705,9 +713,9 @@ export default function AdminPanelPage() {
           setSelectedItems={setSelectedLabs}
           onAssign={() => assignLabsToStaff(assignLabStaffId, selectedLabs)}
           onCancel={() => {
-                          setAssignLabStaffId(null);
-                          setSelectedLabs([]);
-                        }}
+            setAssignLabStaffId(null);
+            setSelectedLabs([]);
+          }}
           isAssigning={isAssigningLabs}
           itemType="lab"
         />
