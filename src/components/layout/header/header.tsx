@@ -38,6 +38,7 @@ const navItems = [
   },
   {
     title: 'Duyurular&Haberler',
+    href: '/duyurular-ve-haberler',
     subItems: [
       { title: 'Etkinlikler', href: '/haberler/etkinlikler' },
       { title: 'Basında Biz', href: '/haberler/basinda-biz' },
