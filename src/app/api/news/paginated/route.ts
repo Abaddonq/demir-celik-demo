@@ -1,29 +1,40 @@
-// src/app/api/news/paginated/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db"; // Drizzle bağlantınız
-import { news } from "@/db/schema"; // news şemanız
-import { count } from "drizzle-orm"; // Toplam kayıt sayısını almak için `count` fonksiyonu
+import { db } from "@/db";
+import { news } from "@/db/schema";
+import { count, ilike, or } from "drizzle-orm"; // ilike ve or eklemeleri
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1"); // Varsayılan sayfa 1
-    const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const searchTerm = searchParams.get("search") || ""; // Arama terimini al
 
-    const offset = (page - 1) * limit; // Offset hesaplaması
+    const offset = (page - 1) * limit;
 
-    // Haberleri limit ve offset ile çek
+    // Arama terimine göre filtre oluştur
+    const searchFilter = searchTerm
+      ? or(
+          ilike(news.title, `%${searchTerm}%`),
+          ilike(news.description, `%${searchTerm}%`)
+        )
+      : undefined;
+
+    // Haberleri filtre ile çek
     const newsList = await db.query.news.findMany({
+      where: searchFilter,
       limit: limit,
       offset: offset,
-      orderBy: (news, { desc }) => [desc(news.created_at)], // En yeni haberler üstte
+      orderBy: (news, { desc }) => [desc(news.created_at)],
     });
 
-    // Toplam haber sayısını al
-    // Drizzle'ın `count()` fonksiyonu bir dizi döndürür, bu dizinin ilk elemanının `count` özelliğine erişiyoruz.
-    // Eğer dizi boşsa veya ilk eleman yoksa, varsayılan olarak 0 alıyoruz.
-    const totalNewsCountResult = await db.select({ count: count() }).from(news);
-    const totalCount = totalNewsCountResult.length > 0 ? totalNewsCountResult[0].count : 0;
+    // Filtreli toplam haber sayısını al
+    const totalNewsCountResult = searchFilter
+      ? await db.select({ count: count() }).from(news).where(searchFilter)
+      : await db.select({ count: count() }).from(news);
+
+    const totalCount =
+      totalNewsCountResult.length > 0 ? totalNewsCountResult[0].count : 0;
 
     return NextResponse.json({
       news: newsList,
@@ -32,11 +43,17 @@ export async function GET(request: NextRequest) {
       limit: limit,
       totalPages: Math.ceil(totalCount / limit),
     });
-  } catch (error: any) { // Hata tipini 'any' olarak belirtiyoruz
-    // Hata detaylarını konsola daha ayrıntılı yazdırıyoruz
-    console.error("Sayfalı haberler getirilirken hata oluştu:", error.message || error);
+  } catch (error: any) {
+    console.error(
+      "Sayfalı haberler getirilirken hata oluştu:",
+      error.message || error
+    );
     return NextResponse.json(
-      { error: "Sayfalı haberler getirilirken hata oluştu: " + (error.message || "Bilinmeyen hata") },
+      {
+        error:
+          "Sayfalı haberler getirilirken hata oluştu: " +
+          (error.message || "Bilinmeyen hata"),
+      },
       { status: 500 }
     );
   }

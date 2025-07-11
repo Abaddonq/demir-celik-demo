@@ -1,11 +1,9 @@
-// app/duyurular-ve-haberler/page.tsx
-'use client';
-
-import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import NewsCard from '@/components/NewsCard'; // NewsCard bileşenini import edin
-import { NewsItem } from '@/lib/news'; // Haber öğesi tipi
+"use client";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import NewsCard from "@/components/NewsCard"; 
+import { NewsItem } from "@/lib/news"; 
 
 export default function NewsListPage() {
   const router = useRouter();
@@ -17,53 +15,81 @@ export default function NewsListPage() {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10; // Sayfa başına gösterilecek haber sayısı
 
-  // URL'den sayfa numarasını oku
+  // İstek kontrolü için ref
+  const isFetching = useRef(false);
+  // İlk render kontrolü
+  const initialRender = useRef(true);
+
   useEffect(() => {
-    const pageParam = searchParams.get('page');
-    const pageNumber = pageParam ? parseInt(pageParam) : 1;
+    const pageParam = searchParams.get("page");
+    const pageNumber = pageParam ? Math.max(1, parseInt(pageParam)) : 1;
     setCurrentPage(pageNumber);
   }, [searchParams]);
 
   // Haberleri çekmek için fonksiyon
-  const fetchNews = useCallback(async (page: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(`/api/news/paginated?page=${page}&limit=${limit}`);
-      if (!response.ok) {
-        throw new Error('Haberler getirilirken hata oluştu.');
-      }
-      const data = await response.json();
-      setNewsList(data.news);
-      setTotalPages(data.totalPages);
-    } catch (err: any) {
-      console.error('Haber listesi çekilirken hata:', err);
-      setError(err.message || 'Haberler yüklenirken bir sorun oluştu.');
-      toast.error(err.message || 'Haberler yüklenirken bir sorun oluştu.');
-    } finally {
-      setLoading(false);
-    }
-  }, []); // Bağımlılık yok, çünkü sadece bir kere tanımlanıyor
+  const fetchNews = useCallback(
+    async (page: number) => {
+      // Zaten istek atılıyorsa engelle
+      if (isFetching.current) return;
 
-  // Sayfa numarası değiştiğinde haberleri yeniden çek
+      isFetching.current = true;
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `/api/news/paginated?page=${page}&limit=${limit}`
+        );
+        if (!response.ok) {
+          throw new Error("Haberler getirilirken hata oluştu.");
+        }
+        const data = await response.json();
+        setNewsList(data.news);
+        setTotalPages(data.totalPages);
+      } catch (err: any) {
+        console.error("Haber listesi çekilirken hata:", err);
+        setError(err.message || "Haberler yüklenirken bir sorun oluştu.");
+        toast.error(err.message || "Haberler yüklenirken bir sorun oluştu.");
+      } finally {
+        setLoading(false);
+        isFetching.current = false;
+      }
+    },
+    [limit]
+  );
+
+  // Sayfa değiştiğinde verileri çek
   useEffect(() => {
+    // İlk render'da URL güncelleme yapma
+    if (initialRender.current) {
+      initialRender.current = false;
+      fetchNews(currentPage);
+      return;
+    }
+
     fetchNews(currentPage);
-    // URL'yi güncelle (sayfa yenilenmeden)
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', currentPage.toString());
-    router.push(`?${params.toString()}`, { scroll: false });
+
+    // URL'yi güncelle (sadece gerekliyse)
+    const currentPageParam = searchParams.get("page");
+    const currentPageNumber = currentPageParam ? parseInt(currentPageParam) : 1;
+
+    if (currentPageNumber !== currentPage) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", currentPage.toString());
+      router.replace(`?${params.toString()}`, { scroll: false });
+    }
   }, [currentPage, fetchNews, router, searchParams]);
 
   // Sayfalama kontrolleri
   const handlePreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
@@ -117,7 +143,10 @@ export default function NewsListPage() {
 
         {/* Sayfalama Kontrolleri */}
         {totalPages > 1 && (
-          <nav className="flex justify-center items-center space-x-2" aria-label="Pagination">
+          <nav
+            className="flex justify-center items-center space-x-2"
+            aria-label="Pagination"
+          >
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
@@ -131,8 +160,8 @@ export default function NewsListPage() {
                 onClick={() => handlePageClick(number)}
                 className={`px-4 py-2 text-sm font-medium rounded-md ${
                   currentPage === number
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-100'
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-100"
                 } transition-colors`}
               >
                 {number}
