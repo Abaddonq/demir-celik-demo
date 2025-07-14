@@ -9,6 +9,7 @@ interface InfoCardProps {
   title: string;
   hasLink?: boolean;
   href?: string;
+  className?: string;
 }
 
 export default function InfoCard({
