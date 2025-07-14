@@ -8,6 +8,11 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
+  FaBars,
+  FaTimes,
+  FaChevronDown,
+  FaChevronUp,
+  FaSearch,
 } from 'react-icons/fa';
 import { useTheme } from '@/app/context/themeContext';
 
@@ -47,8 +52,8 @@ const navItems = [
   {
     title: 'Akademik',
     subItems: [
-      { title: 'Dergi-NSJ ISI', href: '/nsji' },
-      { title: 'Sempozyum-UDCS', href: '/udcs' },
+      { title: 'Dergi-NSJ ISI', href: '/akademik/nsji' },
+      { title: 'Sempozyum-UDCS', href: '/akademik/udcs' },
     ],
   },
   {
@@ -71,14 +76,17 @@ const navItems = [
     ],
   },
   {
-  title: 'İletişim',
-  href: '/iletisim',
-  subItems: [],
-},
+    title: 'İletişim',
+    href: '/iletisim',
+    subItems: [],
+  },
 ];
 
 const Header = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSubMenuOpen, setMobileSubMenuOpen] = useState<number | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { theme } = useTheme();
 
@@ -101,10 +109,25 @@ const Header = () => {
     }, 150);
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+    setMobileSubMenuOpen(null);
+  };
+
+  const toggleMobileSubMenu = (index: number) => {
+    setMobileSubMenuOpen(mobileSubMenuOpen === index ? null : index);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setMobileSubMenuOpen(null);
+  };
+
   return (
     <header style={{ fontFamily, fontSize: fontSizeBase }}>
+      {/* Top Bar - Desktop only */}
       <div
-        className="text-white text-sm flex justify-between px-4 py-2 items-center"
+        className="hidden lg:flex text-white text-sm justify-between px-4 py-2 items-center"
         style={{ backgroundColor: primaryColor }}
       >
         <div className="flex items-center space-x-4">
@@ -153,19 +176,23 @@ const Header = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between py-4 px-6 shadow-md relative z-50" style={{ backgroundColor }}>
-        <div className="flex items-center gap-4">
+      {/* Main Header */}
+      <div className="flex items-center justify-between py-2 lg:py-4 px-4 lg:px-6 shadow-md relative z-50" style={{ backgroundColor }}>
+        {/* Logo and Title */}
+        <div className="flex items-center gap-2 lg:gap-4">
           <img
             src="/images/enstitulogo.png"
             alt="Demir Çelik Enstitüsü"
-            className="h-16 object-contain"
+            className="h-12 lg:h-16 object-contain"
           />
-          <div className="text-xl font-bold" style={{ color: primaryColor }}>
-            Demir Çelik Enstitüsü
+          <div className="text-sm lg:text-xl font-bold" style={{ color: primaryColor }}>
+            <span className="hidden sm:inline">Demir Çelik Enstitüsü</span>
+            <span className="sm:hidden">DCE</span>
           </div>
         </div>
 
-        <nav className="flex gap-6 font-semibold relative z-50">
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex gap-6 font-semibold relative z-50">
           {navItems.map((item, index) => (
             <div
               key={index}
@@ -176,7 +203,7 @@ const Header = () => {
               {item.href ? (
                 <Link
                   href={item.href}
-                  className="cursor-pointer block py-2"
+                  className="cursor-pointer block py-2 hover:transition-colors"
                   style={{ color: primaryColor }}
                   onMouseEnter={(e) => e.currentTarget.style.color = secondaryColor}
                   onMouseLeave={(e) => e.currentTarget.style.color = primaryColor}
@@ -185,7 +212,7 @@ const Header = () => {
                 </Link>
               ) : (
                 <span
-                  className="cursor-pointer block py-2"
+                  className="cursor-pointer block py-2 hover:transition-colors"
                   style={{ color: primaryColor }}
                   onMouseEnter={(e) => e.currentTarget.style.color = secondaryColor}
                   onMouseLeave={(e) => e.currentTarget.style.color = primaryColor}
@@ -193,7 +220,7 @@ const Header = () => {
                   {item.title}
                 </span>
               )}
-              {openIndex === index && (
+              {openIndex === index && item.subItems.length > 0 && (
                 <div className="absolute left-0 top-full mt-1 bg-white shadow-lg rounded-md w-60 z-50">
                   {item.subItems.map((subItem, subIndex) => (
                     <Link
@@ -210,13 +237,167 @@ const Header = () => {
           ))}
         </nav>
 
+        {/* Mobile Controls */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <button
+            onClick={() => setSearchOpen(!searchOpen)}
+            className="p-2 rounded-lg"
+            style={{ color: primaryColor }}
+          >
+            <FaSearch />
+          </button>
+          <button
+            onClick={toggleMobileMenu}
+            className="p-2 rounded-lg"
+            style={{ color: primaryColor }}
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+
+        {/* Desktop CTA Button */}
         <button
-          className="text-white px-4 py-2 rounded-tr-xl font-bold"
+          className="hidden lg:block text-white px-4 py-2 rounded-tr-xl font-bold hover:opacity-90 transition-opacity"
           style={{ backgroundColor: secondaryColor }}
         >
           Fiyat Al
         </button>
       </div>
+
+      {/* Mobile Search Bar */}
+      {searchOpen && (
+        <div className="lg:hidden px-4 py-2" style={{ backgroundColor }}>
+          <input
+            type="text"
+            placeholder="Arama..."
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2"
+            style={{ borderColor: primaryColor}}
+            autoFocus
+          />
+        </div>
+      )}
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 top-[calc(100vh-100vh+theme(spacing.20))] z-40 bg-white shadow-lg">
+          <div className="max-h-screen overflow-y-auto">
+            <nav className="px-4 py-2">
+              {navItems.map((item, index) => (
+                <div key={index} className="border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        className="flex-1 py-4 font-medium"
+                        style={{ color: primaryColor }}
+                        onClick={closeMobileMenu}
+                      >
+                        {item.title}
+                      </Link>
+                    ) : (
+                      <span
+                        className="flex-1 py-4 font-medium"
+                        style={{ color: primaryColor }}
+                      >
+                        {item.title}
+                      </span>
+                    )}
+                    {item.subItems.length > 0 && (
+                      <button
+                        onClick={() => toggleMobileSubMenu(index)}
+                        className="p-2 ml-2"
+                        style={{ color: primaryColor }}
+                      >
+                        {mobileSubMenuOpen === index ? <FaChevronUp /> : <FaChevronDown />}
+                      </button>
+                    )}
+                  </div>
+                  {mobileSubMenuOpen === index && item.subItems.length > 0 && (
+                    <div className="pb-2 pl-4 border-t border-gray-100">
+                      {item.subItems.map((subItem, subIndex) => (
+                        <Link
+                          key={subIndex}
+                          href={subItem.href}
+                          className="block py-3 text-sm text-gray-600 hover:text-gray-900"
+                          onClick={closeMobileMenu}
+                        >
+                          {subItem.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+            
+            {/* Mobile CTA Button */}
+            <div className="p-4 border-t border-gray-200">
+              <button
+                className="w-full text-white py-3 rounded-lg font-bold"
+                style={{ backgroundColor: secondaryColor }}
+                onClick={closeMobileMenu}
+              >
+                Fiyat Al
+              </button>
+            </div>
+
+            {/* Mobile Social Links */}
+            <div className="p-4 border-t border-gray-200">
+              <div className="text-sm font-medium mb-3" style={{ color: primaryColor }}>
+                Bizi Takip Edin
+              </div>
+              <div className="flex gap-3">
+                {[{
+                  href: 'https://www.facebook.com/kbudemircelikenstitusu',
+                  icon: <FaFacebookF />,
+                  label: 'Facebook'
+                }, {
+                  href: 'https://www.instagram.com/demircelikenstitusukbu/#',
+                  icon: <FaInstagram />,
+                  label: 'Instagram'
+                }, {
+                  href: 'https://www.linkedin.com/company/demir-%C3%A7elik-enstit%C3%BCs%C3%BC/',
+                  icon: <FaLinkedinIn />,
+                  label: 'LinkedIn'
+                }].map(({ href, icon, label }, i) => (
+                  <a
+                    key={i}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full flex items-center justify-center transition"
+                    style={{
+                      backgroundColor: primaryColor,
+                      color: backgroundColor,
+                    }}
+                    aria-label={label}
+                  >
+                    {icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Contact Info */}
+            <div className="p-4 border-t border-gray-200 text-sm">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <FaPhoneAlt className="text-red-500" />
+                  <span>Destek: +90 370 418 6001</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FaClock className="text-red-500" />
+                  <span>Pazartesi - Cuma 08:30 - 17:30</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <FaMapMarkerAlt className="text-red-500 mt-1" />
+                  <span>Karabük Üniversitesi Demir Çelik Enstitüsü</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

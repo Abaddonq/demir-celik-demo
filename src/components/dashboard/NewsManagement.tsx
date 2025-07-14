@@ -209,7 +209,7 @@ export default function NewsManagementPanel({
 
       {/* Haber Listesi */}
       {loading ? (
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center items-center h-24">
           <div
             className="animate-spin rounded-full h-10 w-10 border-b-2"
             style={{ borderColor: theme.primaryColor }}
@@ -280,7 +280,7 @@ export default function NewsManagementPanel({
             >
               {newsList.map((newsItem) => (
                 <tr key={newsItem.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-2 text-sm break-words max-w-[200px]">
                     <div
                       className="text-sm font-medium text-gray-900"
                       style={{ color: theme.mode ? "#e0e0e0" : "#1f2937" }}
@@ -289,7 +289,7 @@ export default function NewsManagementPanel({
                     </div>
                   </td>
                   <td
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    className="px-4 py-2 text-sm break-words max-w-[200px]"
                     style={{ color: theme.mode ? "#bdbdbd" : "#6b7280" }}
                   >
                     {truncateDescription(
@@ -298,22 +298,22 @@ export default function NewsManagementPanel({
                     )}
                   </td>
                   <td
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    className="px-4 py-2 text-sm break-words max-w-[200px]"
                     style={{ color: theme.mode ? "#bdbdbd" : "#6b7280" }}
                   >
                     {new Date(newsItem.created_at).toLocaleDateString("tr-TR")}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex space-x-2">
+                  <td className="px-4 py-2 text-sm break-words max-w-[200px]">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <button
                         onClick={() => handleEditNews(newsItem)}
-                        className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
+                        className="w-full sm:w-auto px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
                       >
                         Düzenle
                       </button>
                       <button
                         onClick={() => handleDeleteNews(newsItem.id)}
-                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                        className="w-full sm:w-auto px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                       >
                         Sil
                       </button>
@@ -329,7 +329,7 @@ export default function NewsManagementPanel({
       {/* Sayfalama Kontrolleri */}
       {totalPages > 1 && (
         <nav
-          className="flex justify-center items-center space-x-2 mt-6"
+          className="flex overflow-x-auto justify-center items-center gap-x-1 sm:gap-x-2 mt-6 px-1"
           aria-label="Pagination"
         >
           <button

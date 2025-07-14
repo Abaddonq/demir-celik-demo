@@ -1,8 +1,8 @@
-'use client';
-import Link from 'next/link';
-import { FaFileAlt } from 'react-icons/fa';
-import { useState } from 'react';
-import { useTheme } from '@/app/context/themeContext'; // تأكد من المسار الصحيح
+"use client";
+import Link from "next/link";
+import { FaFileAlt } from "react-icons/fa";
+import { useState } from "react";
+import { useTheme } from "@/app/context/themeContext"; // تأكد من المسار الصحيح
 
 // props tipi ekle
 interface InfoCardProps {
@@ -11,30 +11,33 @@ interface InfoCardProps {
   href?: string;
 }
 
-export default function InfoCard({ title, hasLink = true, href = '#' }: InfoCardProps) {
+export default function InfoCard({
+  title,
+  hasLink = true,
+  href = "#",
+}: InfoCardProps) {
   const [hovered, setHovered] = useState(false);
   const { theme } = useTheme();
 
   const {
-    fontFamily = 'sans-serif',
-    fontSizeBase = '16px',
-    primaryColor = '#1E3A8A',
-    secondaryColor = '#F97316',
-    backgroundColor = '#ffffff',
-    textColor = '#000000'
+    fontFamily = "sans-serif",
+    fontSizeBase = "16px",
+    primaryColor = "#1E3A8A",
+    secondaryColor = "#F97316",
+    backgroundColor = "#ffffff",
+    textColor = "#000000",
   } = theme || {};
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="w-[300px] h-[250px] border border-gray-300 rounded-2xl shadow-md 
-        hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 
-        flex flex-col justify-between items-center p-6 text-center group"
+      className="w-[300px] border border-gray-300 rounded-2xl shadow-md 
+    hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 
+    flex flex-col justify-between items-center p-6 text-center group"
       style={{
         backgroundColor,
         fontFamily,
-        fontSize: fontSizeBase,
       }}
     >
       {/* الأيقونة */}
