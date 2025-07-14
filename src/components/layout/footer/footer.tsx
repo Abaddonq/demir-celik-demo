@@ -1,10 +1,13 @@
 'use client';
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaArrowUp, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaArrowUp, FaPhone, FaEnvelope, FaMapMarkerAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useState } from "react";
 import { useTheme } from '@/app/context/themeContext';
 
 const Footer = () => {
   const { theme } = useTheme();
+  const [isLabsOpen, setIsLabsOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   const {
     fontFamily = 'sans-serif',
@@ -66,7 +69,7 @@ const Footer = () => {
                 <p className="text-sm lg:text-base">Karabük Üniversitesi Demir Çelik Enstitüsü</p>
                 <p className="text-sm lg:text-base">Mükemmel Araştırma ve Geliştirme Merkezi</p>
                 
-                {/* İletişim Bilgileri - Mobile için ikonlarla */}
+                {/* İletişim Bilgileri */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <FaEnvelope className="text-red-400 text-sm" />
@@ -110,8 +113,34 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Laboratuvarlar */}
-            <div>
+            {/* Laboratuvarlar - Mobilde dropdown */}
+            <div className="md:hidden">
+              <button 
+                className="flex items-center justify-between w-full text-lg lg:text-xl font-bold mb-4"
+                onClick={() => setIsLabsOpen(!isLabsOpen)}
+              >
+                <span>Laboratuvarlar</span>
+                {isLabsOpen ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+              
+              {isLabsOpen && (
+                <ul className="space-y-2 max-h-60 overflow-y-auto">
+                  {laboratories.map((lab) => (
+                    <li key={lab}>
+                      <Link
+                        href={`/laboratuvarlar/${encodeURI(lab.toLowerCase().replace(/\s+/g, "-"))}`}
+                        className="hover:underline text-sm lg:text-base transition-colors block"
+                      >
+                        {lab}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            
+            {/* Laboratuvarlar - Masaüstü */}
+            <div className="hidden md:block">
               <h3 className="text-lg lg:text-xl font-bold mb-4">
                 <Link href="/laboratuvarlar" className="hover:underline">Laboratuvarlar</Link>
               </h3>
@@ -129,8 +158,34 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Hizmet Raporlama */}
-            <div>
+            {/* Hizmet Raporlama - Mobilde dropdown */}
+            <div className="md:hidden">
+              <button 
+                className="flex items-center justify-between w-full text-lg lg:text-xl font-bold mb-4"
+                onClick={() => setIsServicesOpen(!isServicesOpen)}
+              >
+                <span>Hizmet Raporlama</span>
+                {isServicesOpen ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+              
+              {isServicesOpen && (
+                <ul className="space-y-2 max-h-60 overflow-y-auto">
+                  {services.map((item) => (
+                    <li key={item}>
+                      <Link
+                        href={`/hizmet-raporlama/${encodeURI(item.toLowerCase().replace(/\s+/g, "-"))}`}
+                        className="hover:underline text-sm lg:text-base transition-colors block"
+                      >
+                        {item}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            
+            {/* Hizmet Raporlama - Masaüstü */}
+            <div className="hidden md:block">
               <h3 className="text-lg lg:text-xl font-bold mb-4">
                 <Link href="/hizmet-raporlama" className="hover:underline">Hizmet Raporlama</Link>
               </h3>

@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import { upload } from "@vercel/blob/client";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import {CoverImageUploader} from "@/components/tiptap-ui/form/CoverImageUploader";
-import {NewsInfoForm} from "@/components/tiptap-ui/form/NewsInfoForm";
-import {EditorTips} from "@/components/tiptap-ui/form/EditorTips";
+import { CoverImageUploader } from "@/components/tiptap-ui/form/CoverImageUploader";
+import { NewsInfoForm } from "@/components/tiptap-ui/form/NewsInfoForm";
+import { EditorTips } from "@/components/tiptap-ui/form/EditorTips";
 
 // TipTap editörünü dinamik olarak yükle
 const SimpleEditor = dynamic(
@@ -37,23 +37,23 @@ export default function Page() {
   const [isEditing, setIsEditing] = useState(false);
 
   function extractImageUrlsFromHtml(htmlContent: string): string[] {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlContent, "text/html");
-  const imgElements = doc.querySelectorAll("img");
-  const imageUrls: string[] = [];
-  imgElements.forEach((img) => {
-    if (img.src) {
-      imageUrls.push(img.src);
-    }
-  });
-  return imageUrls;
-}
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const imgElements = doc.querySelectorAll("img");
+    const imageUrls: string[] = [];
+    imgElements.forEach((img) => {
+      if (img.src) {
+        imageUrls.push(img.src);
+      }
+    });
+    return imageUrls;
+  }
 
-function compareImageUrls(oldUrls: string[], newUrls: string[]) {
-  const added = newUrls.filter((url) => !oldUrls.includes(url));
-  const removed = oldUrls.filter((url) => !newUrls.includes(url));
-  return { added, removed };
-}
+  function compareImageUrls(oldUrls: string[], newUrls: string[]) {
+    const added = newUrls.filter((url) => !oldUrls.includes(url));
+    const removed = oldUrls.filter((url) => !newUrls.includes(url));
+    return { added, removed };
+  }
 
   // Resim önizleme için bellek temizleme
   useEffect(() => {
@@ -258,23 +258,23 @@ function compareImageUrls(oldUrls: string[], newUrls: string[]) {
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 truncate max-w-[150px] sm:max-w-none">
                 {isEditing ? "Haberi Düzenle" : "Haber Oluştur"}
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center">
               <button
                 onClick={handleSave}
                 disabled={isLoading}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors duration-200"
+                className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors duration-200"
               >
                 {isLoading ? (
                   <>
                     <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      className="animate-spin -ml-1 mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -293,12 +293,12 @@ function compareImageUrls(oldUrls: string[], newUrls: string[]) {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    {isEditing ? "Güncelleniyor..." : "Kaydediliyor..."}
+                    {isEditing ? "Güncelle..." : "Kaydediliyor..."}
                   </>
                 ) : isEditing ? (
                   "Güncelle"
                 ) : (
-                  "Haberi Yayınla"
+                  "Yayınla"
                 )}
               </button>
             </div>
@@ -307,15 +307,15 @@ function compareImageUrls(oldUrls: string[], newUrls: string[]) {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6 md:py-8">
         {isEditing && isLoading ? (
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {/* Sol Sütun - Haber Bilgileri */}
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-4 sm:space-y-6">
               <CoverImageUploader
                 previewImage={previewImage}
                 handleImageChange={handleImageChange}
@@ -336,22 +336,16 @@ function compareImageUrls(oldUrls: string[], newUrls: string[]) {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm border">
                 {/* Editor Header */}
-                <div className="border-b bg-gray-50 px-6 py-4 rounded-t-lg">
+                <div className="border-b bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 rounded-t-lg">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-medium text-gray-900">
+                    <h2 className="text-base sm:text-lg font-medium text-gray-900">
                       Haber İçeriği
                     </h2>
-                    <div className="flex items-center space-x-2">
-                      <div className="h-2 w-2 bg-green-400 rounded-full"></div>
-                      <span className="text-sm text-gray-600">
-                        Kaydediliyor
-                      </span>
-                    </div>
                   </div>
                 </div>
 
                 {/* Editor Container */}
-                <div className="p-6">
+                <div className="p-2 sm:p-4 md:p-6">
                   <SimpleEditor
                     key={newsId || "new-editor"}
                     onChange={setContent}
