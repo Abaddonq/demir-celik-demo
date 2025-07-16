@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <>
       <PageHeader
-        imageUrl="/images/Kalite-belgeleri.avif" 
+        imageUrl="/images/kalite-belgeleri.avif" 
         title="Kalite Belgeleri"
       />
       <div className="max-w-4xl mx-auto p-6 text-right">
