@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import Person1 from "@/components/Person1"; 
+import PageHeader from "@/components/PageHeader";
 
 export default function YonetimKadromuzPage() {
   const [staff, setStaff] = useState([]);
 
   useEffect(() => {
-    fetch(`/api/staff?department=${encodeURIComponent("Yönetim Kadromuz")}`)
+    fetch(`/api/staff?department=${encodeURIComponent("Yönetim Kurulu")}`)
       .then(res => res.json())
       .then(data => setStaff(data));
   }, []);
@@ -14,10 +15,18 @@ export default function YonetimKadromuzPage() {
   if (!staff.length) return <div>Yükleniyor...</div>;
 
   return (
+    <div>
+      <PageHeader
+       imageUrl="/images/demir-celik.jpg"
+       title="Yönetim Kadromuz"
+      />
     <div className="grid grid-cols-3 gap-4">
       {staff.map((person: any, idx: number) => (
         <Person1 key={person.id ?? idx} person={person} />
       ))}
+    </div>
+
+    
     </div>
   );
 }

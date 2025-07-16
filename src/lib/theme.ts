@@ -21,3 +21,5 @@ export async function getInitialTheme(): Promise<Theme> {
     fontSizeBase: '16px',
   };
 }
+
+export { theme };

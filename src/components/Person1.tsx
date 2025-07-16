@@ -42,7 +42,7 @@ export default function Person1({ person }: Person1Props) {
         }}
       >
         <img
-          src={person.image_url || "/images/person1.png"}
+          src={person.image_url || "/images/default_person.jpg"}
           alt={`${person.name} ${person.surname}`}
           className="w-40 h-40 rounded-full border-4 shadow-lg object-cover object-top transition-all duration-300"
           style={{

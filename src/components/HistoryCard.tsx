@@ -3,13 +3,13 @@ import Link from 'next/link'
 import { useTheme } from '@/app/context/themeContext'
 
 interface HistoryCardProps {
-  imageUrl: string;
+  // imageUrl?: string;
   title: string;
   description: string;
   moreInfoHref?: string;
 }
 
-export default function HistoryCard({ imageUrl, title, description, moreInfoHref }: HistoryCardProps) {
+export default function HistoryCard({ title, description, moreInfoHref }: HistoryCardProps) {
   const { theme } = useTheme()
 
   // Hedef linki belirle
@@ -17,6 +17,8 @@ export default function HistoryCard({ imageUrl, title, description, moreInfoHref
   const isInternal = moreInfoHref && moreInfoHref.startsWith('/');
 
   return (
+   
+   <section className="flex flex-col lg:flex-row items-center justify-between gap-8 px-6 py-10">
     <div 
       className="rounded-2xl p-6 text-center max-w-sm shadow-md transition-all duration-300 hover:shadow-lg group"
       style={{ 
@@ -32,7 +34,7 @@ export default function HistoryCard({ imageUrl, title, description, moreInfoHref
             color: theme.cardTextColor || '#ffffff'
           }}
         >
-          <img src={imageUrl} alt={title} className="w-16 h-16 object-contain rounded" />
+          {/* <img src={imageUrl} alt={title} className="w-16 h-16 object-contain rounded" /> */}
         </div>
       </div>
 
@@ -104,5 +106,6 @@ export default function HistoryCard({ imageUrl, title, description, moreInfoHref
         }
       `}</style>
     </div>
+    </section>
   )
 }
