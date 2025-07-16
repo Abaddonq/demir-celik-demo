@@ -64,7 +64,7 @@ const laboratoryList = [
   "Yapılarda Isıl Köprüleri̇n Beli̇rlenmesi̇",
   "ISO 50001 Enerji Yönetim Sistemi",
   "Riskli Yapı Tespiti",
-  "Kalite Yöneticisi"
+  "Kalite Yöneticisi",
 ];
 
 export default function AdminPanelPage() {
@@ -166,9 +166,9 @@ export default function AdminPanelPage() {
       const res = await fetch("/api/staff");
       const data: StaffFromApi[] = await res.json();
 
-      const populatedStaffList = data.map((staff: { departmentIds: number[]; }) => ({
-        ...staff,
-        departments: staff.departmentIds
+      const populatedStaffList: Staff[] = data.map((staffFromApi) => ({
+        ...staffFromApi,
+        departments: staffFromApi.departmentIds
           .map((deptId: number) => depts.find((d) => d.id === deptId))
           .filter(Boolean) as Department[],
       }));
@@ -562,7 +562,9 @@ export default function AdminPanelPage() {
         }}
       >
         <div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Admin Paneli</h1>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+            Admin Paneli
+          </h1>
           <p className="mt-1 text-sm sm:text-base opacity-90">
             Tema, departman ve personel yönetimi
           </p>
@@ -646,26 +648,44 @@ export default function AdminPanelPage() {
 
         {activeTab === "moderator" && (
           <div className="p-3 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Bekleyen Moderatörler</h2>
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+              Bekleyen Moderatörler
+            </h2>
             {pendingModerators.length === 0 ? (
-              <div className="text-sm sm:text-base">Bekleyen moderatör başvurusu yok.</div>
+              <div className="text-sm sm:text-base">
+                Bekleyen moderatör başvurusu yok.
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="min-w-full border text-xs sm:text-sm">
                   <thead>
                     <tr>
-                      <th className="border px-2 py-1 sm:px-3 sm:py-2">Ad Soyad</th>
-                      <th className="border px-2 py-1 sm:px-3 sm:py-2">E-posta</th>
-                      <th className="border px-2 py-1 sm:px-3 sm:py-2">Başvuru Tarihi</th>
-                      <th className="border px-2 py-1 sm:px-3 sm:py-2">İşlem</th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        Ad Soyad
+                      </th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        E-posta
+                      </th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        Başvuru Tarihi
+                      </th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        İşlem
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {pendingModerators.map((mod) => (
                       <tr key={mod.id}>
-                        <td className="border px-2 py-1 sm:px-3 sm:py-2">{mod.name}</td>
-                        <td className="border px-2 py-1 sm:px-3 sm:py-2">{mod.email}</td>
-                        <td className="border px-2 py-1 sm:px-3 sm:py-2">{mod.created_at}</td>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          {mod.name}
+                        </td>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          {mod.email}
+                        </td>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          {mod.created_at}
+                        </td>
                         <td className="border px-2 py-1 sm:px-3 sm:py-2">
                           <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
                             <button

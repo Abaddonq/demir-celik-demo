@@ -12,7 +12,7 @@ interface Props {
 
 export default function NavItem({ item, primaryColor, secondaryColor }: Props) {
   const [open, setOpen] = useState(false);
-  const timer = useRef<NodeJS.Timeout>();
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
   const close = () => timer.current && clearTimeout(timer.current);
 
