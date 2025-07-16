@@ -6,6 +6,8 @@ export default function HistoryCard() {
   const { theme } = useTheme()
 
   return (
+   
+   <section className="flex flex-col lg:flex-row items-center justify-between gap-8 px-6 py-10">
     <div 
       className="rounded-2xl p-6 text-center max-w-sm shadow-md transition-all duration-300 hover:shadow-lg group"
       style={{ 
@@ -77,5 +79,6 @@ export default function HistoryCard() {
         }
       `}</style>
     </div>
+    </section>
   )
 }

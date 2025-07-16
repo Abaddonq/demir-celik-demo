@@ -60,6 +60,7 @@ const laboratoryList = [
   "Yapılarda Isıl Köprüleri̇n Beli̇rlenmesi̇",
   "ISO 50001 Enerji Yönetim Sistemi",
   "Riskli Yapı Tespiti",
+  "Kalite Yöneticisi"
 ];
 
 export default function AdminPanelPage() {
@@ -159,10 +160,10 @@ export default function AdminPanelPage() {
       const res = await fetch("/api/staff");
       const data = await res.json();
 
-      const populatedStaffList = data.map((staff) => ({
+      const populatedStaffList = data.map((staff: { departmentIds: number[]; }) => ({
         ...staff,
         departments: staff.departmentIds
-          .map((deptId) => depts.find((d) => d.id === deptId))
+          .map((deptId: number) => depts.find((d) => d.id === deptId))
           .filter(Boolean) as Department[],
       }));
 

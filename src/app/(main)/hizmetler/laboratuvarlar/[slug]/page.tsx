@@ -32,4 +32,3 @@ export default function LabPage({ params }: { params: { slug: string } }) {
 
   return <LabClient lab={lab} />;
 }
-

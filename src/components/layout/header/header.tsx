@@ -210,12 +210,14 @@ const Header = () => {
           ))}
         </nav>
 
-        <button
-          className="text-white px-4 py-2 rounded-tr-xl font-bold"
-          style={{ backgroundColor: secondaryColor }}
-        >
-          Fiyat Al
-        </button>
+        <a href="https://labsis.karabuk.edu.tr/">
+      <button
+        className="text-white px-4 py-2 rounded-tr-xl font-bold"
+        style={{ backgroundColor: secondaryColor }}
+      >
+        Fiyat Al
+      </button>
+    </a>  
       </div>
     </header>
   );
