@@ -3,6 +3,41 @@ import Image from "next/image";
 import Link from "next/link";
 import RecentIssues from "@/components/RecentIssues";
 import Accordion, { Editor } from "@/components/Accordion";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'NSJI - Doğa Bilimleri Dergisi | DCE Doğa Bilimleri Dergisi',
+  description: 'DCE Doğa Bilimleri Dergisi, doğa bilimleri alanındaki özgün araştırmaların yayımlandığı hakemli, uluslararası ve ücretsiz bir dergidir. Yılda iki kez yayımlanan dergimiz, mühendislik ve doğa bilimleri alanındaki yenilikçi çalışmaları bilim dünyasına sunar.',
+  keywords: 'doğa bilimleri dergisi, bilimsel dergi, makine mühendisliği, malzeme mühendisliği, enerji, polimer, gıda bilimleri, orman bilimleri, hakemli dergi, uluslararası dergi, ücretsiz dergi',
+  authors: [
+    { name: 'Dr. Recep Demirsöz' },
+    { name: 'Dr. Safa Polat' },
+    { name: 'Dr. Erhan Kayabaşı' },
+    
+  ],
+  openGraph: {
+    title: 'NSJI - Doğa Bilimleri Dergisi | Araştırma, Yayın, Sürdürülebilirlik',
+    description: 'Doğa bilimleri ve temel mühendislik alanlarında hakemli, uluslararası ve ücretsiz yayın yapan NSJI Dergisi. Makale göndermek veya son sayıları incelemek için sitemizi ziyaret edin.',
+    url: 'https://dergipark.org.tr/tr/pub/nsjisi',
+    siteName: 'NSJI - Doğa Bilimleri Dergisi',
+    images: [
+      {
+        url: '/images/dergis.jpg',
+        width: 400,
+        height: 550,
+        alt: 'NSJI Dergisi Kapak Resmi',
+      },
+    ],
+    locale: 'tr_TR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'NSJI - Doğa Bilimleri Dergisi',
+    description: 'Doğa bilimleri ve temel mühendislik alanlarında hakemli, uluslararası ve ücretsiz yayın yapan NSJI Dergisi. Makale göndermek veya son sayıları incelemek için sitemizi ziyaret edin.',
+    images: ['/images/dergis.jpg'],
+  },
+};
 
 const basEditorler: Editor[] = [
   {

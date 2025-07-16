@@ -1,7 +1,6 @@
-// pages/index.tsx
 import React from "react";
 
-// Bu sayfa "Hazırlanıyor" mesajı gösterecek
+
 const UnderConstruction: React.FC = () => {
   return (
     <div style={styles.container}>

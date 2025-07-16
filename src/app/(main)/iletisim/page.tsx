@@ -1,11 +1,21 @@
-// src/app/iletisim/page.tsx
 import React from 'react';
 import FAQ from '@/components/FAQ';
 import { FaPhoneAlt, FaMapMarkerAlt, FaClock, FaEnvelope, FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
+import type { Metadata } from 'next';
 
-export const metadata = {
-  title: 'İletişim – Demir Çelik Enstitüsü',
+export const metadata: Metadata = {
+  title: 'İletişim, Adres ve Sıkça Sorulan Sorular | Demir Çelik Enstitüsü',
+  description: 'Karabük Üniversitesi Demir Çelik Enstitüsü\'ne ait iletişim bilgileri, adres, telefon, e-posta ve çalışma saatleri. Laboratuvar ve hizmetlerimiz hakkında sıkça sorulan sorulara yanıt bulabilirsiniz.',
+  keywords: 'iletişim, adres, telefon, e-posta, çalışma saatleri, sıkça sorulan sorular, SSS, demir çelik enstitüsü, karabük üniversitesi, nasıl ulaşırım',
+  openGraph: {
+    title: 'DCE İletişim Bilgileri',
+    description: 'Demir Çelik Enstitüsü\'nün tüm iletişim kanalları ve sıkça sorulan sorulara ulaşın.',
+    url: 'https://demircelik.karabuk.edu.tr/iletisim',
+    siteName: 'Karabük Üniversitesi Demir Çelik Enstitüsü',
+    type: 'website',
+  },
 };
+
 
 export default function ContactPage() {
   return (

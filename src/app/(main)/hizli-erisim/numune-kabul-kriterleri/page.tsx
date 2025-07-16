@@ -1,7 +1,19 @@
-'use client';
-
 import React from 'react';
 import PageHeader from '@/components/PageHeader';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Numune Kabul Kriterleri | Laboratuvar Hizmetleri | Demir Çelik Enstitüsü',
+  description: 'Karabük Üniversitesi Demir Çelik Enstitüsü laboratuvarlarında (XRD, XRF, SEM, Metalografi vb.) analiz yaptırmak için gerekli olan güncel numune kabul kriterleri hakkında detaylı bilgi. Numunelerin boyutu, ağırlığı ve hazırlanışıyla ilgili tüm prosedürleri inceleyin.',
+  keywords: 'numune kabul kriterleri, laboratuvar, xrd, xrf, sem, metalografi, korozyon, demir çelik enstitüsü, karabük üniversitesi, analiz, test',
+  openGraph: {
+    title: 'DCE Laboratuvarı Numune Kabul Kriterleri',
+    description: 'Enstitümüz laboratuvarlarında yapılacak analizler için numunelerin taşıması gereken özellikler ve kabul standartları.',
+    url: 'https://demircelik.karabuk.edu.tr/numune-kabul-kriterleri', 
+    siteName: 'Karabük Üniversitesi Demir Çelik Enstitüsü',
+    type: 'website',
+  },
+};
 
 const xrdItems = [
   'Bulk numune; Yükseklik 4-7 mm ,5x5 mm minimum , 20x20 mm geçmemelidir.',

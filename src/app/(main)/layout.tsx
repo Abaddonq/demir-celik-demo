@@ -7,8 +7,8 @@ import { getInitialTheme } from '@/lib/theme';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Demir Celik',
-  description: 'Enstitu',
+  title: 'Demir Çelik Enstitüsü - Araştırma, Eğitim ve Geliştirme Merkezi',
+  description: 'Türkiye\'nin önde gelen Demir Çelik Enstitüsü. Sektörel araştırmalar, eğitim programları, yenilikçi projeler ve yayınlar hakkında bilgi edinin. Endüstri 4.0 ve sürdürülebilirlik odaklı çalışmalar.',
 };
 
 // Viewport ayarlarını ekledik (Mobil uyumluluk için kritik)

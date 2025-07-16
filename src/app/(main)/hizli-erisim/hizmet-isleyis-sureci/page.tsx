@@ -2,6 +2,21 @@ import React from 'react'
 import PageHeader from '@/components/PageHeader';
 import CustomButton from '@/components/CustomButton';
 import Accordion from '@/components/Accordion';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Hizmet İşleyiş Süreci | Laboratuvar Hizmetleri | Demir Çelik Enstitüsü',
+  description: 'Karabük Üniversitesi Demir Çelik Enstitüsü laboratuvar hizmetleri için başvuru, ödeme ve raporlama süreçleri hakkında detaylı bilgi edinin. Labsis sistemi üzerinden online başvuru yapın ve analiz hizmetlerimizden faydalanın.',
+  keywords: 'hizmet işleyiş süreci, laboratuvar hizmetleri, labsis, analiz hizmetleri, başvuru, ödeme, raporlama, demir çelik enstitüsü, karabük üniversitesi',
+  openGraph: {
+    title: 'KDÇE Laboratuvar Hizmetleri İşleyiş Süreci',
+    description: 'Enstitümüzün laboratuvar hizmetlerinden yararlanmak için takip etmeniz gereken başvuru, ödeme ve raporlama adımları.',
+    url: 'https://demircelik.karabuk.edu.tr/hizmet-isleyis-sureci',
+    siteName: 'Karabük Üniversitesi Demir Çelik Enstitüsü',
+    type: 'website',
+  },
+};
+
 const Page = () => {
   return (
     

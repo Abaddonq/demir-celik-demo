@@ -1,7 +1,19 @@
-'use client'; 
-
 import React from 'react';
 import InfoBox from '@/components/InfoBox'; 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Laboratuvar Fiyat Listesi ve Hizmetleri | Demir Çelik Enstitüsü',
+  description: 'Karabük Üniversitesi Demir Çelik Enstitüsü laboratuvarlarının güncel fiyat listesi, test ve ölçüm hizmetleri hakkında bilgi edinin. Demir çelik, metalurji ve malzeme testleri için yüksek kaliteli ve akredite çözümlerimizle tanışın. Sıkı kalite uygulamaları ve uzman kadro ile güvenilir test hizmetleri.',
+  keywords: 'laboratuvar fiyat listesi, demir çelik laboratuvarı, metalurji testleri, malzeme testleri, kalite kontrol, akredite laboratuvar, karabük üniversitesi, demir çelik enstitüsü, test hizmetleri',
+  openGraph: {
+    title: 'KDÇE Laboratuvar Hizmetleri ve Fiyat Listesi',
+    description: 'Karabük Üniversitesi Demir Çelik Enstitüsü laboratuvarlarında sunulan test, ölçüm ve analiz hizmetleri ile güncel fiyat çizelgesini inceleyin.',
+    url: 'https://demircelik.karabuk.edu.tr/fiyat-listesi', // Örnek URL, gerçek URL ile değiştirilmeli
+    siteName: 'Karabük Üniversitesi Demir Çelik Enstitüsü',
+    type: 'website',
+  },
+};
 
 const FiyatListesiPage = () => {
   return (

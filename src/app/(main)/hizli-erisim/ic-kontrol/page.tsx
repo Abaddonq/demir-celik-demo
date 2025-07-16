@@ -1,7 +1,20 @@
-import Accordion from '@/components/Accordion'
 import React from 'react'
 import InfoCard from '@/components/InfoCard'
 import PageHeader from '@/components/PageHeader'
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'İç Kontrol | Belgeler ve Süreçler | Demir Çelik Enstitüsü',
+  description: 'Karabük Üniversitesi Demir Çelik Enstitüsü\'nün iç kontrol süreçleri, organizasyon şeması, görev tanımları ve iş akış şemaları gibi resmi belgelere ulaşın. Kurumumuzun şeffaflık ve hesap verebilirlik ilkeleri çerçevesinde belirlenen tüm prosedürleri inceleyin.',
+  keywords: 'iç kontrol, organizasyon şeması, görev tanımları, iş akış şeması, kamu hizmet standartları, yetki devri, iç kontrol belgesi, demir çelik enstitüsü, karabük üniversitesi',
+  openGraph: {
+    title: 'DCE İç Kontrol Belgeleri',
+    description: 'Enstitümüzün iç kontrol, yönetim ve operasyonel süreçlerini gösteren resmi belgelere erişim sağlayın.',
+    url: 'https://demircelik.karabuk.edu.tr/ic-kontrol',
+    siteName: 'Karabük Üniversitesi Demir Çelik Enstitüsü',
+    type: 'website',
+  },
+};
 
 const page = () => {
   return (
