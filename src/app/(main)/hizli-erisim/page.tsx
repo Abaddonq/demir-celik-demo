@@ -42,7 +42,7 @@ const HizliErisimPage = () => {
     <div className="min-h-screen">
       <PageHeader
         title="Hızlı Erişim"
-        imageUrl="/images/lab.jpg" 
+        imageUrl="/images/lab.avif" 
       />
       
       <div className="w-full px-4 py-8">

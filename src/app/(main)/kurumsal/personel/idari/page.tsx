@@ -17,7 +17,7 @@ export default function İdariPersonelPage() {
   return (
     <div>
       <PageHeader
-        imageUrl="/images/ic-control.jpg"
+        imageUrl="/images/ic-kontrol.avif"
          title="İdari Personel"
       />
     <div className="grid grid-cols-3 gap-4">

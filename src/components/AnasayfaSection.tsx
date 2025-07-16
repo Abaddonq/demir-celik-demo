@@ -35,7 +35,7 @@ export default function AnasayfaSection() {
       <div className="flex-shrink-0">
         <div className="relative w-[300px] h-[400px] lg:w-[350px] lg:h-[450px] rounded-lg overflow-hidden shadow-lg">
           <Image
-            src="/images/anasayfa1.jpg" // اسم الصورة التي وضعتها (غيّره إذا لزم)
+            src="/images/anasayfa1.avif" 
             alt="Test Image"
             fill
             style={{ objectFit: "cover" }}

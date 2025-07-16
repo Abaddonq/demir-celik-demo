@@ -16,7 +16,7 @@ export default function KurumsalKarbonAyakIziPage() {
 
   return (
     <div style={{ fontFamily, fontSize: fontSizeBase, color: textColor }} className="p-4 space-y-10 max-w-7xl mx-auto">
-      <img src="/images/dinamik.png" alt="icon" className="w-20 h-20 mt-1" />
+      <img src="/images/dinamik.webp" alt="icon" className="w-20 h-20 mt-1" />
       <h1 style={{ color: primaryColor }} className="text-3xl font-bold mb-6">
         SKDM RAPORLAMA
       </h1>

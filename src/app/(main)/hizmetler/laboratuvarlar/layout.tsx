@@ -16,7 +16,7 @@ export default function LabsLayout({
   return (
     <>
       <PageHeader
-        imageUrl="/images/Laboratuvarlar.png"
+        imageUrl="/images/Laboratuvarlar.avif"
         title="Laboratuvarlar"
       />
       <div className="flex items-start bg-gray-100 p-4">

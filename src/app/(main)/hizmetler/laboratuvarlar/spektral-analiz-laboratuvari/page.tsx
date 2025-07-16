@@ -47,7 +47,7 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -66,7 +66,7 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -85,7 +85,7 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -103,7 +103,7 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
   <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       

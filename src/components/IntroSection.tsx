@@ -48,7 +48,7 @@ export default function IntroSection() {
           style={{ borderColor: primaryColor }}
         >
           <Image
-            src="/images/anasayfa2.jpg"
+            src="/images/anasayfa2.avif"
             alt="Intro Image"
             width={600}
             height={400}

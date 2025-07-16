@@ -41,7 +41,7 @@ export default function kalintigerilmeolcmePage() {
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -58,7 +58,7 @@ export default function kalintigerilmeolcmePage() {
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -79,7 +79,7 @@ Strain Gage'lerin Yerleştirilmesi</h3>
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -99,7 +99,7 @@ Strain Gage'lerin Yerleştirilmesi</h3>
   <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -118,7 +118,7 @@ Strain Gage'lerin Yerleştirilmesi</h3>
   <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -137,7 +137,7 @@ Strain Gage'lerin Yerleştirilmesi</h3>
   <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -196,7 +196,7 @@ Elde edilen veriler analiz edilir ve yorumlanarak malzemenin kalıntı gerilme d
       <div className="mt-6 flex flex-wrap justify-center gap-4">
         {['Değerlendirme', 'Tasarım', 'Kalite', 'Ar-Ge', 'Güvenlik'].map((item) => (
           <div key={item} className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
-            <img src="/images/check-icon.png" alt="Check" className="w-5 h-5" />
+            <img src="/images/icon.webp" alt="Check" className="w-5 h-5" />
             <span className="text-gray-800 font-medium">{item}</span>
           </div>
         ))}

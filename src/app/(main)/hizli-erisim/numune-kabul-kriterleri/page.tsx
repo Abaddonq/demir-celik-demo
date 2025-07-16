@@ -58,7 +58,7 @@ export default function NumuneKabulKriterleriPage() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pb-16">
       <PageHeader
         title="Numune Kabul Kriterleri"
-        imageUrl="/images/lab.jpg"
+        imageUrl="/images/lab.avif"
       />
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* XRD */}

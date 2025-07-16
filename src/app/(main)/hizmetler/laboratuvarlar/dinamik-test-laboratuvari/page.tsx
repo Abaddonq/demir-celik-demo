@@ -43,7 +43,7 @@ export default function DinamikTestLaboratuvariPage() {
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -61,7 +61,7 @@ export default function DinamikTestLaboratuvariPage() {
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -81,7 +81,7 @@ export default function DinamikTestLaboratuvariPage() {
   <div className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -100,7 +100,7 @@ export default function DinamikTestLaboratuvariPage() {
   <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -119,7 +119,7 @@ export default function DinamikTestLaboratuvariPage() {
   <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
     <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.png" alt="Deprem Icon" className="w-10 h-10" />
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
         </div>
     {/* النص */}
     <div>       
@@ -142,14 +142,14 @@ export default function DinamikTestLaboratuvariPage() {
     <div className="w-full md:w-[80%] space-y-2">
       <h2 style={{ color: 'gray' }} className="font-bold text-lg mb-4">Eksenel Yorulma Testi</h2>
       <div className="bg-blue-50 p-4 rounded-lg shadow-sm flex gap-4">
-        <img src="/images/icon.png" alt="icon" className="w-6 h-6 mt-1" />
+        <img src="/images/icon.webp" alt="icon" className="w-6 h-6 mt-1" />
         <div>
           <strong style={{ color: primaryColor }} className="block text-blue-900">Amaç</strong>
           <p>Malzemenin tekrarlı yükler altında ne kadar süre dayanabileceğini belirlemek.</p>
         </div>
       </div>
       <div className="bg-blue-50 p-4 rounded-lg shadow-sm flex gap-4">
-        <img src="/images/icon.png" alt="icon" className="w-6 h-6 mt-1" />
+        <img src="/images/icon.webp" alt="icon" className="w-6 h-6 mt-1" />
         <div>
           <strong style={{ color: primaryColor }} className="block text-blue-900">Hedef</strong>
           <p>Malzemenin yorulma ömrünü belirlemek, güvenilirlik analizleri yapmak ve tasarımda güvenli yükleme sınırlarını belirlemek.</p>
@@ -163,14 +163,14 @@ export default function DinamikTestLaboratuvariPage() {
     <div className="w-full md:w-[80%] space-y-2">
       <h2 style={{ color: 'gray' }} className="font-bold text-lg mb-4">Yorulma Çatlak İlerleme Testi</h2>
       <div className="bg-blue-50 p-4 rounded-lg shadow-sm flex gap-4">
-        <img src="/images/icon.png" alt="icon" className="w-6 h-6 mt-1" />
+        <img src="/images/icon.webp" alt="icon" className="w-6 h-6 mt-1" />
         <div>
           <strong style={{ color: primaryColor }} className="block text-blue-900">Amaç</strong>
           <p>Malzemedeki çatlakların zaman içinde nasıl ilerlediğini ve büyüme hızını incelemek.</p>
         </div>
       </div>
       <div className="bg-blue-50 p-4 rounded-lg shadow-sm flex gap-4">
-        <img src="/images/icon.png" alt="icon" className="w-6 h-6 mt-1" />
+        <img src="/images/icon.webp" alt="icon" className="w-6 h-6 mt-1" />
         <div>
           <strong style={{ color: primaryColor }} className="block text-blue-900">Hedef</strong>
           <p>Çatlak büyüme mekanizmalarını anlamak، malzemenin kullanım ömrünü tahmin etmek ve önleyici bakım stratejilerini geliştirmek.</p>
@@ -184,18 +184,18 @@ export default function DinamikTestLaboratuvariPage() {
 {/* ___________________________________________________________________________________________________________ */}
 
 <div>
-  <img src="/images/dinamik.png" alt="icon" className="w-20 h-20 mt-1" />
+  <img src="/images/dinamik.webp" alt="icon" className="w-20 h-20 mt-1" />
   <h1 style={{ color: primaryColor }} className="text-3xl font-bold mb-6">
     Dinamik Test Laboratuvarında Yapılabilen Testler
   </h1>
 </div>
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-  {/* البطاقة الأولى */}
+
   <Link href="/testler/kirilma-toklugu-testi">
     <div className="relative group h-64 w-100 rounded-lg overflow-hidden shadow-lg cursor-pointer bg-gray-100">
       <img
-        src="/images/kirilma-toklugu-testi.jpg"
+        src="/images/kirilma-toklugu-testi.avif"
         alt="Kırılma Tokluğu Testi"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         onError={(e) => {

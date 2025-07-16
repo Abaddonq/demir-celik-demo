@@ -17,7 +17,7 @@ export default function TeknikPersonelPage() {
   return (
     <div>
       <PageHeader
-       imageUrl="/images/demir-celik.jpg"
+       imageUrl="/images/demir-celik.avif"
        title="İdari Personel"
       />
     <div className="grid grid-cols-3 gap-4">

@@ -20,7 +20,7 @@ export default function EnstitüYonetimKuruluPage() {
       
     <div>
             <PageHeader
-              imageUrl="/images/ic-control.jpg"
+              imageUrl="/images/ic-kontrol.avif"
               title="Enstitü-Yönetim-Kurulu"
             />
           <div className="grid grid-cols-3 gap-4">

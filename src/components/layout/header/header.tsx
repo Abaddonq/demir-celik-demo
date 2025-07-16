@@ -28,7 +28,7 @@ export default function Header() {
       <div className="flex items-center justify-between lg:justify-center lg:gap-8 px-4 py-3">
         <Link href="/" aria-label="Anasayfa">
           <img
-            src="/images/enstitulogo.png"
+            src="/images/enstitulogo.avif"
             alt="Demir Çelik Enstitüsü"
             className="object-contain"
             style={{ height: "2.5em" }}

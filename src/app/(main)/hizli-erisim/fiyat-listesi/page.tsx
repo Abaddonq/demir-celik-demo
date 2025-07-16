@@ -33,12 +33,12 @@ const FiyatListesiPage = () => {
       {/* InfoBox'lar - Mobil: Dikey, Masaüstü: Yatay */}
       <div className="flex flex-col md:flex-row justify-center items-stretch w-full mb-12 gap-4">
         <InfoBox
-          image="/images/lab.jpg"
+          image="/images/lab.avif"
           title="HASSAS ÖLÇÜM VE TESTLER İÇİN DOĞRU YERDESİNİZ"
           description="Geleceği inşa etmek için teknolojiye yatırım yaparken, en iyi test ve ölçüm tekliflerini oluşturmak için sürekli olarak uzman ve akademisyenlerimiz ile sizin için çalışıyoruz."
         />
         <InfoBox          
-          image="/images/Laboratuvarlar.png"
+          image="/images/Laboratuvarlar.avif"
           title="KALİTELİ TEST HİZMETLERİ"
           description="Ürünlerinizin kalitesini kanıtlamak ve üretiminizi optimize etmek için size yüksek kaliteli test hizmetleri sunan güvenilir bir iş ortağı!"
         />
