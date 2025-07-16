@@ -77,7 +77,7 @@ export default function LabSection() {
         <div className="md:w-1/3 mt-12 md:mt-0">
           <div className="rounded-[200px_0px_200px_0px] overflow-hidden">
             <Image
-              src="/images/anasayfa3.jpg"
+              src="/images/anasayfa3.avif"
               alt="Lab"
               width={600}
               height={400}

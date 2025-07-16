@@ -24,7 +24,7 @@ export default function Hakkimizda() {
   return (
     <div>
       {/* Header */}
-      <PageHeader title="Hakkımızda" imageUrl="/images/demir-celik.jpg" />
+      <PageHeader title="Hakkımızda" imageUrl="/images/demir-celik.avif" />
 
       {/* Main Wrapper */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 flex flex-col gap-10 md:gap-14">
@@ -146,7 +146,7 @@ export default function Hakkimizda() {
             <div className="relative">
               <div className="absolute inset-0 rounded-[40px_0_0_40px] md:rounded-[60px_0_0_60px] border-[8px] md:border-[12px] border-[#f97316] z-10 pointer-events-none" />
               <Image
-                src="/images/Laboratuvarlar.png"
+                src="/images/Laboratuvarlar.avif"
                 alt="Misyonumuz"
                 width={700}
                 height={500}
@@ -195,7 +195,7 @@ export default function Hakkimizda() {
             <div className="relative">
               <div className="absolute inset-0 rounded-[0_40px_40px_0] md:rounded-[0_60px_60px_0] bg-[#202b85] z-0" />
               <Image
-                src="/images/lab.jpg"
+                src="/images/lab.avif"
                 alt="Vizyonumuz"
                 width={700}
                 height={500}

@@ -19,7 +19,7 @@ export default function Home() {
     
     <>
       <PageHeader
-        imageUrl="/images/demir-celik.jpg"
+        imageUrl="/images/demir-celik.avif"
         title="Demir Çelik Enstitüsü"
       />
 

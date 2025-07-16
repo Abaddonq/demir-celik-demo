@@ -22,7 +22,7 @@ const Page = () => {
     
     <div className="flex flex-wrap gap-6 justify-center">
       <PageHeader
-        imageUrl="/images/Laboratuvarlar.png"
+        imageUrl="/images/Laboratuvarlar.avif"
         title="Hizmet İşleyiş Süreci"
       />
          <div>

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: 'NSJI - Doğa Bilimleri Dergisi',
     images: [
       {
-        url: '/images/dergis.jpg',
+        url: '/images/dergis.avif',
         width: 400,
         height: 550,
         alt: 'NSJI Dergisi Kapak Resmi',
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'NSJI - Doğa Bilimleri Dergisi',
     description: 'Doğa bilimleri ve temel mühendislik alanlarında hakemli, uluslararası ve ücretsiz yayın yapan NSJI Dergisi. Makale göndermek veya son sayıları incelemek için sitemizi ziyaret edin.',
-    images: ['/images/dergis.jpg'],
+    images: ['/images/dergis.avif'],
   },
 };
 
@@ -194,7 +194,7 @@ export default function NSJIPage() {
   return (
     <div>
       <PageHeader
-        imageUrl="/images/demir-celik.jpg"
+        imageUrl="/images/demir-celik.avif"
         title="NSJI - Doğa Bilimleri Dergisi"
       />
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-12 flex flex-col gap-12">
@@ -202,7 +202,7 @@ export default function NSJIPage() {
         <section>
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="w-full md:w-1/2 flex justify-center">
-              <Image src="/images/dergis.jpg" alt="ISI Natural Science Journal 2024" width={400} height={550} className="border border-gray-300 rounded-lg shadow" />
+              <Image src="/images/dergis.avif" alt="ISI Natural Science Journal 2024" width={400} height={550} className="border border-gray-300 rounded-lg shadow" />
             </div>
             <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
               <h2 className="text-3xl font-bold text-[#202b85] mb-4">Hakkında</h2>

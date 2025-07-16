@@ -20,7 +20,7 @@ export default function İdariPersonelPage() {
   return (
     <div>
       <PageHeader
-        imageUrl="/images/ic-control.jpg"
+        imageUrl="/images/ic-kontrol.avif"
          title="Akadimik Personel"
       />
       <div>
