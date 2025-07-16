@@ -6,11 +6,6 @@ import PageHeader from "@/components/PageHeader";
 import AnasayfaSection from "@/components/AnasayfaSection";
 import IntroSection from "@/components/IntroSection";
 import LabSection from "@/components/LabSection";
-import { primaryKey } from "drizzle-orm/gel-core";
-import AnasayfaCards from "@/components/AnasayfaCards";
-import AccreditationList from "@/components/AccreditationList";
-import Accordion from "@/components/Accordion";
-import InfoCard from "@/components/InfoCard";
 import HistoryCard from "@/components/HistoryCard";
 // // =======
 // import HistoryCard from "@/components/HistoryCard";
@@ -123,7 +118,6 @@ export default function Home() {
 Uzmanlık Alanlarımız</h1>
         <br /><br />
     </div>
-// =======
     </>
   );
 }
