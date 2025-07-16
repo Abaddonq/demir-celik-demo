@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { ThemeProvider } from '@/app/context/themeContext';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
-import { getInitialTheme } from '@/lib/theme'; // dışa alındı
+import { getInitialTheme } from '@/lib/theme'; 
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {

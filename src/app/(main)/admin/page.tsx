@@ -33,6 +33,10 @@ type Moderator = {
   created_at: string;
 };
 
+type StaffFromApi = Omit<Staff, "departments"> & {
+  departmentIds: number[];
+};
+
 const laboratoryList = [
   "Dinamik Test Laboratuvarı",
   "Kalıntı Gerilme Ölçme Laboratuvarı",
@@ -106,7 +110,9 @@ export default function AdminPanelPage() {
     moderators: false,
   });
 
-  const [assignDeptStaffId, setAssignDeptStaffId] = useState<number | null>(null);
+  const [assignDeptStaffId, setAssignDeptStaffId] = useState<number | null>(
+    null
+  );
   const [isAssigningDept, setIsAssigningDept] = useState(false);
   const [pendingModerators, setPendingModerators] = useState<Moderator[]>([]);
 
@@ -158,7 +164,7 @@ export default function AdminPanelPage() {
     setIsLoading((prev) => ({ ...prev, staff: true }));
     try {
       const res = await fetch("/api/staff");
-      const data = await res.json();
+      const data: StaffFromApi[] = await res.json(); // Tipi burada belirtin
 
       const populatedStaffList = data.map((staff: { departmentIds: number[]; }) => ({
         ...staff,

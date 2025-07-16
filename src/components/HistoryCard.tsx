@@ -2,8 +2,19 @@
 import Link from 'next/link'
 import { useTheme } from '@/app/context/themeContext'
 
-export default function HistoryCard() {
+interface HistoryCardProps {
+  // imageUrl?: string;
+  title: string;
+  description: string;
+  moreInfoHref?: string;
+}
+
+export default function HistoryCard({ title, description, moreInfoHref }: HistoryCardProps) {
   const { theme } = useTheme()
+
+  // Hedef linki belirle
+  const href = moreInfoHref || 'https://demircelik.karabuk.edu.tr/hakkimizda/';
+  const isInternal = moreInfoHref && moreInfoHref.startsWith('/');
 
   return (
    
@@ -17,21 +28,13 @@ export default function HistoryCard() {
     >
       <div className="flex justify-center mb-4">
         <div 
-          className="p-4 rounded-[20%] inline-block transition-all duration-300 group-hover:scale-110"
+          className="p-4 rounded-[20%] inline-block transition-all duration-300 group-hover:scale-110 bg-white"
           style={{ 
             backgroundColor: theme.primaryColor || '#202b85',
             color: theme.cardTextColor || '#ffffff'
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M7 2a1 1 0 0 0-1 1v17a2 2 0 0 0 2 2h3V2H7Zm4 0v20h6a2 2 0 0 0 2-2V2h-8Z" />
-          </svg>
+          {/* <img src={imageUrl} alt={title} className="w-16 h-16 object-contain rounded" /> */}
         </div>
       </div>
 
@@ -39,39 +42,63 @@ export default function HistoryCard() {
         className="text-xl font-bold mb-2 transition-all duration-300 group-hover:scale-105"
         style={{ color: theme.primaryColor || '#202b85' }}
       >
-        Tarihçe
+        {title}
       </h2>
 
       <p 
         className="text-sm mb-4 transition-all duration-300"
         style={{ color: theme.textColor || '#666666' }}
       >
-        Karabük Üniversitesi Demir Çelik Enstitüsü Türkiye ve dünyada demir çelik üretimi, enerji,
-        çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine, ürün kalitesinin
-        artırılmasına, yönelik araştırmalar için gerekli bilimsel ortamı sağlamaktadır.
+        {description}
       </p>
 
-      <Link
-        href="https://demircelik.karabuk.edu.tr/hakkimizda/"
-        className="group flex items-center gap-2 font-bold justify-center transition-all duration-300"
-        style={{ color: theme.primaryColor || '#202b85' }}
-      >
-        <span 
-          className="w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300"
-          style={{ 
-            backgroundColor: theme.primaryColor || '#202b85',
-            color: theme.cardTextColor || '#ffffff'
-          }}
-        >
-          +
-        </span>
-        <span 
-          className="transition-all duration-300 group-hover:text-orange-500"
+      {isInternal ? (
+        <Link
+          href={href}
+          className="group flex items-center gap-2 font-bold justify-center transition-all duration-300"
           style={{ color: theme.primaryColor || '#202b85' }}
         >
-          Daha Fazla Bilgi
-        </span>
-      </Link>
+          <span 
+            className="w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300"
+            style={{ 
+              backgroundColor: theme.primaryColor || '#202b85',
+              color: theme.cardTextColor || '#ffffff'
+            }}
+          >
+            +
+          </span>
+          <span 
+            className="transition-all duration-300 group-hover:text-orange-500"
+            style={{ color: theme.primaryColor || '#202b85' }}
+          >
+            Daha Fazla Bilgi
+          </span>
+        </Link>
+      ) : (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center gap-2 font-bold justify-center transition-all duration-300"
+          style={{ color: theme.primaryColor || '#202b85' }}
+        >
+          <span 
+            className="w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300"
+            style={{ 
+              backgroundColor: theme.primaryColor || '#202b85',
+              color: theme.cardTextColor || '#ffffff'
+            }}
+          >
+            +
+          </span>
+          <span 
+            className="transition-all duration-300 group-hover:text-orange-500"
+            style={{ color: theme.primaryColor || '#202b85' }}
+          >
+            Daha Fazla Bilgi
+          </span>
+        </a>
+      )}
 
       <style jsx>{`
         .group:hover {
