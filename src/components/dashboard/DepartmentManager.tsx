@@ -11,7 +11,7 @@ export default function DepartmentManager({
   setEditDeptName,
   updateDepartment,
   setEditDeptId,
-  deleteDepartment
+  deleteDepartment,
 }: {
   departments: Department[];
   isLoading: LoadingState;
@@ -46,7 +46,7 @@ export default function DepartmentManager({
           <button
             onClick={addDepartment}
             disabled={isLoading.departments || !newDeptName.trim()}
-            className={`px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+            className={`w-full sm:w-auto px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
               isLoading.departments || !newDeptName.trim()
                 ? "bg-blue-400 cursor-not-allowed text-white"
                 : "bg-blue-600 hover:bg-blue-700 text-white"
@@ -85,7 +85,7 @@ export default function DepartmentManager({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+           <table className="min-w-full divide-y divide-gray-200 text-sm">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -108,23 +108,23 @@ export default function DepartmentManager({
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {editDeptId === dept.id ? (
                         <input
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        value={editDeptName}
-                        onChange={(e) => setEditDeptName(e.target.value)}
-                        placeholder="Departman adı"
-                        title="Departman adı"
-                      />
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                          value={editDeptName}
+                          onChange={(e) => setEditDeptName(e.target.value)}
+                          placeholder="Departman adı"
+                          title="Departman adı"
+                        />
                       ) : (
                         dept.name
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {editDeptId === dept.id ? (
-                        <div className="flex space-x-2">
+                        <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                           <button
                             onClick={updateDepartment}
                             disabled={!editDeptName.trim()}
-                            className={`px-3 py-1 rounded ${
+                            className={`w-full sm:w-auto px-3 py-1 rounded ${
                               !editDeptName.trim()
                                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                                 : "bg-green-600 text-white hover:bg-green-700"
@@ -134,7 +134,7 @@ export default function DepartmentManager({
                           </button>
                           <button
                             onClick={() => setEditDeptId(null)}
-                            className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                            className="w-full sm:w-auto px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
                           >
                             İptal
                           </button>

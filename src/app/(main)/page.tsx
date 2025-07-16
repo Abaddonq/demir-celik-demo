@@ -2,17 +2,10 @@
 
 import { useTheme } from "@/app/context/themeContext";
 import PageHeader from "@/components/PageHeader";
-// <<<<<<< HEAD
 import AnasayfaSection from "@/components/AnasayfaSection";
 import IntroSection from "@/components/IntroSection";
 import LabSection from "@/components/LabSection";
 import HistoryCard from "@/components/HistoryCard";
-// // =======
-// import HistoryCard from "@/components/HistoryCard";
-// import InfoBox from "@/components/InfoBox";
-// import Image from "next/image";
-// import Link from "next/link";
-// >>>>>>> 030d0c5477919e628a2ab64937e239c3cb29b63e
 
 export default function Home() {
   const { theme } = useTheme();
@@ -29,7 +22,7 @@ export default function Home() {
         imageUrl="/images/demir-celik.jpg"
         title="Demir Çelik Enstitüsü"
       />
-{/* <<<<<<< HEAD */}
+
 
       <br />
       <br />
@@ -38,7 +31,7 @@ export default function Home() {
       <IntroSection />
       <LabSection />
 
-      {/* هذا الجزء لا يتأثر بالثيم، نضيف له style من الثيم هنا */}
+      
       <div
         style={{
           fontFamily,

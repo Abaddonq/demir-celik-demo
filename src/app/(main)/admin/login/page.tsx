@@ -66,14 +66,14 @@ export default function AdminLoginPage() {
           style={{
             background: theme.primaryColor,
             color: '#fff',
-            padding: '1.5rem',
+            padding: '1rem', 
             textAlign: 'center',
           }}
         >
-          <h1 className="text-2xl md:text-3xl font-bold">Admin Giriş</h1>
-          <p className="mt-1 opacity-90">Yönetici paneline erişim</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Admin Giriş</h1>
+          <p className="mt-1 text-sm sm:text-base opacity-90">Yönetici paneline erişim</p>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
             <label
               className="block text-sm font-medium mb-1"
@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2"
+              className="w-full px-3 py-2 text-sm sm:text-base border rounded-md shadow-sm focus:outline-none focus:ring-2"
               style={{
                 background: theme.mode ? '#23272f' : '#fff',
                 color: theme.mode ? '#fff' : '#23272f',
@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2"
+              className="w-full px-3 py-2 text-sm sm:text-base border rounded-md shadow-sm focus:outline-none focus:ring-2"
               style={{
                 background: theme.mode ? '#23272f' : '#fff',
                 color: theme.mode ? '#fff' : '#23272f',
@@ -124,7 +124,7 @@ export default function AdminLoginPage() {
               color: '#fff',
               opacity: 0.95,
             }}
-            className="w-full px-4 py-2 rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2"
+            className="w-full px-4 py-2 text-sm sm:text-base rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2"
           >
             Giriş Yap
           </button>
@@ -135,10 +135,10 @@ export default function AdminLoginPage() {
               background: theme.mode ? '#23272f' : '#fff',
               color: theme.primaryColor,
               border: `1px solid ${theme.primaryColor}`,
-              marginTop: '0.75rem',
+              marginTop: '0.5rem', 
               transition: 'background 0.2s, color 0.2s',
             }}
-            className="w-full px-4 py-2 rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 hover:opacity-90"
+            className="w-full px-4 py-2 text-sm sm:text-base rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 hover:opacity-90"
           >
             Kayıt Ol
           </button>

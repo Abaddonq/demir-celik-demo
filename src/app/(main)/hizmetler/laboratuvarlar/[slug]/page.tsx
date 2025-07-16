@@ -14,8 +14,4 @@ export default async function LabPage({ params }: { params: Promise<{ slug: stri
   if (!lab) return notFound();
 
   return <LabClient lab={lab} />;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 030d0c5477919e628a2ab64937e239c3cb29b63e

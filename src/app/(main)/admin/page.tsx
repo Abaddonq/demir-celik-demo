@@ -64,7 +64,7 @@ const laboratoryList = [
   "Yapılarda Isıl Köprüleri̇n Beli̇rlenmesi̇",
   "ISO 50001 Enerji Yönetim Sistemi",
   "Riskli Yapı Tespiti",
-  "Kalite Yöneticisi"
+  "Kalite Yöneticisi",
 ];
 
 export default function AdminPanelPage() {
@@ -164,11 +164,11 @@ export default function AdminPanelPage() {
     setIsLoading((prev) => ({ ...prev, staff: true }));
     try {
       const res = await fetch("/api/staff");
-      const data: StaffFromApi[] = await res.json(); // Tipi burada belirtin
+      const data: StaffFromApi[] = await res.json();
 
-      const populatedStaffList = data.map((staff: { departmentIds: number[]; }) => ({
-        ...staff,
-        departments: staff.departmentIds
+      const populatedStaffList: Staff[] = data.map((staffFromApi) => ({
+        ...staffFromApi,
+        departments: staffFromApi.departmentIds
           .map((deptId: number) => depts.find((d) => d.id === deptId))
           .filter(Boolean) as Department[],
       }));
@@ -553,16 +553,19 @@ export default function AdminPanelPage() {
         transition: "background 0.3s, color 0.3s",
       }}
     >
+      {/* Başlık çubuğu - Mobilde dikey hizalama */}
       <div
-        className="p-6 text-white flex items-center justify-between rounded-t-2xl"
+        className="p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2"
         style={{
           background: theme.mode ? "#2d2e4a" : "#6ca4fe",
           color: "#fff",
         }}
       >
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Admin Paneli</h1>
-          <p className="mt-1 opacity-90">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+            Admin Paneli
+          </h1>
+          <p className="mt-1 text-sm sm:text-base opacity-90">
             Tema, departman ve personel yönetimi
           </p>
         </div>
@@ -572,15 +575,18 @@ export default function AdminPanelPage() {
             window.location.href = "/admin/login";
           }}
           style={{ background: theme.secondaryColor }}
-          className="px-4 py-2 text-white rounded hover:opacity-90"
+          className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base text-white rounded hover:opacity-90"
         >
           Çıkış Yap
         </button>
       </div>
 
-      <AdminTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      {/* Tablar - Mobilde kaydırılabilir */}
+      <div className="overflow-x-auto">
+        <AdminTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
 
-      <div className="p-4 md:p-6">
+      <div className="p-3 sm:p-4 md:p-6">
         {activeTab === "tema" && (
           <>
             <ThemeSettings
@@ -641,50 +647,72 @@ export default function AdminPanelPage() {
         )}
 
         {activeTab === "moderator" && (
-          <div className="p-6">
-            <h2 className="text-xl font-bold mb-4">Bekleyen Moderatörler</h2>
+          <div className="p-3 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+              Bekleyen Moderatörler
+            </h2>
             {pendingModerators.length === 0 ? (
-              <div>Bekleyen moderatör başvurusu yok.</div>
+              <div className="text-sm sm:text-base">
+                Bekleyen moderatör başvurusu yok.
+              </div>
             ) : (
-              <table className="min-w-full border">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2">Ad Soyad</th>
-                    <th className="border px-4 py-2">E-posta</th>
-                    <th className="border px-4 py-2">Başvuru Tarihi</th>
-                    <th className="border px-4 py-2">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pendingModerators.map((mod) => (
-                    <tr key={mod.id}>
-                      <td className="border px-4 py-2">{mod.name}</td>
-                      <td className="border px-4 py-2">{mod.email}</td>
-                      <td className="border px-4 py-2">{mod.created_at}</td>
-                      <td className="border px-4 py-2">
-                        <button
-                          className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                          onClick={() => handleApproveModerator(mod.id)}
-                        >
-                          Onayla
-                        </button>
-                        <button
-                          className="bg-red-500 text-white px-3 py-1 rounded"
-                          onClick={() => handleRejectModerator(mod.id)}
-                        >
-                          Reddet
-                        </button>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border text-xs sm:text-sm">
+                  <thead>
+                    <tr>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        Ad Soyad
+                      </th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        E-posta
+                      </th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        Başvuru Tarihi
+                      </th>
+                      <th className="border px-2 py-1 sm:px-3 sm:py-2">
+                        İşlem
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {pendingModerators.map((mod) => (
+                      <tr key={mod.id}>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          {mod.name}
+                        </td>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          {mod.email}
+                        </td>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          {mod.created_at}
+                        </td>
+                        <td className="border px-2 py-1 sm:px-3 sm:py-2">
+                          <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                            <button
+                              className="bg-green-500 text-white px-2 py-1 text-xs sm:text-sm rounded"
+                              onClick={() => handleApproveModerator(mod.id)}
+                            >
+                              Onayla
+                            </button>
+                            <button
+                              className="bg-red-500 text-white px-2 py-1 text-xs sm:text-sm rounded"
+                              onClick={() => handleRejectModerator(mod.id)}
+                            >
+                              Reddet
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
 
         {activeTab === "haberler" && (
-          <div className="p-4">
+          <div className="p-2 sm:p-4">
             <NewsManagement
               initialNewsList={[]}
               initialTotalCount={0}
@@ -694,6 +722,7 @@ export default function AdminPanelPage() {
         )}
       </div>
 
+      {/* Modal pencereler için değişiklik yapılmadı */}
       {assignDeptStaffId && (
         <AssignModal
           title="Departman Atama"

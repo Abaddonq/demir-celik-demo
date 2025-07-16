@@ -80,24 +80,24 @@ export default function StaffManager({
                   const isAcademic = isAcademicStaff(staff);
                   return (
                     <tr key={staff.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-2 text-sm break-words max-w-[200px]">
                         <div className="text-sm font-medium text-gray-900">
                           {staff.name} {staff.surname}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 text-sm break-words max-w-[200px]">
                         {staff.title}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 text-sm break-words max-w-[200px]">
                         <div className="font-medium">{staff.email}</div>
                         <div>{staff.phone || "-"}</div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-4 py-2 text-sm break-words max-w-[200px]">
                         {staff.departments
                           ?.map((dept) => dept.name)
                           .join(", ") || "Belirtilmemiş"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-4 py-2 text-sm break-words max-w-[200px]">
                         <div className="flex space-x-2">
                           <button
                             onClick={() => {
