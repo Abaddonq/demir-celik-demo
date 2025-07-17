@@ -1,3 +1,6 @@
+
+// laboratuvarlar/spektral/page.tsx
+
 'use client';
 import { useTheme } from '@/app/context/themeContext';
 

@@ -9,5 +9,10 @@ export const reports = [
     slug: 'skdm-raporlama',
     title: 'SKDM Raporlama',
     description: 'Kimyasal bileşim analizleri burada yapılır...'
+  },
+  {
+    slug: 'surdurulebilirlik-raporlamasi',
+    title: 'Sürdürülebilirlik Raporlaması',
+    description: 'Kimyasal bileşim analizleri burada yapılır...'
   }
 ];

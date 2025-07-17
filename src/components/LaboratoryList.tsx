@@ -5,28 +5,21 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useTheme } from '@/app/context/themeContext';
 import { FaMapMarkerAlt, FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
+import { labs } from '@/data/labs';
 
-interface LaboratoryItem {
-  title: string;
+// تعريف نوع العنصر
+interface Lab {
   slug: string;
+  title: string;
 }
 
+// Props للمكون الأساسي
 interface LaboratoryListProps {
-  items: LaboratoryItem[];
+  items?: Lab[];
   basePath?: string;
 }
 
-interface MenuItemProps {
-  title: string;
-  href: string;
-  primaryColor: string;
-  secondaryColor: string;
-  textColor: string;
-  underlineColor: string;
-  active: boolean;
-}
-
-export default function LaboratoryList({ items, basePath = '' }: LaboratoryListProps) {
+export default function LaboratoryList({ items = labs, basePath = 'hizmetler/laboratuvarlar' }: LaboratoryListProps) {
   const { theme } = useTheme();
   const pathname = usePathname();
 
@@ -41,10 +34,9 @@ export default function LaboratoryList({ items, basePath = '' }: LaboratoryListP
 
   return (
     <div
-      className="w-full max-w-[280px] bg-white shadow-lg rounded-xl p-4 sticky top-20"
+      className="w-full max-w-[280px] bg-white shadow-lg rounded-xl p-4 sticky top-20 max-h-[80vh] overflow-y-auto"
       style={{ fontFamily, fontSize: fontSizeBase }}
     >
-      {/* عنوان القائمة ينقلك لأول عنصر عند الضغط */}
       <Link href={`/${basePath}/${items[0]?.slug}`} className="block mb-4 cursor-pointer">
         <h2 className="text-xl font-bold text-right transition-colors duration-300" style={{ color: primaryColor }}>
           Laboratuvarlar
@@ -52,7 +44,7 @@ export default function LaboratoryList({ items, basePath = '' }: LaboratoryListP
       </Link>
 
       <div className="divide-y" style={{ borderColor: underlineColor }}>
-        {items.map((item: LaboratoryItem) => (
+        {items.map((item) => (
           <MenuItem
             key={item.slug}
             title={item.title}
@@ -66,6 +58,7 @@ export default function LaboratoryList({ items, basePath = '' }: LaboratoryListP
         ))}
       </div>
 
+      {/* المعلومات الثابتة في الأسفل */}
       <div className="mt-6 space-y-3 border-t pt-4 text-sm" style={{ borderColor: underlineColor }}>
         <h3 className="text-md font-semibold leading-snug" style={{ color: primaryColor }}>
           KARABÜK ÜNİVERSİTESİ <br />
@@ -73,29 +66,9 @@ export default function LaboratoryList({ items, basePath = '' }: LaboratoryListP
           MALZEME ARAŞTIRMA ve GELİŞTİRME MERKEZİ (MARGEM) LABORATUVARLARI
         </h3>
 
-        <div className="flex items-start gap-3">
-          <FaMapMarkerAlt className="mt-1 text-lg" style={{ color: secondaryColor }} />
-          <div>
-            <p className="text-base font-semibold" style={{ color: primaryColor }}>Adres</p>
-            <p className="text-gray-600 text-sm">Demir Çelik Kampüsü, KARABÜK</p>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <FaEnvelope className="mt-1 text-lg" style={{ color: secondaryColor }} />
-          <div>
-            <p className="text-base font-semibold" style={{ color: primaryColor }}>E-Posta</p>
-            <p className="text-gray-600 text-sm">dce@karabuk.edu.tr</p>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <FaPhoneAlt className="mt-1 text-lg" style={{ color: secondaryColor }} />
-          <div>
-            <p className="text-base font-semibold" style={{ color: primaryColor }}>Telefon</p>
-            <p className="text-gray-600 text-sm">(0 370) 418 77 20</p>
-          </div>
-        </div>
+        <ContactItem icon={<FaMapMarkerAlt />} label="Adres" value="Demir Çelik Kampüsü, KARABÜK" color={primaryColor} iconColor={secondaryColor} />
+        <ContactItem icon={<FaEnvelope />} label="E-Posta" value="dce@karabuk.edu.tr" color={primaryColor} iconColor={secondaryColor} />
+        <ContactItem icon={<FaPhoneAlt />} label="Telefon" value="(0 370) 418 77 20" color={primaryColor} iconColor={secondaryColor} />
 
         <a
           href="https://maps.google.com/?q=Karabük+Üniversitesi+Demir+Çelik+Enstitüsü"
@@ -103,14 +76,25 @@ export default function LaboratoryList({ items, basePath = '' }: LaboratoryListP
           rel="noopener noreferrer"
           className="flex items-center gap-2 mt-2 text-sm hover:underline"
         >
-          <FaMapMarkerAlt className="text-red-600" />
-          <span className="font-semibold" style={{ color: secondaryColor }}>
+          <FaMapMarkerAlt className="text-red-600" style={{ color: secondaryColor }} />
+          <span className="font-semibold" style={{ color: primaryColor }}>
             Konum Bilgisi
           </span>
         </a>
       </div>
     </div>
   );
+}
+
+// مكون العنصر في القائمة
+interface MenuItemProps {
+  title: string;
+  href: string;
+  primaryColor: string;
+  secondaryColor: string;
+  textColor: string;
+  underlineColor: string;
+  active: boolean;
 }
 
 function MenuItem({
@@ -148,5 +132,34 @@ function MenuItem({
         </span>
       </div>
     </Link>
+  );
+}
+
+// مكون بيانات التواصل الثابتة
+function ContactItem({
+  icon,
+  label,
+  value,
+  color,
+  iconColor
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  color: string;
+  iconColor: string;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="mt-1 text-lg" style={{ color: iconColor }}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-base font-semibold" style={{ color }}>
+          {label}
+        </p>
+        <p className="text-gray-600 text-sm">{value}</p>
+      </div>
+    </div>
   );
 }

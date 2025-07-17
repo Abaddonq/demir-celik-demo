@@ -1,7 +1,10 @@
+
+// laboratuvralar/kalinti/page.tsx
+
 'use client';
 import { useTheme } from '@/app/context/themeContext';
 
-export default function kalintigerilmeolcmePage() {
+export default function kalintilablistPage() {
   const { theme } = useTheme();
   const { fontFamily, fontSizeBase, primaryColor, textColor } = theme || {};
 
@@ -205,9 +208,6 @@ Elde edilen veriler analiz edilir ve yorumlanarak malzemenin kalıntı gerilme d
   </div>
 </div>
 
-
-
-      {/* بطاقات أو صور أو مقاطع فيديو أو مكونات خاصة */}
     </div>
     </div>
   );

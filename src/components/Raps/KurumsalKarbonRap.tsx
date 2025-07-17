@@ -1,3 +1,6 @@
+
+// raporlamalar/kurumsal/page.tsx
+
 'use client';
 import { useTheme } from '@/app/context/themeContext';
 import { FaFileAlt } from 'react-icons/fa';

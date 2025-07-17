@@ -87,8 +87,8 @@ export default function RaporList({ items, basePath = '' }: RaporListProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 mt-2 text-sm hover:underline"
             >
-              <FaMapMarkerAlt className="text-red-600" />
-              <span className="font-semibold" style={{ color: secondaryColor }}>
+              <FaMapMarkerAlt className="text-red-600" style={{ color: secondaryColor }} />
+              <span className="font-semibold" style={{ color: primaryColor }}>
                 Konum Bilgisi
               </span>
             </a>
