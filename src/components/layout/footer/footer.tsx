@@ -101,12 +101,12 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kurumsal/yonetim" className="hover:underline text-sm lg:text-base transition-colors">
+                  <Link href="/kurumsal/yonetim-kadromuz" className="hover:underline text-sm lg:text-base transition-colors">
                     Yönetim
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kurumsal/iletisim" className="hover:underline text-sm lg:text-base transition-colors">
+                  <Link href="/iletisim" className="hover:underline text-sm lg:text-base transition-colors">
                     İletişim
                   </Link>
                 </li>

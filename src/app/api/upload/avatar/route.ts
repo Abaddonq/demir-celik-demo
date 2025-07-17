@@ -9,15 +9,14 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       onBeforeGenerateToken: async (pathname) => {
-        // İsteğe bağlı: Dosya adını veya tipi kontrol edebilirsiniz
+        
         return {
+          allowOverwrite : true,
           allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-          tokenPayload: JSON.stringify({ userId: 'some-user-id' }), // Opsiyonel token yükü
+          tokenPayload: JSON.stringify({ userId: 'some-user-id' }), 
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        // Yükleme tamamlandığında veritabanına kaydedebilirsiniz.
-        // Ancak TipTap görselleri için bunu page.tsx'ten sonra yapacağız.
         console.log('Blob upload completed', blob, tokenPayload);
       },
     });
@@ -26,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
-      { status: 400 }, // The webhook will retry 5 times waiting for a 200
+      { status: 400 },
     );
   }
 }

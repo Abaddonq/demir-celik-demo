@@ -2,9 +2,8 @@
 import Link from "next/link";
 import { FaFileAlt } from "react-icons/fa";
 import { useState } from "react";
-import { useTheme } from "@/app/context/themeContext"; // تأكد من المسار الصحيح
+import { useTheme } from "@/app/context/themeContext"; 
 
-// props tipi ekle
 interface InfoCardProps {
   title: string;
   hasLink?: boolean;
@@ -41,7 +40,7 @@ export default function InfoCard({
         fontFamily,
       }}
     >
-      {/* الأيقونة */}
+      
       <div className="flex justify-center items-center w-16 h-16 rounded-full border border-gray-400 mb-2 transition-colors duration-300">
         <FaFileAlt
           className="text-2xl transition-colors duration-300"
@@ -51,7 +50,7 @@ export default function InfoCard({
         />
       </div>
 
-      {/* العنوان */}
+      
       <h3
         className="text-xl font-semibold mt-6 mb-2 transition-colors duration-300"
         style={{ color: primaryColor }}
@@ -59,7 +58,7 @@ export default function InfoCard({
         {title}
       </h3>
 
-      {/* زر الرابط */}
+      
       {hasLink ? (
         <Link href={href} className="mt-auto">
           <div className="flex items-center cursor-pointer transition-colors duration-300">

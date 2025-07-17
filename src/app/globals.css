@@ -120,3 +120,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+.prose p {
+  margin-bottom: 1.5em; /* Varsayılan paragraf boşluğu */
+  min-height: 1.2em; /* Boş paragrafların da en az bu kadar yükseklik kaplamasını sağlar */
+}
+
+/* Eğer sadece boş paragrafları hedeflemek isterseniz */
+.prose p:empty {
+  margin-bottom: 2em; /* Boş paragraflar için biraz daha fazla boşluk */
+  min-height: 1.5em; /* Boş paragrafların da daha büyük görünmesini sağlar */
+}
