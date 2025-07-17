@@ -1,17 +1,39 @@
-
-import { reports } from '@/data/reports';
+// src/app/(main)/hizmetler/raporlama/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-import RapClient from './RapClient';
+
+import KurumsalKarbonAyakIziPage from '@/components/Raps/KurumsalKarbonRap';
+import SkdmRap from '@/components/Raps/SkdmRap';
+import Surdurulebilirlik from '@/components/Raps/Surdurulebilirlik';
 
 export async function generateStaticParams() {
-  return reports.map((lab) => ({ slug: lab.slug }));
+  return [
+    { slug: 'kurumsal-karbon-ayak-izi' },
+    { slug: 'skdm-raporlama' },
+    { slug: 'surdurulebilirlik-raporlamasi' }
+  ];
 }
+type PageProps = {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<any>;
+};
 
-export default async function RapPage({ params }: { params: Promise<{ slug: string }> }) {
+
+export default async function Page({ params }: PageProps) {
   const { slug } = await params;
 
-  const lab = reports.find((l) => l.slug === slug);
-  if (!lab) return notFound();
+  const componentMap: Record<string, React.ReactNode> = {
+    'kurumsal-karbon-ayak-izi': <KurumsalKarbonAyakIziPage />,
+    'skdm-raporlama': <SkdmRap />,
+    'surdurulebilirlik-raporlamasi': <Surdurulebilirlik />
+  };
 
-  return <RapClient lab={lab} />;
+  const selectedComponent = componentMap[slug];
+
+  if (!selectedComponent) return notFound();
+
+  return (
+    <div className="p-6">
+      {selectedComponent}
+    </div>
+  );
 }

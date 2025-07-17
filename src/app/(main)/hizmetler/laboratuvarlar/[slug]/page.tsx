@@ -1,17 +1,39 @@
-import { labs } from '@/data/labs';
 import { notFound } from 'next/navigation';
-import LabClient from './LabClient';
+import DinamikTest from '@/components/Labs/DinamikTestLab';
+import KalintiGerilme from '@/components/Labs/Kalintilablist';
+import SpektralAnalizLab from '@/components/Labs/SpektralAnalizLab';
 
 export async function generateStaticParams() {
-  return labs.map((lab) => ({ slug: lab.slug }));
+  return [
+    { slug: 'dinamik-test-laboratuvari' },
+    { slug: 'kalinti-gerilme-olcme' },
+    { slug: 'spektral-analiz-laboratuvari' }
+  ];
 }
 
-export default async function LabPage({ params }: { params: Promise<{ slug: string }> }) {
-  // params artık Promise olduğu için await etmemiz gerekiyor
-  const { slug } = await params;
-  
-  const lab = labs.find((l) => l.slug === slug);
-  if (!lab) return notFound();
+// Add this type to match Next.js expectations
+type PageProps = {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<any>;
+};
 
-  return <LabClient lab={lab} />;
+export default async function Page({ params }: PageProps) {
+  // Await the params promise
+  const { slug } = await params;
+
+  const componentMap: Record<string, React.ReactNode> = {
+    'dinamik-test-laboratuvari': <DinamikTest />,
+    'kalinti-gerilme-olcme': <KalintiGerilme />,
+    'spektral-analiz-laboratuvari': <SpektralAnalizLab />
+  };
+
+  const selectedComponent = componentMap[slug];
+
+  if (!selectedComponent) return notFound();
+
+  return (
+    <div className="p-6">
+      {selectedComponent}
+    </div>
+  );
 }

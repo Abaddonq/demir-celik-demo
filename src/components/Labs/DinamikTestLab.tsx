@@ -1,3 +1,6 @@
+
+// laboratuvarlar/dinamk-test/page.tsx
+
 'use client';
 import { useTheme } from '@/app/context/themeContext';
 import Link from 'next/link';
