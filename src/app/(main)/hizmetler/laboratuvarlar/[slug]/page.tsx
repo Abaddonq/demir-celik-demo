@@ -1,7 +1,4 @@
-// }// src/app/(main)/hizmetler/laboratuvarlar/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-
-// استيراد كل المكونات
 import DinamikTest from '@/components/Labs/DinamikTestLab';
 import KalintiGerilme from '@/components/Labs/Kalintilablist';
 import SpektralAnalizLab from '@/components/Labs/SpektralAnalizLab';
@@ -10,20 +7,24 @@ export async function generateStaticParams() {
   return [
     { slug: 'dinamik-test-laboratuvari' },
     { slug: 'kalinti-gerilme-olcme' },
-    { slug: 'spektral-analiz-laboratuvari'}
-    // أضف جميع الـ slugs هنا
+    { slug: 'spektral-analiz-laboratuvari' }
   ];
 }
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+// Add this type to match Next.js expectations
+type PageProps = {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<any>;
+};
 
-  // خريطة slug -> component
+export default async function Page({ params }: PageProps) {
+  // Await the params promise
+  const { slug } = await params;
+
   const componentMap: Record<string, React.ReactNode> = {
     'dinamik-test-laboratuvari': <DinamikTest />,
     'kalinti-gerilme-olcme': <KalintiGerilme />,
-    'spektral-analiz-laboratuvari':<SpektralAnalizLab/>,
-    // أضف باقي المكونات هنا
+    'spektral-analiz-laboratuvari': <SpektralAnalizLab />
   };
 
   const selectedComponent = componentMap[slug];
