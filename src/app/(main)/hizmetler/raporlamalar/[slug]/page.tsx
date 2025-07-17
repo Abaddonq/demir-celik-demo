@@ -1,17 +1,38 @@
-
-import { reports } from '@/data/reports';
+// }// src/app/(main)/hizmetler/laboratuvarlar/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-import RapClient from './RapClient';
+
+// استيراد كل المكونات
+import KurumsalKarbonAyakIziPage from '@/components/Raps/KurumsalKarbonRap';
+import SkdmRap from '@/components/Raps/SkdmRap';
+import Surdurulebilirlik from '@/components/Raps/Surdurulebilirlik';
 
 export async function generateStaticParams() {
-  return reports.map((lab) => ({ slug: lab.slug }));
+  return [
+    { slug: 'kurumsal-karbon-ayak-izi' },
+    { slug: 'skdm-raporlama' },
+    { slug: 'surdurulebilirlik-raporlamasi'}
+    // أضف جميع الـ slugs هنا
+  ];
 }
 
-export default async function RapPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default function Page({ params }: { params: { slug: string } }) {
+  const { slug } = params;
 
-  const lab = reports.find((l) => l.slug === slug);
-  if (!lab) return notFound();
+  // خريطة slug -> component
+  const componentMap: Record<string, React.ReactNode> = {
+    'kurumsal-karbon-ayak-izi': <KurumsalKarbonAyakIziPage />,
+    'skdm-raporlama': <SkdmRap />,
+    'surdurulebilirlik-raporlamasi': <Surdurulebilirlik />,
+    // أضف باقي المكونات هنا
+  };
 
-  return <RapClient lab={lab} />;
+  const selectedComponent = componentMap[slug];
+
+  if (!selectedComponent) return notFound();
+
+  return (
+    <div className="p-6">
+      {selectedComponent}
+    </div>
+  );
 }

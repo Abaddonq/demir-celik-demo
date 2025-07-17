@@ -1,7 +1,13 @@
+// src/app/(main)/hizmetler/laboratuvarlar/page.tsx
 import { redirect } from 'next/navigation';
-import { labs } from '@/data/labs'; 
+import { labs } from '@/data/labs';
 
 export default function Page() {
   const firstSlug = labs[0]?.slug || '404';
   redirect(`/hizmetler/laboratuvarlar/${firstSlug}`);
+  return(
+  <>
+  </>
+)
 }
+
