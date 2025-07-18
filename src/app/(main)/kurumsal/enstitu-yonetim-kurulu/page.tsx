@@ -40,9 +40,8 @@ export default function EnstitüYonetimKuruluPage() {
 
   if (!staff.length) return <div>Yükleniyor...</div>;
 
-  const topPerson = staff[4];
-  // Geri kalanlar otherStaff olacak.
-  const otherStaff = staff.reverse().slice(1);
+  const topPerson = staff[0];
+  const otherStaff = staff.slice(1);
 
   return (
     <div>
