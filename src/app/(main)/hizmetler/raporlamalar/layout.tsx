@@ -3,6 +3,7 @@ import { reports } from '@/data/reports';
 import RaporList from '@/components/RaporList';
 import React from 'react';
 import PageHeader from '@/components/PageHeader';
+import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata = {
   title: 'Raporlama'
@@ -11,6 +12,7 @@ export const metadata = {
 export default function RaporlamaLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <ScrollToTop />
       <PageHeader
         imageUrl="/images/Raporlamalar.jpg"
         title="Raporlamalar"
