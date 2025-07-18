@@ -24,7 +24,7 @@ const page = () => {
         title="İç Kontrol"
       />
 
-      <main className="flex justify-center items-start min-h-screen pt-20 pb-4 bg-gray-100">
+      <main className="flex justify-center items-start min-h-screen pt-20 pb-4 bg-gray-200">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <InfoCard title="Organizasyon Şeması" href="/images/organizasyon-semasi.webp" />
           <InfoCard title="Görev Tanımları" href="//demircelik.karabuk.edu.tr/wp-content/uploads/2024/12/GOREV-TANIMLARI-2024-9.pdf" />

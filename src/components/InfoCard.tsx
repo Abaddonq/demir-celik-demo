@@ -32,7 +32,7 @@ export default function InfoCard({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="w-[300px] border border-gray-300 rounded-2xl shadow-md 
+      className="w-[260px] border border-gray-300 rounded-2xl shadow-md 
     hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 
     flex flex-col justify-between items-center p-6 text-center group"
       style={{

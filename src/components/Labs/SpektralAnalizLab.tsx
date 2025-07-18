@@ -9,8 +9,8 @@ export default function spektralanalizlaboratuvariPage() {
   const { fontFamily, fontSizeBase, primaryColor, textColor } = theme || {};
 
   return (
-    <div style={{ fontFamily, fontSize: fontSizeBase, color: textColor }} className="p-4">
-      <h1 style={{ color: primaryColor }} className="text-3xl font-bold mb-6">
+    <div style={{ fontFamily, fontSize: fontSizeBase, color: textColor }} className="p-2 md:p-4">
+      <h1 style={{ color: primaryColor }} className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">
         Spektral analiz (Optik Emisyon Spektrometre) deneyi Nedir ve Ne işe Yarar?
       </h1>
       <p>
@@ -46,17 +46,17 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
 
         <br />
 {/* ______________________________________________________________________________________ */}
-<div className="flex flex-col space-y-4 border-b pb-4 mt-6">
-  <div className="flex items-start space-x-4 rtl:space-x-reverse">
+<div className="flex flex-col space-y-2 md:space-y-4 border-b pb-2 md:pb-4 mt-4 md:mt-6">
+  <div className="flex items-start space-x-3 md:space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
-    <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
+    <div className="flex-shrink-0 text-orange-500 w-8 h-8 md:w-10 md:h-10">
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-full h-full" />
         </div>
     {/* النص */}
     <div>       
-      <h3 style={{ color: primaryColor }} className="text-xl font-bold text-blue-900">Numune Hazırlığı
+      <h3 style={{ color: primaryColor }} className="text-lg md:text-xl font-bold text-blue-900">Numune Hazırlığı
 </h3>
-      <p className="text-gray-600 leading-relaxed mt-2">
+      <p className="text-gray-600 text-sm md:text-base leading-relaxed mt-1 md:mt-2">
       İncelemek istediğiniz numuneyi uygun boyutlara getirin ve hazırlayın.
        Metal numuneler genellikle önce temizlenir sonra yüksek hızda dönen cihazda
         60 numara ile zımparalanarak yüzey hazır hale getirilir.</p>
@@ -65,16 +65,16 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
 </div>
 <br />
 {/* ____________________________________________________________________________________ */}
-    <div className="flex flex-col space-y-4 border-b pb-4 mt-6">
-  <div className="flex items-start space-x-4 rtl:space-x-reverse">
+    <div className="flex flex-col space-y-2 md:space-y-4 border-b pb-2 md:pb-4 mt-4 md:mt-6">
+  <div className="flex items-start space-x-3 md:space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
-    <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
+    <div className="flex-shrink-0 text-orange-500 w-8 h-8 md:w-10 md:h-10">
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-full h-full" />
         </div>
     {/* النص */}
     <div>       
-      <h3 style={{ color: primaryColor }} className="text-xl font-bold text-blue-900">Işıltı Oluşturma</h3>
-      <p className="text-gray-600 leading-relaxed mt-2">
+      <h3 style={{ color: primaryColor }} className="text-lg md:text-xl font-bold text-blue-900">Işıltı Oluşturma</h3>
+      <p className="text-gray-600 text-sm md:text-base leading-relaxed mt-1 md:mt-2">
        Atomize edilmiş numunenin ışıltısı, optik emisyon spektrometresi tarafından alınır.
          Işıltı, numunenin içindeki elementlerin karakteristik ışığı yaymasıyla oluşur.
       </p>
@@ -84,16 +84,16 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
     <br />
     {/* _____________________________________________________________________
      */}
-    <div className="flex flex-col space-y-4 border-b pb-4 mt-6">
-  <div className="flex items-start space-x-4 rtl:space-x-reverse">
+    <div className="flex flex-col space-y-2 md:space-y-4 border-b pb-2 md:pb-4 mt-4 md:mt-6">
+  <div className="flex items-start space-x-3 md:space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
-    <div className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
+    <div className="flex-shrink-0 text-orange-500 w-8 h-8 md:w-10 md:h-10">
+          <img src="/images/icon.webp" alt="Deprem Icon" className="w-full h-full" />
         </div>
     {/* النص */}
     <div>       
-      <h3 style={{ color: primaryColor }} className="text-xl font-bold text-blue-900">Spektral Analiz</h3>
-      <p className="text-gray-600 leading-relaxed mt-2">
+      <h3 style={{ color: primaryColor }} className="text-lg md:text-xl font-bold text-blue-900">Spektral Analiz</h3>
+      <p className="text-gray-600 text-sm md:text-base leading-relaxed mt-1 md:mt-2">
        OES, numunedeki ışıltının spektrumunu kaydeder. Bu spektrum, elementlerin karakteristik emisyon çizgilerini içerir.
         Her bir elementin belirli bir dalga boyunda yaydığı ışık, elementin varlığını ve yoğunluğunu belirlemek için kullanılır.
       </p>
@@ -102,16 +102,16 @@ Optik Emisyon Spektrometresi (OES) ile spektral analiz yapmak için genellikle �
 </div>
 <br />
 {/* _____________________________________________________________________________ */}
-        <div className="flex flex-col space-y-4 border-b pb-4 mt-6">
-  <div  style={{ color: primaryColor }} className="flex items-start space-x-4 rtl:space-x-reverse">
+        <div className="flex flex-col space-y-2 md:space-y-4 border-b pb-2 md:pb-4 mt-4 md:mt-6">
+  <div  style={{ color: primaryColor }} className="flex items-start space-x-3 md:space-x-4 rtl:space-x-reverse">
     {/* أيقونة أو صورة */}
-    <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-10 h-10">
-          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-10 h-10" />
+    <div  style={{ color: primaryColor }} className="flex-shrink-0 text-orange-500 w-8 h-8 md:w-10 md:h-10">
+          <img  style={{ color: primaryColor }} src="/images/icon.webp" alt="Deprem Icon" className="w-full h-full" />
         </div>
     {/* النص */}
     <div>       
-      <h3 style={{ color: primaryColor }} className="text-xl font-bold text-blue-900">Veri Analizi ve Yorumlama</h3>
-      <p className="text-gray-600 leading-relaxed mt-2">
+      <h3 style={{ color: primaryColor }} className="text-lg md:text-xl font-bold text-blue-900">Veri Analizi ve Yorumlama</h3>
+      <p className="text-gray-600 text-sm md:text-base leading-relaxed mt-1 md:mt-2">
       Elde edilen spektral veriler, genellikle bir bilgisayar programı kullanılarak analiz edilir. Bu analiz, numunedeki elementlerin varlığını, 
       yoğunluğunu ve diğer kimyasal özelliklerini belirlemeye yardımcı olur.
       </p>

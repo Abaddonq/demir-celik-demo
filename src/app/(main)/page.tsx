@@ -6,6 +6,14 @@ import AnasayfaSection from "@/components/AnasayfaSection";
 import IntroSection from "@/components/IntroSection";
 import LabSection from "@/components/LabSection";
 import HistoryCard from "@/components/HistoryCard";
+import {
+  FaHistory,
+  FaUsers,
+  FaCertificate,
+  FaFlask,
+  FaLightbulb,
+  FaLeaf
+} from "react-icons/fa";
 
 export default function Home() {
   const { theme } = useTheme();
@@ -47,38 +55,45 @@ export default function Home() {
 
       {/* Kurumsal grid */}
       <div className="pb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <HistoryCard
-          title="Tarihçe"
-          description="Karabük Üniversitesi Demir Çelik Enstitüsü, Türkiye ve dünyada demir-çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine ve ürün kalitesinin artırılmasına yönelik bilimsel ortam sağlar."
-          moreInfoHref="/kurumsal/hakkimizda"
-        />
-        <HistoryCard
-          title="Yönetim Kadrosu"
-          description="Uzman kadromuz ve akademisyenlerimizle en iyi test ve ölçüm hizmetini sunmak için çalışıyoruz."
-          moreInfoHref="/kurumsal/yonetim-kadromuz"
-        />
-        <HistoryCard
-          title="Kalite Belgeleri"
-          description="Mükemmellik ve kalite iyileştirme taahhüdümüzle, ön analizlerimiz için birbiriyle ilişkili kalite kontrol ve güvence girişimleri sunuyoruz."
-          moreInfoHref="/hizli-erisim/kalite-belgeleri"
-        />
-        <HistoryCard
-          title="Laboratuvarlar"
-          description="Hassas ölçüm ve testler için doğru yerdesiniz."
-          moreInfoHref="/hizmetler/laboratuvarlar/dinamik-test-laboratuvari"
-        />
-        <HistoryCard
-          title="Yenilikler"
-          description="Sürekli olarak yenilikçi testlere öncülük ediyor, yeni ilişkiler kuruyor ve teknolojiye yatırım yapıyoruz."
-          moreInfoHref="/hizmetler/raporlamalar"
-        />
-        <HistoryCard
-          title="Sürdürülebilirlik"
-          description="Çevik, müşteri odaklı ve ekip çalışması değerlerimizle sürdürülebilir bir organizasyon inşa ediyoruz."
-          moreInfoHref="/duyurular-ve-haberler"
-        />
-        {/* Diğer HistoryCard'lar buraya */}
-      </div>
+  <HistoryCard
+    title="Tarihçe"
+    description="Karabük Üniversitesi Demir Çelik Enstitüsü, Türkiye ve dünyada demir-çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine ve ürün kalitesinin artırılmasına yönelik bilimsel ortam sağlar."
+    moreInfoHref="/kurumsal/hakkimizda"
+    icon={<FaHistory />}
+  />
+  <HistoryCard
+    title="Yönetim Kadrosu"
+    description="Uzman kadromuz ve akademisyenlerimizle en iyi test ve ölçüm hizmetini sunmak için çalışıyoruz."
+    moreInfoHref="/kurumsal/yonetim-kadromuz"
+    icon={<FaUsers />}
+  />
+  <HistoryCard
+    title="Kalite Belgeleri"
+    description="Mükemmellik ve kalite iyileştirme taahhüdümüzle, ön analizlerimiz için birbiriyle ilişkili kalite kontrol ve güvence girişimleri sunuyoruz."
+    moreInfoHref="/hizli-erisim/kalite-belgeleri"
+    icon={<FaCertificate />}
+  />
+  <HistoryCard
+    title="Laboratuvarlar"
+    description="Hassas ölçüm ve testler için doğru yerdesiniz."
+    moreInfoHref="/hizmetler/laboratuvarlar/dinamik-test-laboratuvari"
+    icon={<FaFlask />}
+  />
+  <HistoryCard
+    icon={<FaLightbulb />}
+    title="Yenilikler"
+    description="Sürekli olarak yenilikçi testlere öncülük ediyor, yeni ilişkiler kuruyor ve teknolojiye yatırım yapıyoruz."
+    moreInfoHref="/hizmetler/raporlamalar"
+    
+  />
+  <HistoryCard
+    title="Sürdürülebilirlik"
+    description="Çevik, müşteri odaklı ve ekip çalışması değerlerimizle sürdürülebilir bir organizasyon inşa ediyoruz."
+    moreInfoHref="/duyurular-ve-haberler"
+    icon={<FaLeaf />}
+  />
+</div>
+
 
       {/* Uzmanlık Alanlarımız */}
       <section className="pb-20">

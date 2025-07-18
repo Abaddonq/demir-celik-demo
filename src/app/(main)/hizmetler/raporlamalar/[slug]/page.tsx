@@ -1,6 +1,4 @@
-// src/app/(main)/hizmetler/raporlama/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-
 import KurumsalKarbonAyakIziPage from '@/components/Raps/KurumsalKarbonRap';
 import SkdmRap from '@/components/Raps/SkdmRap';
 import Surdurulebilirlik from '@/components/Raps/Surdurulebilirlik';
@@ -12,11 +10,11 @@ export async function generateStaticParams() {
     { slug: 'surdurulebilirlik-raporlamasi' }
   ];
 }
+
 type PageProps = {
   params: Promise<{ slug: string }>;
   searchParams?: Promise<any>;
 };
-
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
@@ -32,7 +30,7 @@ export default async function Page({ params }: PageProps) {
   if (!selectedComponent) return notFound();
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {selectedComponent}
     </div>
   );

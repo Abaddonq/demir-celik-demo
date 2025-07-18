@@ -131,3 +131,50 @@
   margin-bottom: 2em; /* Boş paragraflar için biraz daha fazla boşluk */
   min-height: 1.5em; /* Boş paragrafların da daha büyük görünmesini sağlar */
 }
+
+/* Add this to your global CSS file */
+.sticky-on-desktop {
+  position: static;
+}
+
+@media (min-width: 768px) {
+  .sticky-on-desktop {
+    position: sticky;
+  }
+}
+
+/* Responsive text sizes */
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}

@@ -1,18 +1,22 @@
 "use client";
 import Link from "next/link";
 import { useTheme } from "@/app/context/themeContext";
+import { ReactNode } from "react";
+
 
 interface HistoryCardProps {
-  // imageUrl?: string;
+  imageUrl?: string;
   title: string;
   description: string;
   moreInfoHref?: string;
+  icon?: ReactNode;
 }
 
 export default function HistoryCard({
   title,
   description,
   moreInfoHref,
+  icon, 
 }: HistoryCardProps) {
   const { theme } = useTheme();
 
@@ -29,16 +33,17 @@ export default function HistoryCard({
       }}
     >
       <div className="flex justify-center mb-4">
-        <div
-          className="p-4 rounded-[20%] inline-block transition-all duration-300 group-hover:scale-110 bg-white"
-          style={{
-            backgroundColor: theme.primaryColor || "#202b85",
-            color: theme.cardTextColor || "#ffffff",
-          }}
-        >
-          {/* <img src={imageUrl} alt={title} className="w-16 h-16 object-contain rounded" /> */}
-        </div>
-      </div>
+  <div
+    className="p-4 rounded-[20%] inline-block transition-all duration-300 group-hover:scale-110 text-3xl"
+    style={{
+      backgroundColor: theme.primaryColor || "#202b85",
+      color: theme.cardTextColor || "#ffffff",
+    }}
+  >
+    {icon}
+  </div>
+</div>
+
 
       <h2
         className="text-xl font-bold mb-2 transition-all duration-300 group-hover:scale-105"

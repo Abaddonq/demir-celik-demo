@@ -11,14 +11,12 @@ export async function generateStaticParams() {
   ];
 }
 
-// Add this type to match Next.js expectations
 type PageProps = {
   params: Promise<{ slug: string }>;
   searchParams?: Promise<any>;
 };
 
 export default async function Page({ params }: PageProps) {
-  // Await the params promise
   const { slug } = await params;
 
   const componentMap: Record<string, React.ReactNode> = {
@@ -32,7 +30,7 @@ export default async function Page({ params }: PageProps) {
   if (!selectedComponent) return notFound();
 
   return (
-    <div className="p-6">
+    <div className="p-2 md:p-6">
       {selectedComponent}
     </div>
   );

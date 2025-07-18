@@ -47,7 +47,7 @@ export default function EnstitüYonetimKuruluPage() {
     <div>
       <PageHeader
         imageUrl="/images/demir-celik.avif"
-        title="Yönetim Kadromuz"
+        title="Enstitü Yönetim"
       />
 
       {/* Top person displayed centrally */}
