@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useTheme } from "@/app/context/themeContext";
 import { FaCheckCircle } from "react-icons/fa";
 import Image from "next/image";
@@ -15,7 +15,7 @@ export default function AnasayfaSection() {
 
   return (
     <section
-      className="flex flex-col lg:flex-row items-center justify-between gap-8 px-6 py-10 "
+      className="flex flex-col lg:flex-row items-center justify-between gap-8 py-10"
       style={{
         fontFamily,
         fontSize: fontSizeBase,
@@ -25,7 +25,10 @@ export default function AnasayfaSection() {
     >
       {/* Left: Başlık */}
       <div className="flex-1 text-left">
-        <h1 style={{ color: primaryColor }} className="text-3xl lg:text-4xl font-bold leading-relaxed md:px-10">
+        <h1
+          style={{ color: primaryColor }}
+          className="text-3xl lg:text-4xl font-bold leading-relaxed md:px-10"
+        >
           Ürünlerinizin kalitesini kanıtlamak ve üretiminizi optimize etmek için
           size yüksek kaliteli test hizmetleri sunan güvenilir bir iş ortağı!
         </h1>
@@ -35,7 +38,7 @@ export default function AnasayfaSection() {
       <div className="flex-shrink-0">
         <div className="relative w-[300px] h-[400px] lg:w-[350px] lg:h-[450px] rounded-lg overflow-hidden shadow-lg">
           <Image
-            src="/images/anasayfa1.avif" 
+            src="/images/anasayfa1.avif"
             alt="Test Image"
             fill
             style={{ objectFit: "cover" }}
@@ -44,7 +47,10 @@ export default function AnasayfaSection() {
       </div>
 
       {/* Right: Açıklama ve özellikler */}
-      <div  style={{ color: primaryColor }}  className="flex-1 space-y-4 text-justify md:px-20">
+      <div
+        style={{ color: primaryColor }}
+        className="flex-1 space-y-4 text-justify md:px-20"
+      >
         <p>
           Karabük Üniversitesi Demir Çelik Enstitüsü Türkiye ve dünyada demir
           çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin

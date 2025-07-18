@@ -1,6 +1,6 @@
-'use client'
-import Link from 'next/link'
-import { useTheme } from '@/app/context/themeContext'
+"use client";
+import Link from "next/link";
+import { useTheme } from "@/app/context/themeContext";
 
 interface HistoryCardProps {
   // imageUrl?: string;
@@ -9,45 +9,47 @@ interface HistoryCardProps {
   moreInfoHref?: string;
 }
 
-export default function HistoryCard({ title, description, moreInfoHref }: HistoryCardProps) {
-  const { theme } = useTheme()
+export default function HistoryCard({
+  title,
+  description,
+  moreInfoHref,
+}: HistoryCardProps) {
+  const { theme } = useTheme();
 
   // Hedef linki belirle
-  const href = moreInfoHref || 'https://demircelik.karabuk.edu.tr/hakkimizda/';
-  const isInternal = moreInfoHref && moreInfoHref.startsWith('/');
+  const href = moreInfoHref || "https://demircelik.karabuk.edu.tr/hakkimizda/";
+  const isInternal = moreInfoHref && moreInfoHref.startsWith("/");
 
   return (
-   
-   <section className="flex flex-col lg:flex-row items-center justify-between gap-8 px-6 py-10">
-    <div 
+    <div
       className="rounded-2xl p-6 text-center max-w-sm shadow-md transition-all duration-300 hover:shadow-lg group"
-      style={{ 
-        backgroundColor: theme.cardBackground || '#eaf6fd',
-        fontFamily: theme.fontFamily
+      style={{
+        backgroundColor: theme.cardBackground || "#eaf6fd",
+        fontFamily: theme.fontFamily,
       }}
     >
       <div className="flex justify-center mb-4">
-        <div 
+        <div
           className="p-4 rounded-[20%] inline-block transition-all duration-300 group-hover:scale-110 bg-white"
-          style={{ 
-            backgroundColor: theme.primaryColor || '#202b85',
-            color: theme.cardTextColor || '#ffffff'
+          style={{
+            backgroundColor: theme.primaryColor || "#202b85",
+            color: theme.cardTextColor || "#ffffff",
           }}
         >
           {/* <img src={imageUrl} alt={title} className="w-16 h-16 object-contain rounded" /> */}
         </div>
       </div>
 
-      <h2 
+      <h2
         className="text-xl font-bold mb-2 transition-all duration-300 group-hover:scale-105"
-        style={{ color: theme.primaryColor || '#202b85' }}
+        style={{ color: theme.primaryColor || "#202b85" }}
       >
         {title}
       </h2>
 
-      <p 
+      <p
         className="text-sm mb-4 transition-all duration-300"
-        style={{ color: theme.textColor || '#666666' }}
+        style={{ color: theme.textColor || "#666666" }}
       >
         {description}
       </p>
@@ -56,20 +58,20 @@ export default function HistoryCard({ title, description, moreInfoHref }: Histor
         <Link
           href={href}
           className="group flex items-center gap-2 font-bold justify-center transition-all duration-300"
-          style={{ color: theme.primaryColor || '#202b85' }}
+          style={{ color: theme.primaryColor || "#202b85" }}
         >
-          <span 
+          <span
             className="w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300"
-            style={{ 
-              backgroundColor: theme.primaryColor || '#202b85',
-              color: theme.cardTextColor || '#ffffff'
+            style={{
+              backgroundColor: theme.primaryColor || "#202b85",
+              color: theme.cardTextColor || "#ffffff",
             }}
           >
             +
           </span>
-          <span 
+          <span
             className="transition-all duration-300 group-hover:text-orange-500"
-            style={{ color: theme.primaryColor || '#202b85' }}
+            style={{ color: theme.primaryColor || "#202b85" }}
           >
             Daha Fazla Bilgi
           </span>
@@ -80,20 +82,20 @@ export default function HistoryCard({ title, description, moreInfoHref }: Histor
           target="_blank"
           rel="noopener noreferrer"
           className="group flex items-center gap-2 font-bold justify-center transition-all duration-300"
-          style={{ color: theme.primaryColor || '#202b85' }}
+          style={{ color: theme.primaryColor || "#202b85" }}
         >
-          <span 
+          <span
             className="w-6 h-6 flex items-center justify-center rounded-full transition-all duration-300"
-            style={{ 
-              backgroundColor: theme.primaryColor || '#202b85',
-              color: theme.cardTextColor || '#ffffff'
+            style={{
+              backgroundColor: theme.primaryColor || "#202b85",
+              color: theme.cardTextColor || "#ffffff",
             }}
           >
             +
           </span>
-          <span 
+          <span
             className="transition-all duration-300 group-hover:text-orange-500"
-            style={{ color: theme.primaryColor || '#202b85' }}
+            style={{ color: theme.primaryColor || "#202b85" }}
           >
             Daha Fazla Bilgi
           </span>
@@ -102,10 +104,9 @@ export default function HistoryCard({ title, description, moreInfoHref }: Histor
 
       <style jsx>{`
         .group:hover {
-          background-color: ${theme.secondaryColor || '#ff7f50'} !important;
+          background-color: ${theme.secondaryColor || "#ff7f50"} !important;
         }
       `}</style>
     </div>
-    </section>
-  )
+  );
 }
