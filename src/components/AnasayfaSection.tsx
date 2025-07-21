@@ -1,8 +1,6 @@
-"use client";
-
 import { useTheme } from "@/app/context/themeContext";
 import { FaCheckCircle } from "react-icons/fa";
-import Image from "next/image"; // Next.js Image bileşeni
+import Image from "next/image";
 
 export default function AnasayfaSection() {
   const { theme } = useTheme();
@@ -39,7 +37,7 @@ export default function AnasayfaSection() {
             fill
             className="object-cover"
             sizes="(max-width: 768px) 90vw, (max-width: 1200px) 33vw, 400px"
-            // priority prop'unu buradan kaldırdık!
+            priority
           />
         </div>
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { useTheme } from "@/app/context/themeContext";
-import dynamic from "next/dynamic"; // next/dynamic import edildi
-
+import PageHeader from "@/components/PageHeader";
 import AnasayfaSection from "@/components/AnasayfaSection";
 import IntroSection from "@/components/IntroSection";
 import LabSection from "@/components/LabSection";
@@ -16,20 +15,13 @@ import {
   FaLeaf
 } from "react-icons/fa";
 
-// PageHeader bileşeni lazy loading ile yüklenecek
-const DynamicPageHeader = dynamic(() => import("@/components/PageHeader"), {
-  loading: () => <p>Yükleniyor...</p>, // İsteğe bağlı: Yüklenirken gösterilecek bir placeholder
-  ssr: false // Bu bileşenin sunucu tarafında render edilmesini önler, genellikle client side bileşenler için kullanılır
-});
-
 export default function Home() {
   const { theme } = useTheme();
   const { textColor = "#111827" } = theme || {};
 
   return (
     <>
-      {/* Lazy yüklenecek PageHeader bileşeni */}
-      <DynamicPageHeader
+      <PageHeader
         imageUrl="/images/demir-celik.avif"
         title="Demir Çelik Enstitüsü"
       />
@@ -63,43 +55,45 @@ export default function Home() {
 
       {/* Kurumsal grid */}
       <div className="pb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <HistoryCard
-          title="Tarihçe"
-          description="Karabük Üniversitesi Demir Çelik Enstitüsü, Türkiye ve dünyada demir-çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine ve ürün kalitesinin artırılmasına yönelik bilimsel ortam sağlar."
-          moreInfoHref="/kurumsal/hakkimizda"
-          icon={<FaHistory />}
-        />
-        <HistoryCard
-          title="Yönetim Kadrosu"
-          description="Uzman kadromuz ve akademisyenlerimizle en iyi test ve ölçüm hizmetini sunmak için çalışıyoruz."
-          moreInfoHref="/kurumsal/yonetim-kadromuz"
-          icon={<FaUsers />}
-        />
-        <HistoryCard
-          title="Kalite Belgeleri"
-          description="Mükemmellik ve kalite iyileştirme taahhüdümüzle, ön analizlerimiz için birbiriyle ilişkili kalite kontrol ve güvence girişimleri sunuyoruz."
-          moreInfoHref="/hizli-erisim/kalite-belgeleri"
-          icon={<FaCertificate />}
-        />
-        <HistoryCard
-          title="Laboratuvarlar"
-          description="Hassas ölçüm ve testler için doğru yerdesiniz."
-          moreInfoHref="/hizmetler/laboratuvarlar/dinamik-test-laboratuvari"
-          icon={<FaFlask />}
-        />
-        <HistoryCard
-          icon={<FaLightbulb />}
-          title="Yenilikler"
-          description="Sürekli olarak yenilikçi testlere öncülük ediyor, yeni ilişkiler kuruyor ve teknolojiye yatırım yapıyoruz."
-          moreInfoHref="/hizmetler/raporlamalar"
-        />
-        <HistoryCard
-          title="Sürdürülebilirlik"
-          description="Çevik, müşteri odaklı ve ekip çalışması değerlerimizle sürdürülebilir bir organizasyon inşa ediyoruz."
-          moreInfoHref="/duyurular-ve-haberler"
-          icon={<FaLeaf />}
-        />
-      </div>
+  <HistoryCard
+    title="Tarihçe"
+    description="Karabük Üniversitesi Demir Çelik Enstitüsü, Türkiye ve dünyada demir-çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine ve ürün kalitesinin artırılmasına yönelik bilimsel ortam sağlar."
+    moreInfoHref="/kurumsal/hakkimizda"
+    icon={<FaHistory />}
+  />
+  <HistoryCard
+    title="Yönetim Kadrosu"
+    description="Uzman kadromuz ve akademisyenlerimizle en iyi test ve ölçüm hizmetini sunmak için çalışıyoruz."
+    moreInfoHref="/kurumsal/yonetim-kadromuz"
+    icon={<FaUsers />}
+  />
+  <HistoryCard
+    title="Kalite Belgeleri"
+    description="Mükemmellik ve kalite iyileştirme taahhüdümüzle, ön analizlerimiz için birbiriyle ilişkili kalite kontrol ve güvence girişimleri sunuyoruz."
+    moreInfoHref="/hizli-erisim/kalite-belgeleri"
+    icon={<FaCertificate />}
+  />
+  <HistoryCard
+    title="Laboratuvarlar"
+    description="Hassas ölçüm ve testler için doğru yerdesiniz."
+    moreInfoHref="/hizmetler/laboratuvarlar/dinamik-test-laboratuvari"
+    icon={<FaFlask />}
+  />
+  <HistoryCard
+    icon={<FaLightbulb />}
+    title="Yenilikler"
+    description="Sürekli olarak yenilikçi testlere öncülük ediyor, yeni ilişkiler kuruyor ve teknolojiye yatırım yapıyoruz."
+    moreInfoHref="/hizmetler/raporlamalar"
+    
+  />
+  <HistoryCard
+    title="Sürdürülebilirlik"
+    description="Çevik, müşteri odaklı ve ekip çalışması değerlerimizle sürdürülebilir bir organizasyon inşa ediyoruz."
+    moreInfoHref="/duyurular-ve-haberler"
+    icon={<FaLeaf />}
+  />
+</div>
+
 
       {/* Uzmanlık Alanlarımız */}
       <section className="pb-20">
