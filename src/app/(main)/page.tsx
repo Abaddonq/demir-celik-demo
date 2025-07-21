@@ -1,43 +1,18 @@
 "use client";
 
 import { useTheme } from "@/app/context/themeContext";
-import PageHeader from "@/components/PageHeader"; // PageHeader lazy yüklenmeyecek
-
-// next/dynamic import edildi
-import dynamic from "next/dynamic";
-
-// Tüm diğer bileşenler lazy loading ile yüklenecek
-const DynamicAnasayfaSection = dynamic(() => import("@/components/AnasayfaSection"), {
-  ssr: false,
-  loading: () => <p>Ana sayfa bölümü yükleniyor...</p>, // İsteğe bağlı
-});
-
-const DynamicIntroSection = dynamic(() => import("@/components/IntroSection"), {
-  ssr: false,
-  loading: () => <p>Giriş bölümü yükleniyor...</p>, // İsteğe bağlı
-});
-
-const DynamicLabSection = dynamic(() => import("@/components/LabSection"), {
-  ssr: false,
-  loading: () => <p>Laboratuvarlar bölümü yükleniyor...</p>, // İsteğe bağlı
-});
-
-const DynamicHistoryCard = dynamic(() => import("@/components/HistoryCard"), {
-  ssr: false,
-  loading: () => <p>Geçmiş kartları yükleniyor...</p>, // İsteğe bağlı
-});
-
-// react-icons özelinde, genelde bu kütüphanenin kendisi büyükse
-// iconları lazy yüklemek yerine sadece ihtiyacımız olanları import etmek daha verimli olur.
-// Ancak eğer FaHistory vb. de ayrı ayrı büyükse, onlar için de dynamic kullanabiliriz.
-// Şimdilik default olarak bırakıyorum, çünkü genelde bu ikonlar küçük bundle'lar oluşturur.
+import PageHeader from "@/components/PageHeader";
+import AnasayfaSection from "@/components/AnasayfaSection";
+import IntroSection from "@/components/IntroSection";
+import LabSection from "@/components/LabSection";
+import HistoryCard from "@/components/HistoryCard";
 import {
   FaHistory,
   FaUsers,
   FaCertificate,
   FaFlask,
   FaLightbulb,
-  FaLeaf,
+  FaLeaf
 } from "react-icons/fa";
 
 export default function Home() {
@@ -46,26 +21,22 @@ export default function Home() {
 
   return (
     <>
-      {/* PageHeader lazy yüklenmeyecek */}
       <PageHeader
         imageUrl="/images/demir-celik.avif"
         title="Demir Çelik Enstitüsü"
       />
 
-      {/* Lazy yüklenen AnasayfaSection */}
-      <DynamicAnasayfaSection />
+      <AnasayfaSection />
 
       <hr className="border-slate-300 my-8 w-full" />
 
-      {/* Lazy yüklenen IntroSection */}
-      <DynamicIntroSection />
+      <IntroSection />
 
       <hr className="border-slate-300 my-8 w-full" />
 
-      {/* Lazy yüklenen LabSection */}
-      <DynamicLabSection />
+      <LabSection />
 
-      {/* Kurumsal misyon beyanı - Bu bir bileşen değil, mevcut haliyle kalacak */}
+      {/* Kurumsal misyon beyanı */}
       <section className="py-12">
         <div className="max-w-6xl mx-auto">
           <h1
@@ -82,47 +53,49 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kurumsal grid - İçindeki HistoryCard'lar lazy yüklenecek */}
+      {/* Kurumsal grid */}
       <div className="pb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <DynamicHistoryCard
-          title="Tarihçe"
-          description="Karabük Üniversitesi Demir Çelik Enstitüsü, Türkiye ve dünyada demir-çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine ve ürün kalitesinin artırılmasına yönelik bilimsel ortam sağlar."
-          moreInfoHref="/kurumsal/hakkimizda"
-          icon={<FaHistory />}
-        />
-        <DynamicHistoryCard
-          title="Yönetim Kadrosu"
-          description="Uzman kadromuz ve akademisyenlerimizle en iyi test ve ölçüm hizmetini sunmak için çalışıyoruz."
-          moreInfoHref="/kurumsal/yonetim-kadromuz"
-          icon={<FaUsers />}
-        />
-        <DynamicHistoryCard
-          title="Kalite Belgeleri"
-          description="Mükemmellik ve kalite iyileştirme taahhüdümüzle, ön analizlerimiz için birbiriyle ilişkili kalite kontrol ve güvence girişimleri sunuyoruz."
-          moreInfoHref="/hizli-erisim/kalite-belgeleri"
-          icon={<FaCertificate />}
-        />
-        <DynamicHistoryCard
-          title="Laboratuvarlar"
-          description="Hassas ölçüm ve testler için doğru yerdesiniz."
-          moreInfoHref="/hizmetler/laboratuvarlar/dinamik-test-laboratuvari"
-          icon={<FaFlask />}
-        />
-        <DynamicHistoryCard
-          icon={<FaLightbulb />}
-          title="Yenilikler"
-          description="Sürekli olarak yenilikçi testlere öncülük ediyor, yeni ilişkiler kuruyor ve teknolojiye yatırım yapıyoruz."
-          moreInfoHref="/hizmetler/raporlamalar"
-        />
-        <DynamicHistoryCard
-          title="Sürdürülebilirlik"
-          description="Çevik, müşteri odaklı ve ekip çalışması değerlerimizle sürdürülebilir bir organizasyon inşa ediyoruz."
-          moreInfoHref="/duyurular-ve-haberler"
-          icon={<FaLeaf />}
-        />
-      </div>
+  <HistoryCard
+    title="Tarihçe"
+    description="Karabük Üniversitesi Demir Çelik Enstitüsü, Türkiye ve dünyada demir-çelik üretimi, enerji, çevre ve inşaat alanlarında yeni teknolojilerin geliştirilmesine ve ürün kalitesinin artırılmasına yönelik bilimsel ortam sağlar."
+    moreInfoHref="/kurumsal/hakkimizda"
+    icon={<FaHistory />}
+  />
+  <HistoryCard
+    title="Yönetim Kadrosu"
+    description="Uzman kadromuz ve akademisyenlerimizle en iyi test ve ölçüm hizmetini sunmak için çalışıyoruz."
+    moreInfoHref="/kurumsal/yonetim-kadromuz"
+    icon={<FaUsers />}
+  />
+  <HistoryCard
+    title="Kalite Belgeleri"
+    description="Mükemmellik ve kalite iyileştirme taahhüdümüzle, ön analizlerimiz için birbiriyle ilişkili kalite kontrol ve güvence girişimleri sunuyoruz."
+    moreInfoHref="/hizli-erisim/kalite-belgeleri"
+    icon={<FaCertificate />}
+  />
+  <HistoryCard
+    title="Laboratuvarlar"
+    description="Hassas ölçüm ve testler için doğru yerdesiniz."
+    moreInfoHref="/hizmetler/laboratuvarlar/dinamik-test-laboratuvari"
+    icon={<FaFlask />}
+  />
+  <HistoryCard
+    icon={<FaLightbulb />}
+    title="Yenilikler"
+    description="Sürekli olarak yenilikçi testlere öncülük ediyor, yeni ilişkiler kuruyor ve teknolojiye yatırım yapıyoruz."
+    moreInfoHref="/hizmetler/raporlamalar"
+    
+  />
+  <HistoryCard
+    title="Sürdürülebilirlik"
+    description="Çevik, müşteri odaklı ve ekip çalışması değerlerimizle sürdürülebilir bir organizasyon inşa ediyoruz."
+    moreInfoHref="/duyurular-ve-haberler"
+    icon={<FaLeaf />}
+  />
+</div>
 
-      {/* Uzmanlık Alanlarımız - Bu bir bileşen değil, mevcut haliyle kalacak */}
+
+      {/* Uzmanlık Alanlarımız */}
       <section className="pb-20">
         <div className="max-w-5xl mx-auto">
           <h2
