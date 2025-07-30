@@ -1,12 +1,7 @@
-// src/app/(main)/hizmetler/laboratuvarlar/layout.tsx
-import { labs } from '@/data/labs';
 import LaboratoryList from '@/components/LaboratoryList';
 import PageHeader from '@/components/PageHeader';
 import ScrollToTop from '@/components/ScrollToTop';
 
-export const metadata = {
-  title: 'Laboratuvarlar'
-};
 
 export default function LabsLayout({ children }: { children: React.ReactNode }) {
   return (
