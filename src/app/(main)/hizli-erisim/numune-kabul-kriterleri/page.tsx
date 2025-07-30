@@ -55,12 +55,12 @@ const metalografiItems = [
 
 export default function NumuneKabulKriterleriPage() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pb-16">
+    <div className="relative min-h-screen pb-16">
       <PageHeader
+        imageUrl="/images/kalite-belgeleri.avif"
         title="Numune Kabul Kriterleri"
-        imageUrl="/images/lab.avif"
       />
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto px-4 py-12 bg-white dark:bg-gray-900">
         {/* XRD */}
         <h3 className="text-2xl md:text-3xl font-bold text-[#202b85] mb-8 mt-6">1. XRD için numune özellikleri;</h3>
         <ul>
