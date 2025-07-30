@@ -82,54 +82,64 @@ Bu mekanizma, AB’nin sera gazı emisyonlarında 2030 yılına kadar asgari %55
         </div>
       </div>
 <br />
-<br />
 {/* ______________________________________________________________________________________ */}
       {/* New Section from Screenshot */}
-      <div className="flex flex-col md:flex-row gap-8 items-center bg-white shadow-md rounded-lg p-6 max-w-7xl mx-auto">
-        {/* Left: Circular Logo and Text */}
-        <div className="flex flex-col items-center md:items-start md:w-1/3 text-center md:text-left">
-          <div className="mb-4">
-            <div className="relative w-36 h-36 rounded-full border-4 border-orange-500 flex items-center justify-center mx-auto md:mx-0">
-              {/* Circle text could be an SVG or simplified with just text */}
-              <svg viewBox="0 0 200 200" className="w-36 h-36">
-                <defs>
-                  <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
-                </defs>
-                <text fill="#f97316" fontSize="12" fontWeight="600">
-                  <textPath href="#circlePath" startOffset="50%" textAnchor="middle" letterSpacing="3">
-                    Karbon Ayak İzi Doğrulama
-                  </textPath>
-                </text>
-                <g transform="translate(50,50)">
-                  {/* Simple flask icons as in the logo */}
-                  <circle cx="50" cy="60" r="10" fill="#f97316" />
-                  <rect x="45" y="40" width="10" height="20" fill="#f97316" />
-                  <rect x="40" y="80" width="20" height="5" fill="#f97316" />
-                </g>
-              </svg>
-            </div>
-          </div>
-          <p className="text-sm leading-relaxed max-w-xs">
-Ülkemizde Avrupa Yeşil Mutakabatı (AYM) ile öngörülen tedbirlerden Sınırda Karbon Düzenleme Mekanizmasına
- (SKDM) temel yasal çerçeve (AB) 2023/956 sayılı Tüzük) AB Resmi Gazetesi’nde 16 Mayıs 2023 tarihinde yayımlanmıştır.
-  SKDM aracılığıyla AB, ilk aşamada, çimento, demir-çelik, alüminyum, gübre, hidrojen ve elektrik sektörlerine ilişkin
-   yerli ve ithal ürünlerin tabi olduğu karbon bedelini eşitlemeyi amaçlamaktadır.
-          </p>
+      <div className="w-full bg-white shadow-md rounded-xl p-6 max-w-7xl mx-auto">
+  <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+    {/* Left: Image */}
+    <div className="lg:w-1/2 flex items-center justify-center">
+      <img
+        src="/images/karbon-ayak-izi.jpg"
+        alt="Karbon Ayak İzi Doğrulama"
+        className="rounded-xl object-cover w-full h-full max-h-[400px]"
+      />
+    </div>
+
+    {/* Right: Circular Badge and Text */}
+    <div className="lg:w-1/2 flex flex-col justify-center">
+      <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 h-full">
+        {/* Circular badge */}
+        <div className="relative w-32 h-32 mx-auto lg:mx-0">
+          <svg viewBox="0 0 200 200" className="w-full h-full">
+            <defs>
+              <path
+                id="circlePath"
+                d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
+              />
+            </defs>
+            <text fill="#f97316" fontSize="12" fontWeight="600">
+              <textPath
+                href="#circlePath"
+                startOffset="50%"
+                textAnchor="middle"
+                letterSpacing="3"
+              >
+                Karbon Ayak İzi Doğrulama
+              </textPath>
+            </text>
+            <g transform="translate(50,50)">
+              <circle cx="50" cy="60" r="10" fill="#f97316" />
+              <rect x="45" y="40" width="10" height="20" fill="#f97316" />
+              <rect x="40" y="80" width="20" height="5" fill="#f97316" />
+            </g>
+          </svg>
         </div>
 
-        {/* Middle: Image */}
-        <div className="md:w-1/3 flex justify-center">
-          <img
-            src="/images/karbon-ayak-izi.jpg"
-            alt="Karbon Ayak İzi Doğrulama"
-            className="rounded-lg object-cover max-h-64"
-          />
-        </div>
+        {/* Paragraph */}
+        <p className="text-sm leading-relaxed max-w-xl">
+          Ülkemizde Avrupa Yeşil Mutabakatı (AYM) ile öngörülen tedbirlerden Sınırda Karbon Düzenleme Mekanizmasına
+          (SKDM) temel yasal çerçeve (AB) 2023/956 sayılı Tüzük) AB Resmi Gazetesi’nde 16 Mayıs 2023 tarihinde
+          yayımlanmıştır. SKDM aracılığıyla AB, ilk aşamada, çimento, demir-çelik, alüminyum, gübre, hidrojen ve elektrik
+          sektörlerine ilişkin yerli ve ithal ürünlerin tabi olduğu karbon bedelini eşitlemeyi amaçlamaktadır.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
-        {/* Right: Text Content */}
-        <div className="md:w-1/3 space-y-4">
-    
-          <p className="text-sm leading-relaxed">
+      <section>
+      <div>
+      <p className="text-sm leading-relaxed"  style={{ color: primaryColor   }}>
             AYM’nin odağında yer alan iklim eylemi alanında ise, Avrupa’yı 2050 yılına kadar dünyanın
              ilk iklim-nötr kıtası haline getirmeye yönelik siyasi taahhüdün hukuki açıdan bağlayıcı 
              bir yükümlülüğe dönüştürülmesi amacıyla, 30 Haziran 2021 tarihinde "Avrupa İklim Yasası"
@@ -141,7 +151,7 @@ Bu mekanizma, AB’nin sera gazı emisyonlarında 2030 yılına kadar asgari %55
               tarafından AB’nin 2040 sera gazı emisyon hedefinin, 1990 seviyesine kıyasla %90 oranında azaltım olması 
               önerilmektedir.
           </p>
-
+          <br />
           <h3 className="font-semibold" style={{ color: secondaryColor }}>
             Uygulama ve Hedefler
           </h3>
@@ -157,8 +167,8 @@ Bu mekanizma, AB’nin sera gazı emisyonlarında 2030 yılına kadar asgari %55
               </li>
             ))}
           </ul>
-        </div>
-      </div>
+          </div>
+          </section>
     </div>
   );
 }
