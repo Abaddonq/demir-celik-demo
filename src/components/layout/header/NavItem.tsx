@@ -1,8 +1,8 @@
-'use client';
-import { useState, useRef } from 'react';
-import Link from 'next/link';
-import { FaChevronDown } from 'react-icons/fa';
-import type { NavItem as TNavItem } from './header.types';
+"use client";
+import { useState, useRef } from "react";
+import Link from "next/link";
+import { FaChevronDown } from "react-icons/fa";
+import type { NavItem as TNavItem } from "./header.types";
 
 interface Props {
   item: TNavItem;
@@ -12,32 +12,41 @@ interface Props {
 
 export default function NavItem({ item, primaryColor, secondaryColor }: Props) {
   const [open, setOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const timer = useRef<NodeJS.Timeout | null>(null);
 
   const close = () => timer.current && clearTimeout(timer.current);
 
+  const handleMouseEnter = () => {
+    close();
+    setOpen(true);
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    timer.current = setTimeout(() => setOpen(false), 150);
+    setIsHovered(false);
+  };
+
   return (
     <div
-      onMouseEnter={() => {
-        close();
-        setOpen(true);
-      }}
-      onMouseLeave={() => timer.current = setTimeout(() => setOpen(false), 150)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className="relative"
     >
       {item.href ? (
         <Link
           href={item.href}
-          style={{ color: primaryColor }}
-          className="px-3 py-2 rounded-md text-sm font-medium hover:text-orange-500 transition-colors"
+          style={{ color: isHovered ? secondaryColor : primaryColor }}
+          className="px-3 py-2 rounded-md text-sm font-medium transition-colors"
         >
           {item.title}
         </Link>
       ) : (
         <button
           type="button"
-          style={{ color: primaryColor }}
-          className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium hover:text-orange-500 transition-colors"
+          style={{ color: isHovered ? secondaryColor : primaryColor }}
+          className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors"
         >
           {item.title} <FaChevronDown className="text-xs" />
         </button>
@@ -49,6 +58,7 @@ export default function NavItem({ item, primaryColor, secondaryColor }: Props) {
             <Link
               key={sub.title}
               href={sub.href!}
+              style={{ color: primaryColor}}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               {sub.title}

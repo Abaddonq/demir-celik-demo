@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   // Tailwind'in tarayacağı dosyaların yollarını belirtir
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}', // Next.js 'app' dizini
@@ -11,4 +11,6 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};
+
+export default config; // Change module.exports to export default

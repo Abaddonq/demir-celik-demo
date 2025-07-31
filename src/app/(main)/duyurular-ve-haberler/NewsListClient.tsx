@@ -2,8 +2,9 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import NewsCard from "@/components/NewsCard"; 
-import { NewsItem } from "@/lib/news"; 
+import NewsCard from "@/components/NewsCard";
+import { NewsItem } from "@/lib/news";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
 
 export default function NewsListClient() {
   const router = useRouter();
@@ -88,7 +89,7 @@ export default function NewsListClient() {
   const getVisiblePages = () => {
     const pages = [];
     const maxVisible = 3; // Mobilde maksimum görünecek sayfa sayısı
-    
+
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
       return pages;
@@ -116,7 +117,7 @@ export default function NewsListClient() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-base sm:text-lg text-gray-700">Haberler yükleniyor...</p>
+        <LoadingSpinner /> {/* Use the LoadingSpinner component */}
       </div>
     );
   }
@@ -145,21 +146,21 @@ export default function NewsListClient() {
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 sm:mb-8 text-center">
           Duyurular ve Haberler
         </h1>
-        
+
         {/* Grid sisteminde mobil uyumluluk */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
           {newsList.map((newsItem) => (
             <NewsCard key={newsItem.id} news={newsItem} />
           ))}
         </div>
-        
+
         {totalPages > 1 && (
           <nav className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             {/* Sayfa bilgisi - Mobilde üstte */}
             <div className="text-sm text-gray-700 sm:hidden">
               Sayfa {currentPage} / {totalPages}
             </div>
-            
+
             <div className="flex items-center space-x-1 sm:space-x-2 w-full sm:w-auto">
               <button
                 onClick={handlePreviousPage}
@@ -168,7 +169,7 @@ export default function NewsListClient() {
               >
                 Önceki
               </button>
-              
+
               <div className="flex flex-1 sm:flex-none justify-center overflow-x-auto">
                 <div className="flex space-x-1 sm:space-x-2">
                   {visiblePages.map((page, index) => (
@@ -185,8 +186,8 @@ export default function NewsListClient() {
                         {page}
                       </button>
                     ) : (
-                      <span 
-                        key={`ellipsis-${index}`} 
+                      <span
+                        key={`ellipsis-${index}`}
                         className="px-2 sm:px-3 py-2 text-gray-500"
                       >
                         {page}
@@ -195,7 +196,7 @@ export default function NewsListClient() {
                   ))}
                 </div>
               </div>
-              
+
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
@@ -204,7 +205,7 @@ export default function NewsListClient() {
                 Sonraki
               </button>
             </div>
-            
+
             {/* Sayfa bilgisi - Desktop'ta sağda */}
             <div className="hidden sm:block text-sm text-gray-700">
               Sayfa {currentPage} / {totalPages}

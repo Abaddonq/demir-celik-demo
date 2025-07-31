@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import Person1 from "@/components/Person1";
 import PageHeader from "@/components/PageHeader";
 import { Staff } from "@/lib/dashboardTypes";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Import the new LoadingSpinner component
 
 export default function EnstitüYonetimKuruluPage() {
   const [staff, setStaff] = useState<Staff[]>([]);
+  const [loading, setLoading] = useState(true); // Initialize loading state
 
   useEffect(() => {
     fetch(
@@ -35,10 +37,23 @@ export default function EnstitüYonetimKuruluPage() {
         console.error("Failed to fetch staff data:", error);
         // Optionally, handle the error more gracefully in the UI
         setStaff([]);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after fetch is complete
       });
   }, []);
 
-  if (!staff.length) return <div>Yükleniyor...</div>;
+  if (loading) {
+    return (
+      // You can wrap it in a div with specific height if needed, e.g., h-screen
+      <div className="h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // If not loading and no staff, show "Personel bulunamadı."
+  if (!staff.length) return <div>Personel bulunamadı.</div>;
 
   const topPerson = staff[0];
   const otherStaff = staff.slice(1);

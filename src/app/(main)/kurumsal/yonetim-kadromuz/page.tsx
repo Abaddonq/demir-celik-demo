@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import Person1 from "@/components/Person1";
 import PageHeader from "@/components/PageHeader";
 import { Staff } from "@/lib/dashboardTypes";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
 
 export default function YonetimKadromuzPage() {
   const [staff, setStaff] = useState<Staff[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     fetch(`/api/staff?department=${encodeURIComponent("Yönetim Kurulu")}`)
@@ -33,10 +35,22 @@ export default function YonetimKadromuzPage() {
         console.error("Failed to fetch staff data:", error);
         // Optionally, handle the error more gracefully in the UI
         setStaff([]);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after fetch is complete
       });
   }, []);
 
-  if (!staff.length) return <div>Yükleniyor...</div>;
+  if (loading) { // Conditionally render LoadingSpinner
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // If not loading and no staff, show an appropriate message
+  if (!staff.length) return <div>Personel bulunamadı.</div>;
 
   const topPerson = staff[0];
   const otherStaff = staff.slice(1);

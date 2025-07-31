@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function NewsListPage() {
   return (
-    <Suspense fallback={<p>Haberler yükleniyor...</p>}>
+    <Suspense>
       <NewsListClient />
     </Suspense>
   );

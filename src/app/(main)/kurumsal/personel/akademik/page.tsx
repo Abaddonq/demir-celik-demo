@@ -2,18 +2,50 @@
 import { useEffect, useState } from "react";
 import Person1 from "@/components/Person1";
 import PageHeader from "@/components/PageHeader";
-import AcademicAccordion from "@/components/AcademicAccordion"; // Yeni Accordion bileşenini import ediyoruz
+import AcademicAccordion from "@/components/AcademicAccordion";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
 
 export default function AkademiPersonelPage() {
   const [staff, setStaff] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState<string | null>(null); // Add error state
 
   useEffect(() => {
     fetch(`/api/staff?department=${encodeURIComponent("Akademi")}`)
-      .then((res) => res.json())
-      .then((data) => setStaff(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setStaff(data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch staff data:", err);
+        setError("Personel bilgileri yüklenirken bir hata oluştu."); // Set an error message
+        setStaff([]); // Clear staff on error
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after fetch completes
+      });
   }, []);
 
-  if (!staff.length) return <div>Yükleniyor...</div>;
+  if (loading) { // Conditionally render LoadingSpinner
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error) { // Display error message if there was an error
+    return <div className="text-center text-red-600 py-8">{error}</div>;
+  }
+
+  if (!staff.length) { // Show "No staff found" message if array is empty after loading
+    return <div>Personel bulunamadı.</div>;
+  }
 
   return (
     <div>
@@ -47,7 +79,7 @@ export default function AkademiPersonelPage() {
                   title="Sorumlu Laboratuvarlar"
                   items={[
                     {
-                      name: person.name + " " + person.surname, // Bu kısım hala gerekli çünkü Accordion bileşeni Editor tipini bekliyor
+                      name: person.name + " " + person.surname,
                       institution: (
                         <div>
                           {person.responsible_labs && person.responsible_labs.length > 0 ? (
