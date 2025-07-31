@@ -59,19 +59,7 @@ export default function AkademiPersonelPage() {
             <div key={person.id ?? idx} className="flex flex-col items-center p-4 border rounded-lg shadow-md bg-white">
               <Person1 person={person} />
 
-              {/* İletişim Bilgileri Accordion'ı */}
-              <div className="w-full mt-6 max-w-sm">
-                <AcademicAccordion
-                  title="İletişim Bilgileri"
-                  items={[
-                    {
-                      name: person.name + " " + person.surname,
-                      email: person.email,
-                      institution: person.phone ? `Telefon: ${person.phone}` : 'Telefon bilgisi yok',
-                    },
-                  ]}
-                />
-              </div>
+             
 
               {/* Sorumlu Laboratuvarlar Accordion'ı */}
               <div className="w-full mt-4 max-w-sm">
