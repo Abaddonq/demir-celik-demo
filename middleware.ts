@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   if (
     request.nextUrl.pathname.startsWith("/admin") &&
     !request.nextUrl.pathname.startsWith("/admin/login") &&
-    !request.nextUrl.pathname.startsWith("/api/news")
+    request.nextUrl.pathname.startsWith("/api/news")
   ) {
     const token = request.cookies.get("token")?.value;
     const user = token ? verifyJwt(token) : null;
