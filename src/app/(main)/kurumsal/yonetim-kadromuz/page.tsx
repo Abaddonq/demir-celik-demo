@@ -1,9 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import Person1 from "@/components/Person1";
+import dynamic from "next/dynamic";
 import PageHeader from "@/components/PageHeader";
 import { Staff } from "@/lib/dashboardTypes";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "@/components/LoadingSpinner"; 
+
+const Person1 = dynamic(() => import("@/components/Person1"), {
+  loading: () => <LoadingSpinner />, 
+  ssr: false,
+});
 
 export default function YonetimKadromuzPage() {
   const [staff, setStaff] = useState<Staff[]>([]);

@@ -1,9 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import Person1 from "@/components/Person1";
+import dynamic from "next/dynamic"; 
 import PageHeader from "@/components/PageHeader";
 import { Staff } from "@/lib/dashboardTypes";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "@/components/LoadingSpinner"; 
+const Person1 = dynamic(() => import("@/components/Person1"), {
+  loading: () => <LoadingSpinner />, 
+  ssr: false, 
+});
 
 export default function TeknikPersonelPage() {
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -54,6 +58,7 @@ export default function TeknikPersonelPage() {
       {/* Grid yapısını mobil uyumlu hale getirdik */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 my-8 px-4">
         {staff.map((person: Staff, idx: number) => (
+          // Person1 component is now lazy-loaded, with the spinner appearing for each as it loads
           <Person1 key={person.id ?? idx} person={person} />
         ))}
       </div>

@@ -1,13 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
-import Person1 from "@/components/Person1";
+import dynamic from "next/dynamic"; 
 import PageHeader from "@/components/PageHeader";
 import { Staff } from "@/lib/dashboardTypes";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Import the new LoadingSpinner component
+import LoadingSpinner from "@/components/LoadingSpinner"; 
+const Person1 = dynamic(() => import("@/components/Person1"), {
+  loading: () => <LoadingSpinner />, 
+  ssr: false, 
+});
 
 export default function EnstitüYonetimKuruluPage() {
   const [staff, setStaff] = useState<Staff[]>([]);
-  const [loading, setLoading] = useState(true); // Initialize loading state
+  const [loading, setLoading] = useState(true); // Initialize loading state for data fetch
 
   useEffect(() => {
     fetch(
@@ -43,9 +47,9 @@ export default function EnstitüYonetimKuruluPage() {
       });
   }, []);
 
+  // Only show a full-page spinner if the initial data is still loading
   if (loading) {
     return (
-      // You can wrap it in a div with specific height if needed, e.g., h-screen
       <div className="h-screen flex items-center justify-center">
         <LoadingSpinner />
       </div>
@@ -65,16 +69,15 @@ export default function EnstitüYonetimKuruluPage() {
         title="Enstitü Yönetim"
       />
 
-      {/* Top person displayed centrally */}
+      {/* Top person displayed centrally. next/dynamic handles the loading state via its 'loading' option. */}
       <div className="flex justify-center my-8">
-        {/* Sadece ilk kişiyi (topPerson) göster */}
         {topPerson && <Person1 person={topPerson} />}
       </div>
 
-      {/* Remaining staff displayed in a 2x2 grid (or adjust grid-cols for 4 people side-by-side) */}
+      {/* Remaining staff displayed in a grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
-        {/* Diğer tüm personelleri (otherStaff) ızgarada göster */}
         {otherStaff.map((person: Staff, idx: number) => (
+          // next/dynamic handles the loading state for each instance
           <Person1 key={person.id ?? idx} person={person} />
         ))}
       </div>

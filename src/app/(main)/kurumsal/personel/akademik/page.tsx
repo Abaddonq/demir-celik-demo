@@ -1,9 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import Person1 from "@/components/Person1";
+import dynamic from "next/dynamic"; 
 import PageHeader from "@/components/PageHeader";
 import AcademicAccordion from "@/components/AcademicAccordion";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "@/components/LoadingSpinner";
+
+
+const Person1 = dynamic(() => import("@/components/Person1"), {
+  loading: () => <LoadingSpinner />,
+  ssr: false,
+});
 
 export default function AkademiPersonelPage() {
   const [staff, setStaff] = useState([]);
@@ -57,9 +63,8 @@ export default function AkademiPersonelPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {staff.map((person: any, idx: number) => (
             <div key={person.id ?? idx} className="flex flex-col items-center p-4 border rounded-lg shadow-md bg-white">
+              {/* Person1 component is now lazy-loaded, with the spinner appearing for it as it loads */}
               <Person1 person={person} />
-
-             
 
               {/* Sorumlu Laboratuvarlar Accordion'ı */}
               <div className="w-full mt-4 max-w-sm">

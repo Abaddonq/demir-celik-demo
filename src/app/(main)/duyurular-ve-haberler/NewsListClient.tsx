@@ -1,10 +1,16 @@
-'use client';
+"use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import NewsCard from "@/components/NewsCard";
+import dynamic from "next/dynamic"; 
 import { NewsItem } from "@/lib/news";
-import LoadingSpinner from "@/components/LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "@/components/LoadingSpinner"; 
+
+
+const NewsCard = dynamic(() => import("@/components/NewsCard"), {
+  loading: () => <LoadingSpinner />, 
+  ssr: false, 
+});
 
 export default function NewsListClient() {
   const router = useRouter();
@@ -150,6 +156,7 @@ export default function NewsListClient() {
         {/* Grid sisteminde mobil uyumluluk */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
           {newsList.map((newsItem) => (
+            // NewsCard component is now lazy-loaded, with the spinner appearing for each as it loads
             <NewsCard key={newsItem.id} news={newsItem} />
           ))}
         </div>
